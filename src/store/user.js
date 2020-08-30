@@ -8,6 +8,7 @@ export default {
             uid: null,
             email: null,
             nickName: null,
+            photoUrl: null,
         },
 
         unsubscribeAuth: null
@@ -26,6 +27,9 @@ export default {
         },
         SET_USER_NICKNAME(state, payload) {
             state.user.nickName = payload
+        },
+        SET_USER_PHOTO(state, payload) {
+            state.user.photoUrl = payload
         },
         SET_USER_EMAIL(state, payload) {
             state.user.email = payload
@@ -55,9 +59,10 @@ export default {
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(() => {
                     firebase.auth().currentUser.updateProfile(
-                        { displayName: payload.nickName })
+                        { displayName: payload.nickName, photoURL: payload.photoUrl })
                         .then(() =>
                             commit('SET_USER_NICKNAME', payload.displayName),
+                            commit('SET_USER_PHOTO', payload.photoURL)
                         )
 
 
@@ -88,6 +93,7 @@ export default {
             if (payload) {
                 commit('SET_USER', { uid: payload.uid, email: payload.email }),
                     commit('SET_USER_NICKNAME', payload.displayName)
+                commit('SET_USER_PHOTO', payload.photoURL)
                 dispatch('LOAD_USER_DATA', payload.uid)
             } else {
                 commit('UNSET_USER')
@@ -107,9 +113,9 @@ export default {
                 let currentUser = firebase.auth().currentUser
 
                 if (payload.changeType == 'name') {
-                    currentUser.updateProfile({ displayName: payload.newName })
+                    currentUser.updateProfile({ displayName: payload.newNickName })
                         .then(() => {
-                            commit('SET_USER_NAME', payload.newName)
+                            commit('SET_USER_NICKNAME', payload.newNickName)
                             commit('SET_PROCESSING', false)
                             EventBus.notify('user-profile-data-changed')
                         })
@@ -145,11 +151,29 @@ export default {
                 commit('SET_PROCESSING', false)
                 commit('SET_ERROR', error.message)
             });
+        },
+        CHANGE_USER_IMAGE({ commit}, payload) {
+            commit('SET_PROCESSING', true)
+            commit('CLEAR_ERROR')
+
+            let currentUser = firebase.auth().currentUser
+
+            currentUser.updateProfile({ photoURL: payload.newPhotoUrl })
+                .then(() => {
+                    commit('SET_USER_PHOTO', payload.newPhotoUrl)
+                    commit('SET_PROCESSING', false)
+                    EventBus.notify('user-profile-data-changed')
+                })
+                .catch(error => {
+                    commit('SET_PROCESSING', false)
+                    commit('SET_ERROR', error.message)
+                })
         }
     },
     getters: {
         userId: (state) => state.user.uid,
-        userName: (state) => state.user.name,
+        userName: (state) => state.user.nickName,
+        userPhoto: (state) => state.user.photoUrl,
         userEmail: (state) => state.user.email,
         isUserAuthenticated: (state) => state.user.isAuthenticated
     }

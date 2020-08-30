@@ -22,6 +22,14 @@
               ></v-text-field>
 
               <v-text-field
+                label="Аватар"
+                prepend-icon="mdi-image"
+                required
+                v-model="photoURL"
+                :rules="photoURLRules"
+              ></v-text-field>
+
+              <v-text-field
                 label="Е-мейл"
                 name="login"
                 prepend-icon="mdi-email"
@@ -65,6 +73,7 @@ export default {
       password: null,
       nickName: null,
       valid: null,
+      photoURL: null,
       emailRules: [
         (v) => !!v || "Пожалуйста введите е-мейл",
         (v) => /.+@.+\..+/.test(v) || "Неправильный е-мейл",
@@ -76,6 +85,7 @@ export default {
           "Пароль слишком короткий - минимум 6 символов",
       ],
       nickNameRules: [(v) => !!v || "Пожалуйста введите ваше имя"],
+      photoURLRules: [(v) => !!v || "Пожалуйста введите адресную строку вашей фотографии"]
     };
   },
   computed: {
@@ -101,6 +111,7 @@ export default {
         email: this.email,
         password: this.password,
         nickName: this.nickName,
+        photoURL: this.photoURL
       });
     },
   },
