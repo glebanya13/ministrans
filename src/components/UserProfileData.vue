@@ -187,6 +187,7 @@ export default {
       this.$store.dispatch("CHANGE_USER_IMAGE", {
         newPhotoUrl: this.newPhotoUrl
       })
+      this.dialogAva = false
     }
   },
   created() {

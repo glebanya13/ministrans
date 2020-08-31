@@ -162,7 +162,6 @@ export default {
                 .then(() => {
                     commit('SET_USER_PHOTO', payload.newPhotoUrl)
                     commit('SET_PROCESSING', false)
-                    EventBus.notify('user-profile-data-changed')
                 })
                 .catch(error => {
                     commit('SET_PROCESSING', false)

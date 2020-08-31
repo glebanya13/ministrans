@@ -66,7 +66,7 @@ export default {
             },
             {
               icon: "mdi-check-decagram",
-              title: "Записаться",
+              title: "Отметиться",
               route: "/write",
             },
           ]
