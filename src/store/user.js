@@ -7,10 +7,7 @@ export default {
             isAuthenticated: false,
             uid: null,
             email: null,
-            nickName: null,
-            photoUrl: null,
         },
-
         unsubscribeAuth: null
     },
     mutations: {
@@ -25,12 +22,9 @@ export default {
                 uid: null
             }
         },
-        SET_USER_NICKNAME(state, payload) {
-            state.user.nickName = payload
-        },
-        SET_USER_PHOTO(state, payload) {
-            state.user.photoUrl = payload
-        },
+        // SET_USER_PHOTO(state, payload) {
+        //     state.user.photoUrl = payload
+        // },
         SET_USER_EMAIL(state, payload) {
             state.user.email = payload
         },
@@ -58,12 +52,11 @@ export default {
             commit('CLEAR_ERROR')
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(() => {
-                    firebase.auth().currentUser.updateProfile(
-                        { displayName: payload.nickName, photoURL: payload.photoUrl })
-                        .then(() =>
-                            commit('SET_USER_NICKNAME', payload.displayName),
-                            commit('SET_USER_PHOTO', payload.photoURL)
-                        )
+                    // firebase.auth().currentUser.updateProfile(
+                    //     { photoURL: payload.photoUrl })
+                    //     .then(() =>
+                    //         commit('SET_USER_PHOTO', payload.photoURL)
+                    //     )
 
 
                     commit('SET_PROCESSING', false)
@@ -92,8 +85,7 @@ export default {
         STATE_CHANGED({ commit, dispatch }, payload) {
             if (payload) {
                 commit('SET_USER', { uid: payload.uid, email: payload.email }),
-                    commit('SET_USER_NICKNAME', payload.displayName)
-                commit('SET_USER_PHOTO', payload.photoURL)
+                // commit('SET_USER_PHOTO', payload.photoURL)
                 dispatch('LOAD_USER_DATA', payload.uid)
             } else {
                 commit('UNSET_USER')
@@ -111,19 +103,7 @@ export default {
 
             user.reauthenticateAndRetrieveDataWithCredential(credential).then(function () {
                 let currentUser = firebase.auth().currentUser
-
-                if (payload.changeType == 'name') {
-                    currentUser.updateProfile({ displayName: payload.newNickName })
-                        .then(() => {
-                            commit('SET_USER_NICKNAME', payload.newNickName)
-                            commit('SET_PROCESSING', false)
-                            EventBus.notify('user-profile-data-changed')
-                        })
-                        .catch(error => {
-                            commit('SET_PROCESSING', false)
-                            commit('SET_ERROR', error.message)
-                        })
-                }
+              
                 if (payload.changeType == 'email') {
                     currentUser.updateEmail(payload.newEmail)
                         .then(() => {
@@ -152,28 +132,27 @@ export default {
                 commit('SET_ERROR', error.message)
             });
         },
-        CHANGE_USER_IMAGE({ commit}, payload) {
-            commit('SET_PROCESSING', true)
-            commit('CLEAR_ERROR')
+        // CHANGE_USER_IMAGE({ commit}, payload) {
+        //     commit('SET_PROCESSING', true)
+        //     commit('CLEAR_ERROR')
 
-            let currentUser = firebase.auth().currentUser
+        //     let currentUser = firebase.auth().currentUser
 
-            currentUser.updateProfile({ photoURL: payload.newPhotoUrl })
-                .then(() => {
-                    commit('SET_USER_PHOTO', payload.newPhotoUrl)
-                    commit('SET_PROCESSING', false)
-                })
-                .catch(error => {
-                    commit('SET_PROCESSING', false)
-                    commit('SET_ERROR', error.message)
-                })
-        }
+        //     currentUser.updateProfile({ photoURL: payload.newPhotoUrl })
+        //         .then(() => {
+        //             commit('SET_USER_PHOTO', payload.newPhotoUrl)
+        //             commit('SET_PROCESSING', false)
+        //         })
+        //         .catch(error => {
+        //             commit('SET_PROCESSING', false)
+        //             commit('SET_ERROR', error.message)
+        //         })
+        // }
     },
     getters: {
         userId: (state) => state.user.uid,
-        userName: (state) => state.user.nickName,
-        userPhoto: (state) => state.user.photoUrl,
+        // userPhoto: (state) => state.user.photoUrl,
         userEmail: (state) => state.user.email,
-        isUserAuthenticated: (state) => state.user.isAuthenticated
+        isUserAuthenticated: (state) => state.user.isAuthenticated,
     }
 }

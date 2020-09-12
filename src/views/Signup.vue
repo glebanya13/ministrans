@@ -11,23 +11,6 @@
             <v-alert type="warning" :value="error">{{error}}</v-alert>
 
             <v-form v-model="valid">
-              <v-text-field
-                label="Никнейм"
-                name="nickname"
-                prepend-icon="mdi-account"
-                type="text"
-                required
-                v-model="nickName"
-                :rules="nickNameRules"
-              ></v-text-field>
-
-              <v-text-field
-                label="Аватар"
-                prepend-icon="mdi-image"
-                required
-                v-model="photoURL"
-                :rules="photoURLRules"
-              ></v-text-field>
 
               <v-text-field
                 label="Е-мейл"
@@ -71,9 +54,7 @@ export default {
     return {
       email: null,
       password: null,
-      nickName: null,
       valid: null,
-      photoURL: null,
       emailRules: [
         (v) => !!v || "Пожалуйста введите е-мейл",
         (v) => /.+@.+\..+/.test(v) || "Неправильный е-мейл",
@@ -84,8 +65,6 @@ export default {
           (v && v.length >= 6) ||
           "Пароль слишком короткий - минимум 6 символов",
       ],
-      nickNameRules: [(v) => !!v || "Пожалуйста введите ваше имя"],
-      photoURLRules: [(v) => !!v || "Пожалуйста введите адресную строку вашей фотографии"]
     };
   },
   computed: {
@@ -110,8 +89,6 @@ export default {
       this.$store.dispatch("SIGNUP", {
         email: this.email,
         password: this.password,
-        nickName: this.nickName,
-        photoURL: this.photoURL
       });
     },
   },

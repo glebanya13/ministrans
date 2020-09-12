@@ -4,7 +4,7 @@
       <v-col cols="12" sm="8" md="6">
         <v-card class="elevation-12">
           <v-toolbar color="primary" dark flat>
-            <v-toolbar-title>Регистрация</v-toolbar-title>
+            <v-toolbar-title>Персональные данные</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
@@ -28,6 +28,16 @@
                 v-model="surname"
                 :rules="surnameRules"
               ></v-text-field>
+
+              <v-overflow-btn
+                class="my-2"
+                label="Парафия"
+                prepend-icon="mdi-church"
+                required
+                :items="parafias"
+                v-model="parafia"
+                :rules="parafiasRules"
+              ></v-overflow-btn>
 
               <v-overflow-btn
                 class="my-2"
@@ -61,6 +71,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn to="/">Заполнить позже</v-btn>
             <v-btn
               color="primary"
               @click.prevent="personal()"
@@ -92,8 +103,13 @@ export default {
         "Одиннадцатый",
         "Школу закончил",
       ],
+      parafias:[
+        "Святой Троицы, г. Глубокое",
+        "Иисуса Милосердного, г. Витебск"
+      ],
       levels: ["Асперант", "Министрант", "Лектар", "Ксендз"],
       birthday: null,
+      parafia: null,
       clas: null,
       name: null,
       surname: null,
@@ -105,6 +121,7 @@ export default {
       levelsRules: [(v) => !!v || "Пожалуйста выберите ваше звание"],
       classesRules: [(v) => !!v || "Пожалуйста выберите ваш класс"],
       dataRules: [(v) => !!v || "Пожалуйста введите дату рождения"],
+      parafiasRules: [(v) => !!v || "Пожалуйста выберите вашу парафию"],
     };
   },
   computed: {
@@ -118,10 +135,11 @@ export default {
         level: this.level,
         birthday: this.birthday,
         clas: this.clas,
-        name: this.name,
+        name: this.name, 
         surname: this.surname,
+        parafia: this.parafia, 
       });
-      this.$router.push("/");
+      this.$router.push("/profile");
     },
   },
 };
