@@ -1,91 +1,145 @@
 <template>
-<v-container fluid>
+  <v-container fluid>
     <v-layout column>
-  <v-card class="mx-auto" width="800" outlined>
-    <v-card-text>
-      <h2 class="text-center">Здесь можно отметиться</h2>
-      <h3>Выберите дату и время:</h3>
-      <v-date-picker v-model="date"
-      full-width
-      :landscape="$vuetify.breakpoint.smAndUp"
-      class="mt-4">
-      </v-date-picker>
+      <v-card class="mx-auto" width="500" outlined>
+        <v-card-text>
+          <h1 class="text-center black--text">Записаться на Имшу</h1><br>
+          <h1 class="text-center black--text">Дата:</h1><br>
+          <h1 class="text-center black--text">
+            {{date}}
+          </h1><br>
+          <h1 class="text-center black--text">Время:</h1><br>
+          <h1 class="text-center black--text">
+            {{time}}
+          </h1>
+
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-dialog v-model="dialog" persistent max-width="450">
+            <template v-slot:activator="{ on }">
+              <v-btn class="primary" v-on="on">Изменить</v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <h2 class="black--text">Изменить дату посещения</h2>
+              </v-card-title>
+              <v-card-text>
+
+                <v-dialog
+        ref="dialog1"
+        v-model="modal"
+        :return-value.sync="newdate"
+        persistent
+        width="290px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="newdate"
+            label="Выберите дату"
+            prepend-icon="event"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker v-model="newdate" scrollable>
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="modal = false">Отмена</v-btn>
+          <v-btn text color="primary" @click="$refs.dialog1.save(newdate)">OK</v-btn>
+        </v-date-picker>
+      </v-dialog>
 
         <v-select
-          v-model="day"
-          :items="days"
+          v-if="isSunday == true"
+          v-model="newtime"
+          :items="timesSunday"
           menu-props="auto"
-          label="Выберите день"
+          label="Выберите время"
           hide-details
-          prepend-icon="mdi-calendar-today"
+          prepend-icon="event"
           single-line
         ></v-select>
 
-<v-radio-group v-if="day == 'Будний день'" v-model="timeb" :mandatory="false">
-      <v-radio label="9:00" value="timeb-1"></v-radio>
-      <v-radio label="18:00" value="timeb-2"></v-radio>
-    </v-radio-group>
-
-    <v-radio-group v-if="day == 'Воскресение'" v-model="times" :mandatory="false">
-      <v-radio label="9:30" value="times-1"></v-radio>
-      <v-radio label="11:00" value="times-2"></v-radio>
-      <v-radio label="13:00" value="times-3"></v-radio>
-      <v-radio label="18:00" value="times-4"></v-radio>
-    </v-radio-group>
-
-    <v-radio-group v-if="day == 'Праздничный день'" v-model="timec" :mandatory="false">
-      <v-radio label="10:00" value="timec-1"></v-radio>
-      <v-radio label="12:00" value="timec-2"></v-radio>
-      <v-radio label="18:00" value="timec-3"></v-radio>
-    </v-radio-group>
-
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn class="primary" @click="checkin()">Отметиться</v-btn>
-    </v-card-actions>
-  </v-card>
+        <v-select
+        v-if="isSunday == false"
+          v-model="newtime"
+          :items="timesDefault"
+          menu-props="auto"
+          label="Выберите время"
+          hide-details
+          prepend-icon="event"
+          single-line
+        ></v-select>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="dialog = false">Отмена</v-btn>
+                <v-btn color="primary" @click="save()">Сохранить</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-btn class="primary" @click="checkin()">Подтвердить</v-btn>
+          <v-snackbar v-model="snackbar" bottom light color="green lighten-1">
+                  <v-icon>check</v-icon> {{snackbarText}}
+              </v-snackbar>
+        </v-card-actions>
+      </v-card>
     </v-layout>
-</v-container>
+  </v-container>
 </template>
 
 <script>
 export default {
   data() {
     return {
+      dialog: false,
+      day: new Date().getDay(),
       date: new Date().toISOString().substr(0, 10),
-      days: ['Будний день', 'Воскресение', 'Праздничный день'],
-      day: 'Будний день',
-      timeb: 'timeb-1',
-      times: 'times-1',
-      timec: 'timec-1'
-      // time: new Date(),
+      modal: false,
+      newdate: new Date().toISOString().substr(0, 10),
+      timesDefault: ['09:00', '18:00'],
+      timesSunday: ['09:30', '11:00', '13:00', '18:00'],
+      newtime: '',
+      time: '09:00',
+      snackbar: false,
+      snackbarText: null,
     };
   },
   methods: {
-    // checkin() {
-    //   this.$store.dispatch("CHECK_IN", {
-    //     date: this.submittableDateTime,
-    //   });
-    // },
+    checkin() {
+      this.$store.dispatch("CHECK_IN", {
+        date: this.date,
+        time: this.time,
+        isSunday: this.isSunday,
+      });
+      this.snackbar = true
+      this.snackbarText = "Поздравляем вы отметились!"
+    },
+
+    save() {
+      this.date = this.newdate;
+      this.time = this.newtime
+      this.dialog = false
+    },
   },
-  // computed: {
-  //   submittableDateTime() {
-  //     const date = new Date(this.date)
-  //     if(typeof this.time === 'string') {
-  //       const hours = this.time.match(/^(\d+)/)[1]
-  //       const minutes = this.time.match(/:(\d+)/)[1]
-  //       date.setHours(hours)
-  //       date.setMinutes(minutes)
-  //     }else {
-  //       date.setHours(this.time.getHours())
-  //       date.setMinutes(this.time.getMinutes())
-  //     }
-  //     return date
-  //   }
-  // },
-   
-};
+  computed: {
+    newDay(){
+      let newday = new Date(this.newdate).getDay()
+      return newday
+    },
+    isSunday(){
+      let isSunday = false
+      if(this.newDay == 0){
+        isSunday = true
+      }
+      if(this.day == 0){
+        isSunday = true
+      }
+      return isSunday
+    }
+  },
+}
 </script>
 
 <style>

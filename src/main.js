@@ -37,5 +37,6 @@ new Vue({
   render: h => h(App),
   created(){
     
-  }
+    this.$store.dispatch("LOAD_USERS")
+  },
 }).$mount('#app')

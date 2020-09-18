@@ -138,6 +138,7 @@ export default {
         name: this.name, 
         surname: this.surname,
         parafia: this.parafia, 
+        userId: this.$store.getters.userId
       });
       this.$router.push("/profile");
     },
