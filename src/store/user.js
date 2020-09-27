@@ -84,9 +84,10 @@ export default {
         },
         STATE_CHANGED({ commit, dispatch }, payload) {
             if (payload) {
-                commit('SET_USER', { uid: payload.uid, email: payload.email }),
+                commit('SET_USER', { uid: payload.uid, email: payload.email })
                 // commit('SET_USER_PHOTO', payload.photoURL)
                 dispatch('LOAD_USER_DATA', payload.uid)
+                dispatch('LOAD_MARKS')
             } else {
                 commit('UNSET_USER')
             }

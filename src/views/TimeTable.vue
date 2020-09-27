@@ -1,23 +1,30 @@
 <template>
 <div>
-  
+  <!-- <bar></bar> -->
 </div>
 </template>
 
 
 <script>
-  export default {
-    data(){
-      return {
+// import { Line } from 'vue-chartjs'
+
+//   export default {
+//   extends: Line,
+//   props: ['chartdata', 'options'],
+    // data(){
+    //   return {
         
-    }
-    },
-    computed:{
-      users(){
-        return this.$store.getters.getUser
-      }
-    }
-  }
+    // }
+    // },
+    // computed:{
+    //   users(){
+    //     return this.$store.getters.getUser
+    //   }
+    // },
+    // mounted(){
+    //   this.renderChart(this.chartdata, this.options)
+    // }
+  // }
 </script>
 
 <style>

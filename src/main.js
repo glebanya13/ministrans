@@ -15,7 +15,7 @@ Vue.use(VuetifyConfirm, {
   buttonFalseText: 'Нет',
   color: 'warning',
   icon: 'warning',
-  title: 'Warning',
+  title: 'Опасно',
   width: 350,
   property: '$confirm'
 })
@@ -36,7 +36,6 @@ new Vue({
   vuetify,
   render: h => h(App),
   created(){
-    
-    this.$store.dispatch("LOAD_USERS")
+    // this.$store.dispatch("LOAD_MARKS")
   },
 }).$mount('#app')
