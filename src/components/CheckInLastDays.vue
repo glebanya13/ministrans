@@ -31,13 +31,13 @@ export default {
   },
   computed: {
     marks() {
-      return this.$store.getters.marks;
+      return this.$store.getters.userMarks;
     },
   },
   methods: {
     deleteDate(mark) {
       Vue.$db.collection("marks").doc(mark).delete();
-      this.$store.dispatch("LOAD_MARKS");
+      this.$store.dispatch("LOAD_MARKS_BY_USER");
     },
   },
   created() {

@@ -63,6 +63,8 @@
                     hide-details
                     prepend-icon="event"
                     single-line
+                    :rules="timeRules"
+                    required
                   ></v-select>
 
                   <v-select

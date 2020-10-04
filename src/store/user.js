@@ -87,6 +87,7 @@ export default {
                 commit('SET_USER', { uid: payload.uid, email: payload.email })
                 // commit('SET_USER_PHOTO', payload.photoURL)
                 dispatch('LOAD_USER_DATA', payload.uid)
+                dispatch('LOAD_MARKS_BY_USER')
                 dispatch('LOAD_MARKS')
             } else {
                 commit('UNSET_USER')
