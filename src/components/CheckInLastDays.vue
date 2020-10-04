@@ -41,7 +41,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch("LOAD_MARKS");
+    this.$store.dispatch("LOAD_MARKS_BY_USER");
   },
 };
 </script>

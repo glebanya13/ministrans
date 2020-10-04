@@ -89,6 +89,7 @@ export default {
                 dispatch('LOAD_USER_DATA', payload.uid)
                 dispatch('LOAD_MARKS_BY_USER')
                 dispatch('LOAD_MARKS')
+                dispatch('LOAD_USERS')
             } else {
                 commit('UNSET_USER')
             }

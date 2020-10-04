@@ -11,12 +11,15 @@ let defaultUserData = {
 export default {
     state: {
         userData: defaultUserData,
-
+        users: {}
     },
     mutations: {
         SET_USER_DATA(state, payload) {
             Vue.set(state, 'userData', payload)
         },
+        SET_USERS(state, payload) {
+            state.users = payload
+        }
     },
     actions: {
         LOAD_USER_DATA({ commit }, payload) {
@@ -58,8 +61,29 @@ export default {
                     commit('SET_PROCESSING', false)
                 })
         },
+        LOAD_USERS({ commit }){
+            Vue.$db.collection('userData')
+                .get()
+                .then(querySnapshot => {
+                    let users = []
+                    querySnapshot.forEach(s => {
+                        const data = s.data()
+                        let user = {
+                            uid: data.userId,
+                            name: data.name
+                        }
+                        console.log(user)
+                        users.push(user)
+                    })
+                    commit('SET_USERS', users)
+                })
+                .catch(error =>
+                    commit('SET_ERROR', error.message)
+                )
+        }
     },
     getters: {
+        users: (state) => state.users,
         userData: (state) => state.userData,
         userName: (state) => state.userData.name,
         userLevel: (state) => state.userData.level,

@@ -2,22 +2,24 @@
   <div class="small">
     <canvas ref="canvas">
     </canvas>
-    <v-btn @click="ex()"></v-btn>
+    <v-btn @click="userDate()">Проверка...</v-btn>
   </div>
 </template>
 
 <script>
-import { HorizontalBar } from "vue-chartjs";
+import { HorizontalBar } from "vue-chartjs"
+// import Vue from 'vue'
 
 export default {
   extends: HorizontalBar,
   data(){
     return {
       chartdata: {
+         labels: this.userName,
       datasets: [{
-         labels: ['asd', 'adsad', 'dasdass'],
-         data: this.userDate,
-         backgroundColor: ["#73BFB8", "#73BFB8", "#73BFB8", "#73BFB8", "#73BFB8", "#73BFB8", "#73BFB8"], 
+        label: 'График посещения',
+         data: ['5'],
+         backgroundColor: ["#73BFB8", "#73BFB8", "#73BFB8", "#73BFB8", "#73BFB8"], 
       }]
     },
     }
@@ -26,15 +28,34 @@ export default {
     marks(){
       return this.$store.getters.marks
     },
-    userDate(){
-      return this.marks.forEach(mark => {
+    users(){
+      return this.$store.getters.users
+    },
+    // userName(){
+      // let userName = this.marks.map(mark =>{ 
+      //   return mark.name
+      // })
+      // let userId = this.marks.map(mark => {
+      //   return mark.uid
+      // })
+      // let names = this.marks.filter()
+
+      // let map = new Map([
+      //   [userId, userName]
+      // ])
+
+      // return names
+    // },
+    userDates(){
+      let userDate = this.marks.map(mark => {
         return mark.date
       })
+      return userDate
     }
   },
   methods:{
-    ex(){
-      console.log(this.userDate)
+    userDate(){
+      console.log(this.userName)
     }
   },
   mounted() {

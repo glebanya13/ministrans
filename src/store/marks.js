@@ -2,18 +2,10 @@ import Vue from 'vue'
 
 export default {
     state: {
-        time: null,
-        date: null,
-        isSunday: false,
         userMarks: {},
         marks: {}
     },
     mutations: {
-        LOAD_DATE(state, payload) {
-            state.time = payload
-            state.date = payload
-            state.isSunday = payload
-        },
         SET_USER_MARKS(state, payload) {
             state.userMarks = payload
         },
@@ -22,21 +14,18 @@ export default {
         }
     },
     actions: {
-        CHECK_IN({ commit, getters }, state) {
+        CHECK_IN({ commit, getters }, userMarkData) {
             commit('SET_PROCESSING', true)
 
-            commit('LOAD_DATE')
-
-
-            let userDataRef = Vue.$db.collection('marks').doc(`${state.date}_${state.time}_${getters.userId}`)
+            let userDataRef = Vue.$db.collection('marks').doc(`${userMarkData.date}_${userMarkData.time}_${userMarkData.userId}`)
 
             userDataRef.set({
-                date: state.date,
-                isSunday: state.isSunday,
+                date: userMarkData.date,
+                isSunday: userMarkData.isSunday,
                 parafia: {
                     parafiaName: getters.userParafia,
                 },
-                time: state.time,
+                time: userMarkData.time,
                 user: {
                     userName: getters.userName,
                     userSurname: getters.userSurname,
@@ -86,12 +75,9 @@ export default {
                     querySnapshot.forEach(s => {
                         const data = s.data()
                         let mark = {
-                            id: s.id,
-                            time: data.time,
-                            date: data.date,
                             uid: data.user.userId.slice(),
+                            data: data.date,
                             name: data.user.userName.slice(),
-                            surname: data.user.userSurname.slice()
                         }
                         marks.push(mark)
                     })

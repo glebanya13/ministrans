@@ -147,7 +147,7 @@ export default {
         time: this.time,
         isSunday: this.isSunday,
       });
-      this.$store.dispatch("LOAD_MARKS");
+      this.$store.dispatch("LOAD_MARKS_BY_USER");
       this.dialog = false;
       this.snackbar = true;
       this.snackbarText = "Поздравляем, вы отметились!";
