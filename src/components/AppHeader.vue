@@ -64,6 +64,11 @@ export default {
               title: "Расписание",
               route: "/timetable",
             },
+             {
+              icon: "mdi-text-box-multiple-outline",
+              title: "Посещение",
+              route: "/stats",
+            },
             {
               icon: "mdi-check-decagram",
               title: "Отметиться",
