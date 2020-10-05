@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Profile from '../views/Profile.vue'
 import TimeTable from '../views/TimeTable.vue'
+import Stats from '../views/Stats.vue'
 import WriteDown from '../views/WriteDown.vue'
 import Signin from '../views/Signin.vue'
 import Signup from '../views/Signup.vue'
@@ -28,6 +29,11 @@ Vue.use(VueRouter)
     path: '/timetable',
     name: 'timetable',
     component: TimeTable
+  },
+  {
+    path: '/stats',
+    name: 'stats',
+    component: Stats
   },
   {
     path: '/write',
