@@ -13,7 +13,7 @@
             </thead>
             <tbody>
               <tr
-                v-for="item in users"
+                v-for="item in usersList"
                 :key="item.name"
                 @click="edit(item)"
                 style="cursor: pointer"
@@ -96,6 +96,8 @@
 </template>
 
 <script>
+
+import {mapGetters, mapActions} from 'vuex'
 export default {
   data() {
     return {
@@ -128,7 +130,7 @@ export default {
           times: [],
         },
       ],
-      users: [
+      usersList: [
         {
           name: "Глеб",
           timetable: {
@@ -180,7 +182,9 @@ export default {
       ],
     };
   },
+  computed: mapGetters(['users']),
   methods: {
+    ...mapActions(['LOAD_USERS_FOR_TIMETABLE', 'UPDATE_TIMETABLE_FOR_USER']),
     getSunday(timetable) {
       return timetable.vs;
     },
@@ -216,9 +220,16 @@ export default {
       this.editableUser.timetable.cht = convertValuesForWeekday(this.weekdayTimes[3].times)
       this.editableUser.timetable.pt = convertValuesForWeekday(this.weekdayTimes[4].times)
       this.editableUser.timetable.sb = convertValuesForWeekday(this.weekdayTimes[5].times)
+      this.UPDATE_TIMETABLE_FOR_USER(this.editableUser)
+      
       this.editableUser = {};
     }
   },
+  mounted(){
+    this.LOAD_USERS_FOR_TIMETABLE();
+    this.usersList = this.users;
+  }
+
 };
 
 function convertValuesForSunday(values){

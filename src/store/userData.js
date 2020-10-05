@@ -80,8 +80,52 @@ export default {
                 .catch(error =>
                     commit('SET_ERROR', error.message)
                 )
+        },
+        LOAD_USERS_FOR_TIMETABLE({commit}){
+            Vue.$db.collection('userData')
+                .get()
+                .then(querySnapshot => {
+                    let users = []
+                    querySnapshot.forEach(s => {
+                        const data = s.data()
+                        let user = {
+                            uid: data.userId,
+                            name: data.name,
+                            surname: data.surname,
+                            timetable: data.timetable || {
+                                vs: "",
+                                pn: "",
+                                vt: "",
+                                sr: "",
+                                cht: "",
+                                pt: "",
+                                sb: "",
+                              }
+                        }
+                        users.push(user)
+                    })
+                    commit('SET_USERS', users)
+                })
+                .catch(error =>
+                    commit('SET_ERROR', error.message)
+                )
+        },
+        UPDATE_TIMETABLE_FOR_USER({commit}, user){
+            commit('SET_PROCESSING', true)
+
+            let userDataRef = Vue.$db.collection('userData').doc(user.uid)
+            userDataRef.set({
+                timetable: user.timetable
+            }, {merge:true})
+            .then(() => {
+                commit('SET_PROCESSING', false)
+            })
+            .catch(() => {
+                commit('SET_PROCESSING', false)
+            })
         }
     },
+    
     getters: {
         users: (state) => state.users,
         userData: (state) => state.userData,
