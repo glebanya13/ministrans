@@ -77,11 +77,6 @@ export default {
           ]
           : [
             {
-              icon: "mdi-text-box-multiple-outline",
-              title: "Расписание",
-              route: "/timetable",
-            },
-            {
               icon: "mdi-lock-open",
               title: "Регистрация",
               route: "/signup",

@@ -26,12 +26,6 @@
 // import Vue from 'vue'
 import { mapActions, mapGetters } from "vuex";
 export default {
-  data() {
-    return {
-      mappedData: new Map(),
-    };
-  },
-
   computed: {
     ...mapGetters(["stats"]),
 
@@ -48,13 +42,13 @@ export default {
       }
       return [
         {
-          name: "ВС",
-          data: resSunday,
-        },
-        {
           name: "Будние",
           data: resWeekDay,
         },
+        {
+          name: "ВС",
+          data: resSunday,
+        }
       ];
     },
   },

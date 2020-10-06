@@ -79,6 +79,22 @@ export default {
 
                 })
         },
+        SOCIALSIGNIN({ commit }) {
+            commit('SET_PROCESSING', true)
+            const provider = new firebase.auth.GoogleAuthProvider()
+
+            firebase.auth().signInWithPopup(provider)
+                .then((res) => {
+                    INIT_AUTH()
+                    console.log(res)
+                    commit('SET_PROCESSING', false)
+                })
+                .catch(function (error) {
+                    commit('SET_PROCESSING', false)
+                    commit('SET_ERROR', error.message)
+
+                })
+        },
         SIGNOUT() {
             firebase.auth().signOut();
         },

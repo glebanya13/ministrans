@@ -11,7 +11,8 @@ let defaultUserData = {
 export default {
     state: {
         userData: defaultUserData,
-        users: {}
+        users: {},
+        usersForTimeTable: []
     },
     mutations: {
         SET_USER_DATA(state, payload) {
@@ -19,6 +20,9 @@ export default {
         },
         SET_USERS(state, payload) {
             state.users = payload
+        },
+        SET_USERS_FOR_TIMETABLE(state, users){
+            state.usersForTimeTable = users
         }
     },
     actions: {
@@ -81,6 +85,7 @@ export default {
                 )
         },
         LOAD_USERS_FOR_TIMETABLE({commit}){
+            commit('SET_PROCESSING', true)
             Vue.$db.collection('userData')
                 .get()
                 .then(querySnapshot => {
@@ -103,13 +108,16 @@ export default {
                         }
                         users.push(user)
                     })
-                    commit('SET_USERS', users)
+                    commit('SET_USERS_FOR_TIMETABLE', users)
+                    commit('SET_PROCESSING', false)
                 })
-                .catch(error =>
+                .catch(error => {
                     commit('SET_ERROR', error.message)
-                )
+                    commit('SET_PROCESSING', false)
+                })
         },
         UPDATE_TIMETABLE_FOR_USER({commit}, user){
+            
             commit('SET_PROCESSING', true)
 
             let userDataRef = Vue.$db.collection('userData').doc(user.uid)
@@ -134,5 +142,6 @@ export default {
         userBirthday: (state) => state.userData.birthday,
         userClas: (state) => state.userData.clas,
         userParafia: (state) => state.userData.parafia,
+        usersForTimeTable: (state) => state.usersForTimeTable,
     }
 }
