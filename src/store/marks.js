@@ -3,7 +3,8 @@ import Vue from 'vue'
 export default {
     state: {
         userMarks: {},
-        marks: {}
+        marks: {},
+        stats: {}
     },
     mutations: {
         SET_USER_MARKS(state, payload) {
@@ -11,6 +12,9 @@ export default {
         },
         SET_MARKS(state, payload) {
             state.marks = payload
+        },
+        SET_STATS(state, payload) {
+            state.stats = payload
         }
     },
     actions: {
@@ -86,10 +90,44 @@ export default {
                 .catch(error =>
                     commit('SET_ERROR', error.message)
                 )
-        }
+        },
+    LOAD_STATS({commit}){
+        Vue.$db.collection('marks')
+            .get()
+            .then(querySnapshot => {
+                let marks = []
+                querySnapshot.forEach(s => {
+                    const data = s.data()
+                    let mark = {
+                        uid: data.user.userId.slice(),
+                        data: data.date,
+                        name: data.user.userName.slice(),
+                        surname: data.user.userSurname.slice(),
+                        isSunday: data.isSunday
+                    }
+                    marks.push(mark)
+                })
+                var res = groupByKey(marks, 'uid')
+                commit('SET_STATS', res)
+            })
+            .catch(error =>
+                commit('SET_ERROR', error.message)
+            )
+    }
     },
+
     getters: {
         userMarks: (state) => state.userMarks,
-        marks: (state) => state.marks
+        marks: (state) => state.marks,
+        stats: (state) => state.stats
     }
+
+}
+
+function groupByKey(array, key) {
+    return array
+        .reduce((hash, obj) => {
+            if (obj[key] === undefined) return hash;
+            return Object.assign(hash, { [obj[key]]: (hash[obj[key]] || []).concat(obj) })
+        }, {})
 }

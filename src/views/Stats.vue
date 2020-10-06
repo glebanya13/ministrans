@@ -1,72 +1,75 @@
 <template>
   <div class="small">
-    <canvas ref="canvas">
-    </canvas>
-    <v-btn @click="userDate()">Проверка...</v-btn>
+     <bar-chart xtitle="Посещения" ytitle="Министранты" :stacked="true"
+      :data="chartsData"
+    ></bar-chart>
+    <!-- <bar-chart
+      xtitle="Посещения"
+      ytitle="Министранты"
+      :stacked="true"
+      :data="[
+        {
+          name: 'Workout',
+          data: { ss: 3, ee: 5 },
+        },
+        {
+          name: 'Workout 1',
+          data: { ss: 2, ee: 6 },
+          color: '#b00',
+        },
+      ]"
+    ></bar-chart> -->
   </div>
 </template>
 
 <script>
-import { HorizontalBar } from "vue-chartjs"
 // import Vue from 'vue'
-
+import { mapActions, mapGetters } from "vuex";
 export default {
-  extends: HorizontalBar,
-  data(){
+  data() {
     return {
-      chartdata: {
-         labels: this.userName,
-      datasets: [{
-        label: 'График посещения',
-         data: ['5'],
-         backgroundColor: ["#73BFB8", "#73BFB8", "#73BFB8", "#73BFB8", "#73BFB8"], 
-      }]
-    },
-    }
+      mappedData: new Map(),
+    };
   },
+
   computed: {
-    marks(){
-      return this.$store.getters.marks
-    },
-    users(){
-      return this.$store.getters.users
-    },
-    // userName(){
-      // let userName = this.marks.map(mark =>{ 
-      //   return mark.name
-      // })
-      // let userId = this.marks.map(mark => {
-      //   return mark.uid
-      // })
-      // let names = this.marks.filter()
+    ...mapGetters(["stats"]),
 
-      // let map = new Map([
-      //   [userId, userName]
-      // ])
-
-      // return names
-    // },
-    userDates(){
-      let userDate = this.marks.map(mark => {
-        return mark.date
-      })
-      return userDate
-    }
+    chartsData() {
+      let resWeekDay = {};
+      let resSunday = {};
+      for (var k in this.stats) {
+        resSunday[
+          `${this.stats[k][0].name} ${this.stats[k][0].surname}`
+        ] = this.stats[k].filter((x) => x.isSunday).length;
+        resWeekDay[
+          `${this.stats[k][0].name} ${this.stats[k][0].surname}`
+        ] = this.stats[k].filter((x) => !x.isSunday).length;
+      }
+      return [
+        {
+          name: "ВС",
+          data: resSunday,
+        },
+        {
+          name: "Будние",
+          data: resWeekDay,
+        },
+      ];
+    },
   },
-  methods:{
-    userDate(){
-      console.log(this.userName)
-    }
+  methods: {
+    ...mapActions(["LOAD_STATS"])
   },
-  mounted() {
-    this.renderChart(this.chartdata);
+  created() {
+    this.LOAD_STATS();
   },
 };
 </script>
 
 <style>
 .small {
-    max-width: 600px;
-    margin:  150px auto;
-  }
+  max-width: 600px;
+  margin: 150px auto;
+}
 </style>

@@ -8,6 +8,10 @@ import firebase from 'firebase'
 import 'firebase/firestore'
 import VuetifyConfirm from 'vuetify-confirm'
 import { setupBus } from './infrastructure/eventBus'
+import Chartkick from 'vue-chartkick'
+import Chart from 'chart.js'
+
+Vue.use(Chartkick.use(Chart))
 
 Vue.use(VuetifyConfirm, {
   vuetify,

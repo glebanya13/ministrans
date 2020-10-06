@@ -72,7 +72,6 @@ export default {
                             uid: data.userId,
                             name: data.name
                         }
-                        console.log(user)
                         users.push(user)
                     })
                     commit('SET_USERS', users)
