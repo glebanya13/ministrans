@@ -85,7 +85,7 @@ export default {
 
             firebase.auth().signInWithPopup(provider)
                 .then((res) => {
-                    INIT_AUTH()
+                    this.INIT_AUTH()
                     console.log(res)
                     commit('SET_PROCESSING', false)
                 })
