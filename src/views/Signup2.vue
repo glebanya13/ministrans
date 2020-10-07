@@ -61,7 +61,7 @@
 
               <v-text-field
                 label="Дата рождения"
-                type="month"
+                type="date"
                 prepend-icon="mdi-calendar-today"
                 required
                 v-model="birthday"
@@ -85,6 +85,7 @@
 </template>
 
 <script>
+import {mapActions,mapGetters} from 'vuex'
 export default {
   data() {
     return {
@@ -108,6 +109,7 @@ export default {
         "Иисуса Милосердного, г. Витебск"
       ],
       levels: ["Асперант", "Министрант", "Лектар", "Ксендз"],
+
       birthday: null,
       parafia: null,
       clas: null,
@@ -125,12 +127,15 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['userId', 'userData']),
     processing() {
       return this.$store.getters.getProcessing;
     },
   },
   methods: {
+    ...mapActions(['LOAD_USER_DATA']),
     personal() {
+
       this.$store.dispatch("ADD_USER_DATA", {
         level: this.level,
         birthday: this.birthday,
@@ -142,6 +147,22 @@ export default {
       });
       this.$router.push("/profile");
     },
+  },
+  mounted() {
+    this.$bus.$on("user-data-loaded", () => {
+        this.level = this.userData.level
+        this.birthday = this.userData.birthday
+        this.clas = this.userData.clas
+        this.name = this.userData.name
+        this.surname = this.userData.surname
+        this.clas = this.userData.clas
+        this.parafia = this.userData.parafia
+    });
+    
+    //this.LOAD_USER_DATA(this.userId);
+  },
+  beforeDestroy() {
+    this.$bus.$off("user-data-loaded");
   },
 };
 </script>

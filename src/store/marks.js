@@ -59,9 +59,9 @@ export default {
                             id: s.id,
                             time: data.time,
                             date: data.date,
-                            uid: data.user.userId.slice(),
-                            name: data.user.userName.slice(),
-                            surname: data.user.userSurname.slice()
+                            uid: data.user.userId,
+                            name: data.user.userName,
+                            surname: data.user.userSurname
                         }
                         userMarks.push(userMark)
                     })
@@ -99,10 +99,10 @@ export default {
                 querySnapshot.forEach(s => {
                     const data = s.data()
                     let mark = {
-                        uid: data.user.userId.slice(),
+                        uid: data.user.userId,
                         data: data.date,
-                        name: data.user.userName.slice(),
-                        surname: data.user.userSurname.slice(),
+                        name: data.user.userName,
+                        surname: data.user.userSurname,
                         isSunday: data.isSunday
                     }
                     marks.push(mark)

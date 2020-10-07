@@ -8,6 +8,7 @@ export default {
             uid: null,
             email: null,
         },
+        originalDisplayName: "", // to recognise user with filled profile. idea didnt work for google
         unsubscribeAuth: null
     },
     mutations: {
@@ -30,10 +31,14 @@ export default {
         },
         SET_UNSUBSCRIBE_AUTH(state, payload) {
             state.unsubscribeAuth = payload
+        },
+        SET_ORIGINAL_DISPLAY_NAME(state, payload){
+            state.originalDisplayName = payload
         }
     },
     actions: {
         INIT_AUTH({ dispatch, commit, state }) {
+            console.log('init auth')
             return new Promise((resolve) => {
                 if (state.unsubscribeAuth)
                     state.unsubscribeAuth()
@@ -70,7 +75,8 @@ export default {
         SIGNIN({ commit }, payload) {
             commit('SET_PROCESSING', true)
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-                .then(() => {
+                .then((res) => {
+                    commit('SET_ORIGINAL_DISPLAY_NAME', res.user.displayName)
                     commit('SET_PROCESSING', false)
                 })
                 .catch(function (error) {
@@ -79,14 +85,15 @@ export default {
 
                 })
         },
-        SOCIALSIGNIN({ commit }) {
+        SOCIALSIGNIN({ commit, dispatch }) {
             commit('SET_PROCESSING', true)
+        
             const provider = new firebase.auth.GoogleAuthProvider()
 
             firebase.auth().signInWithPopup(provider)
                 .then((res) => {
-                    this.INIT_AUTH()
-                    console.log(res)
+                    dispatch('INIT_AUTH')
+                    commit('SET_ORIGINAL_DISPLAY_NAME', res.user.displayName)
                     commit('SET_PROCESSING', false)
                 })
                 .catch(function (error) {
@@ -99,15 +106,19 @@ export default {
             firebase.auth().signOut();
         },
         STATE_CHANGED({ commit, dispatch }, payload) {
+            console.log("state change")
+            console.log(payload)
             if (payload) {
                 commit('SET_USER', { uid: payload.uid, email: payload.email })
                 // commit('SET_USER_PHOTO', payload.photoURL)
+                
                 dispatch('LOAD_USER_DATA', payload.uid)
                 dispatch('LOAD_MARKS_BY_USER')
                 dispatch('LOAD_MARKS')
                 dispatch('LOAD_USERS')
             } else {
                 commit('UNSET_USER')
+                commit('UNSET_USER_DATA')
             }
         },
         CHANGE_USER_PROFILE_DATA({ commit }, payload) {
@@ -173,5 +184,6 @@ export default {
         // userPhoto: (state) => state.user.photoUrl,
         userEmail: (state) => state.user.email,
         isUserAuthenticated: (state) => state.user.isAuthenticated,
+        originalDisplayName: (state) => state.originalDisplayName
     }
 }

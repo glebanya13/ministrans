@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import { EventBus } from '../infrastructure/eventBus'
+import firebase from 'firebase'
 
 let defaultUserData = {
     level: null,
@@ -21,12 +23,16 @@ export default {
         SET_USERS(state, payload) {
             state.users = payload
         },
-        SET_USERS_FOR_TIMETABLE(state, users){
+        SET_USERS_FOR_TIMETABLE(state, users) {
             state.usersForTimeTable = users
+        },
+        UNSET_USER_DATA(state) {
+            state.userData = defaultUserData
         }
     },
     actions: {
         LOAD_USER_DATA({ commit }, payload) {
+
             commit('SET_PROCESSING', true)
             let userDataRef = Vue.$db.collection('userData').doc(payload)
             userDataRef.get()
@@ -38,6 +44,7 @@ export default {
 
                     commit('SET_USER_DATA', userData)
                     commit('SET_PROCESSING', false)
+                    EventBus.notify('user-data-loaded')
                 })
                 .catch(() => {
                     commit('SET_PROCESSING', false)
@@ -47,6 +54,19 @@ export default {
             commit('SET_PROCESSING', true)
 
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId)
+
+            if (payload.name) {
+                var user = firebase.auth().currentUser;
+
+                user.updateProfile({
+                    displayName: `${payload.name} ${payload.surname}`
+                }).then(function () {
+                    // Update successful.
+                }).catch(function (error) {
+                    commit('SET_ERROR', error.message)
+                });
+            }
+            firebase.auth().currentUser
 
             userDataRef.set({
                 level: payload.level,
@@ -65,7 +85,7 @@ export default {
                     commit('SET_PROCESSING', false)
                 })
         },
-        LOAD_USERS({ commit }){
+        LOAD_USERS({ commit }) {
             Vue.$db.collection('userData')
                 .get()
                 .then(querySnapshot => {
@@ -84,7 +104,7 @@ export default {
                     commit('SET_ERROR', error.message)
                 )
         },
-        LOAD_USERS_FOR_TIMETABLE({commit}){
+        LOAD_USERS_FOR_TIMETABLE({ commit }) {
             commit('SET_PROCESSING', true)
             Vue.$db.collection('userData')
                 .get()
@@ -104,7 +124,7 @@ export default {
                                 cht: "",
                                 pt: "",
                                 sb: "",
-                              }
+                            }
                         }
                         users.push(user)
                     })
@@ -116,23 +136,23 @@ export default {
                     commit('SET_PROCESSING', false)
                 })
         },
-        UPDATE_TIMETABLE_FOR_USER({commit}, user){
-            
+        UPDATE_TIMETABLE_FOR_USER({ commit }, user) {
+
             commit('SET_PROCESSING', true)
 
             let userDataRef = Vue.$db.collection('userData').doc(user.uid)
             userDataRef.set({
                 timetable: user.timetable
-            }, {merge:true})
-            .then(() => {
-                commit('SET_PROCESSING', false)
-            })
-            .catch(() => {
-                commit('SET_PROCESSING', false)
-            })
+            }, { merge: true })
+                .then(() => {
+                    commit('SET_PROCESSING', false)
+                })
+                .catch(() => {
+                    commit('SET_PROCESSING', false)
+                })
         }
     },
-    
+
     getters: {
         users: (state) => state.users,
         userData: (state) => state.userData,

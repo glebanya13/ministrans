@@ -11,8 +11,14 @@ import { setupBus } from './infrastructure/eventBus'
 import Chartkick from 'vue-chartkick'
 import Chart from 'chart.js'
 
-Vue.use(Chartkick.use(Chart))
+const moment = require('moment')
+require('moment/locale/ru')
 
+Vue.use(require('vue-moment'), {
+    moment
+})
+
+Vue.use(Chartkick.use(Chart))
 Vue.use(VuetifyConfirm, {
   vuetify,
   buttonTrueText: 'Да',

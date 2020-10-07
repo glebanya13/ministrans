@@ -18,7 +18,7 @@
                 @click="edit(item)"
                 style="cursor: pointer"
               >
-                <td>{{ item.name }}</td>
+                <td>{{ item.name }} {{ item.surname }}</td>
                 <td>{{ getSunday(item.timetable) }}</td>
                 <td>{{ getWeekdays(item.timetable) }}</td>
               </tr>
@@ -32,6 +32,71 @@
             color="primary"
           ></v-progress-circular>
         </div>
+        <br />
+        <br />
+        <v-tabs v-model="tab" centered>
+          <v-tabs-slider></v-tabs-slider>
+          <v-tab>Будние дни</v-tab>
+          <v-tab>Воскресение</v-tab>
+        </v-tabs>
+
+        <v-tabs-items v-model="tab">
+          <v-tab-item>
+            <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">Дата</th>
+                    <th class="text-left">09:00</th>
+                    <th class="text-left">18:00</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item in weekDates"
+                    :key="item.getTime()"
+                    style="cursor: pointer"
+                  >
+                    <td>{{ item | moment("DD.MM.YY ddd") }}</td>
+                    <td>{{ getUsersForDay(item.getDay(), "09:00") }}</td>
+                    <td>{{ getUsersForDay(item.getDay(), "18:00") }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-tab-item>
+          <v-tab-item>
+            <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">Время</th>
+                    <th class="text-left">Министранты</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>09:30</td>
+                    <td>{{ getUsersForDay(0, "09:30") }}</td>
+                  </tr>
+                  <tr>
+                    <td>11:00</td>
+                    <td>{{ getUsersForDay(0, "11:00") }}</td>
+                  </tr>
+                  <tr>
+                    <td>13:00</td>
+                    <td>{{ getUsersForDay(0, "13:00") }}</td>
+                  </tr>
+                  <tr>
+                    <td>18:00</td>
+                    <td>{{ getUsersForDay(0, "18:00") }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-tab-item>
+        </v-tabs-items>
+
         <!-- <v-dialog
           v-model="dialog"
           width="500px"
@@ -54,7 +119,9 @@
               </v-toolbar-items>
             </v-toolbar>
 
-            <v-card-title headline>{{ editableUser.name }}</v-card-title>
+            <v-card-title headline
+              >{{ editableUser.name }} {{ editableUser.surname }}</v-card-title
+            >
             <v-list dense>
               <v-list-item dense>
                 <v-row>
@@ -104,9 +171,11 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+
 export default {
   data() {
     return {
+      tab: null,
       dialog: false,
       editableUser: {},
       sundayTimes: [],
@@ -193,6 +262,15 @@ export default {
     usersList() {
       return this.usersForTimeTable || this.usersTempData;
     },
+    weekDates() {
+      var res = [];
+      var today = new Date();
+      for (var i = 0; i < 7; i++) {
+        let date = today.addDays(i);
+        if (date.getDay() != 0) res.push(date);
+      }
+      return res;
+    },
   },
   methods: {
     ...mapActions(["LOAD_USERS_FOR_TIMETABLE", "UPDATE_TIMETABLE_FOR_USER"]),
@@ -246,6 +324,37 @@ export default {
 
       this.editableUser = {};
     },
+    getUsersForDay(targetDay, time) {
+      return this.usersForTimeTable
+        .map((u) => {
+          let res = "";
+          switch (targetDay) {
+            case 1:
+              res = u.timetable.pn;
+              break;
+            case 2:
+              res = u.timetable.vt;
+              break;
+            case 3:
+              res = u.timetable.sr;
+              break;
+            case 4:
+              res = u.timetable.cht;
+              break;
+            case 5:
+              res = u.timetable.pt;
+              break;
+            case 6:
+              res = u.timetable.sb;
+              break;
+            case 0:
+              res = u.timetable.vs;
+              break;
+          }
+          return res.indexOf(time) != -1 ? `${u.name} ${u.surname}; ` : "";
+        })
+        .join(" ");
+    },
   },
   mounted() {
     this.LOAD_USERS_FOR_TIMETABLE();
@@ -295,6 +404,12 @@ function convertWeekdayTime(time) {
   });
   return res;
 }
+
+Date.prototype.addDays = function (days) {
+  var date = new Date(this.valueOf());
+  date.setDate(date.getDate() + days);
+  return date;
+};
 </script>
 
 <style scoped>

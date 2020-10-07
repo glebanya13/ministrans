@@ -18,6 +18,13 @@
             </tbody>
           </template>
         </v-simple-table>
+        <div class="text-center">
+          <v-progress-circular
+            v-if="getProcessing"
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+        </div>
       </v-card>
     </v-layout>
   </v-container>
@@ -25,11 +32,14 @@
 
 <script>
 import Vue from "vue";
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {};
   },
   computed: {
+    ...mapGetters(['getProcessing']),
     marks() {
       return this.$store.getters.userMarks;
     },

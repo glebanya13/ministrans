@@ -1,8 +1,17 @@
 <template>
   <div>
-    <v-navigation-drawer absolute temporary v-model="drawer" class="hidden-md-and-up">
+    <v-navigation-drawer
+      absolute
+      temporary
+      v-model="drawer"
+      class="hidden-md-and-up"
+    >
       <v-list>
-        <v-list-item v-for="(item, i) in menuItems" :key="`navdrawer${i}`" :to="item.route">
+        <v-list-item
+          v-for="(item, i) in menuItems"
+          :key="`navdrawer${i}`"
+          :to="item.route"
+        >
           <v-list-item-icon>
             <v-icon v-html="item.icon"></v-icon>
           </v-list-item-icon>
@@ -10,30 +19,43 @@
             <v-list-item-title v-text="item.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
+        <v-list-item text style="cursor: pointer" v-if="isUserAuthenticated">
+          <v-list-item-icon>
+            <v-icon left>mdi-exit-run</v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title text @click.prevent="singout()" v-if="isUserAuthenticated"><v-icon left>mdi-exit-run</v-icon> Выйти</v-list-item-title>
+            <v-list-item-title @click.prevent="singout()"
+              >Выйти</v-list-item-title
+            >
           </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar app color="primary" dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="hidden-md-and-up"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        @click.stop="drawer = !drawer"
+        class="hidden-md-and-up"
+      ></v-app-bar-nav-icon>
 
-      <router-link to="/" tag="span" style="cursor:pointer">
+      <router-link to="/" tag="span" style="cursor: pointer">
         <v-toolbar-title>Ministrans</v-toolbar-title>
       </router-link>
 
       <v-spacer></v-spacer>
 
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn v-for="(item, i) in menuItems" text :key="`menuitem${i}`" :to="item.route">
+        <v-btn
+          v-for="(item, i) in menuItems"
+          text
+          :key="`menuitem${i}`"
+          :to="item.route"
+        >
           <v-icon left v-html="item.icon"></v-icon>
-          {{item.title}}
+          {{ item.title }}
         </v-btn>
         <v-btn text @click.prevent="singout()" v-if="isUserAuthenticated">
           <v-icon left>mdi-exit-run</v-icon>
-            Выйти
+          Выйти
         </v-btn>
       </v-toolbar-items>
     </v-app-bar>
@@ -45,15 +67,15 @@ export default {
   data() {
     return {
       drawer: false,
-    }
+    };
   },
-  computed:{
-    isUserAuthenticated(){
-      return this.$store.getters.isUserAuthenticated
+  computed: {
+    isUserAuthenticated() {
+      return this.$store.getters.isUserAuthenticated;
     },
-      menuItems(){
-          return this.isUserAuthenticated 
-          ? [
+    menuItems() {
+      return this.isUserAuthenticated
+        ? [
             {
               icon: "mdi-account",
               title: "Профиль",
@@ -64,8 +86,8 @@ export default {
               title: "Расписание",
               route: "/timetable",
             },
-             {
-              icon: "mdi-text-box-multiple-outline",
+            {
+              icon: "mdi-list-status",
               title: "Посещение",
               route: "/stats",
             },
@@ -75,7 +97,7 @@ export default {
               route: "/write",
             },
           ]
-          : [
+        : [
             {
               icon: "mdi-lock-open",
               title: "Регистрация",
@@ -86,21 +108,22 @@ export default {
               title: "Войти",
               route: "/signin",
             },
-          ]
-      }
-  }, 
-  methods:{
-    singout(){
-      this.$confirm('Вы точно хотите выйти?').then(res => {
-        if(res)
-        this.$store.dispatch('SIGNOUT')
-        this.$router.push({name: 'home'})
-      })
-    }
-  }
-}
+          ];
+    },
+  },
+  methods: {
+    singout() {
+      this.$confirm("Вы точно хотите выйти?").then((res) => {
+        if (res) {
+          this.$store.dispatch("SIGNOUT");
+          this.$router.push({ name: "home" });
+          //this.$router.push("/");
+        }
+      });
+    },
+  },
+};
 </script>
 
 <style>
-
 </style>
