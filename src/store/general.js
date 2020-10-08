@@ -9,7 +9,6 @@ export default {
         },
         SET_ERROR(state, payload) {
             state.error = payload
-           // console.log(`Error: ${payload}`)
         },
         CLEAR_ERROR(state) {
             state.error = null

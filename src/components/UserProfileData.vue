@@ -45,7 +45,7 @@
           </h2>
           <h2 class="headline mb-0">
             <h4 v-if="!userBirthday"><v-icon>mdi-calendar-today</v-icon> Нет данных</h4>
-            <h4 v-if="userBirthday"><v-icon>mdi-calendar-today</v-icon> {{userBirthday}}</h4>
+            <h4 v-if="userBirthday"><v-icon>mdi-calendar-today</v-icon> {{userBirthday | moment("DD MMMM YYYY")}}</h4>
             
           </h2>
           <h2 class="headline mb-0">

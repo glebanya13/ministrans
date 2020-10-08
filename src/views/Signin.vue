@@ -92,16 +92,9 @@ export default {
   },
   watch: {
     isUserAuthenticated(val) {
-      if (val === true){
-        console.log(this.originalDisplayName)
-if (this.originalDisplayName) {
+      if (val === true) {
           this.$router.push("/");
-        } else {
-          console.log('redirect')
-          this.$router.push("/signup2");
-        }
       }
-        
     },
   },
   methods: {

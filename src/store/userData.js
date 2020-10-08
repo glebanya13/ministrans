@@ -53,11 +53,10 @@ export default {
         ADD_USER_DATA({ commit, getters }, payload) {
             commit('SET_PROCESSING', true)
 
-            let userDataRef = Vue.$db.collection('userData').doc(getters.userId)
+            let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId)
 
-            if (payload.name) {
-                var user = firebase.auth().currentUser;
-
+            var user = firebase.auth().currentUser;
+            if (payload.name && !user.displayName) {
                 user.updateProfile({
                     displayName: `${payload.name} ${payload.surname}`
                 }).then(function () {
@@ -66,7 +65,6 @@ export default {
                     commit('SET_ERROR', error.message)
                 });
             }
-            firebase.auth().currentUser
 
             userDataRef.set({
                 level: payload.level,
@@ -75,13 +73,14 @@ export default {
                 name: payload.name,
                 surname: payload.surname,
                 parafia: payload.parafia,
-                userId: getters.userId
+                userId: getters.userId || payload.userId
             }, { merge: true })
 
                 .then(() => {
                     commit('SET_PROCESSING', false)
                 })
-                .catch(() => {
+                .catch((e) => {
+                    console.error(e)
                     commit('SET_PROCESSING', false)
                 })
         },

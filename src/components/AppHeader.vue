@@ -38,7 +38,7 @@
       ></v-app-bar-nav-icon>
 
       <router-link to="/" tag="span" style="cursor: pointer">
-        <v-toolbar-title>Ministrans</v-toolbar-title>
+        <v-toolbar-title>Ministrants</v-toolbar-title>
       </router-link>
 
       <v-spacer></v-spacer>

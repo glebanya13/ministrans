@@ -8,7 +8,6 @@ export default {
             uid: null,
             email: null,
         },
-        originalDisplayName: "", // to recognise user with filled profile. idea didnt work for google
         unsubscribeAuth: null
     },
     mutations: {
@@ -92,14 +91,23 @@ export default {
 
             firebase.auth().signInWithPopup(provider)
                 .then((res) => {
-                    dispatch('INIT_AUTH')
-                    commit('SET_ORIGINAL_DISPLAY_NAME', res.user.displayName)
+                    
+                    //dispatch('INIT_AUTH')
+
+                    if(res.user.displayName){
+                        let nameParts = res.user.displayName.split(' ');
+                        dispatch('ADD_USER_DATA', {
+                            userId: res.user.uid,
+                            name: nameParts[0],
+                            surname: nameParts[1]
+                        })
+                    }
+
                     commit('SET_PROCESSING', false)
                 })
                 .catch(function (error) {
                     commit('SET_PROCESSING', false)
                     commit('SET_ERROR', error.message)
-
                 })
         },
         SIGNOUT() {
@@ -107,7 +115,6 @@ export default {
         },
         STATE_CHANGED({ commit, dispatch }, payload) {
             console.log("state change")
-            console.log(payload)
             if (payload) {
                 commit('SET_USER', { uid: payload.uid, email: payload.email })
                 // commit('SET_USER_PHOTO', payload.photoURL)
@@ -183,7 +190,6 @@ export default {
         userId: (state) => state.user.uid,
         // userPhoto: (state) => state.user.photoUrl,
         userEmail: (state) => state.user.email,
-        isUserAuthenticated: (state) => state.user.isAuthenticated,
-        originalDisplayName: (state) => state.originalDisplayName
+        isUserAuthenticated: (state) => state.user.isAuthenticated
     }
 }
