@@ -21,7 +21,7 @@ export default {
         CHECK_IN({ commit, getters }, userMarkData) {
             commit('SET_PROCESSING', true)
 
-            let userDataRef = Vue.$db.collection('marks').doc(`${userMarkData.date}_${userMarkData.time}_${userMarkData.userId}`)
+            let userDataRef = Vue.$db.collection('marks').doc(`${userMarkData.date}_${userMarkData.time}_${getters.userId}`)
 
             userDataRef.set({
                 date: userMarkData.date,
@@ -69,7 +69,7 @@ export default {
                 })
                 .catch(error =>
                     commit('SET_ERROR', error.message)
-                )
+                    )
         },
         LOAD_MARKS({ commit }){
             Vue.$db.collection('marks')
