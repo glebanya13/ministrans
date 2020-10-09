@@ -6,11 +6,11 @@
         <v-simple-table>
           <template v-slot:default>
             <tbody>
-              <tr v-for="mark in marks" :key="mark.id">
-                <td>{{ new Date(mark.date).toLocaleDateString() }}</td>
-                <td>{{ mark.time }}</td>
+              <tr v-for="checkin in massCheckins" :key="checkin.id">
+                <td>{{ checkin.date  | moment("DD.MM.YY ddd") }}</td>
+                <td>{{ checkin.time }}</td>
                 <td>
-                  <v-icon style="cursor: pointer" @click="deleteDate(mark.id)">
+                  <v-icon style="cursor: pointer" @click="deleteDate(checkin.id)">
                     mdi-delete-off</v-icon
                   >
                 </td>
@@ -40,18 +40,18 @@ export default {
   },
   computed: {
     ...mapGetters(['getProcessing']),
-    marks() {
-      return this.$store.getters.userMarks;
+    massCheckins() {
+      return this.$store.getters.userMassCheckins;
     },
   },
   methods: {
-    deleteDate(mark) {
-      Vue.$db.collection("marks").doc(mark).delete();
-      this.$store.dispatch("LOAD_MARKS_BY_USER");
+    deleteDate(checkin) {
+      Vue.$db.collection("masCheckins").doc(checkin).delete();
+      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER");
     },
   },
   created() {
-    this.$store.dispatch("LOAD_MARKS_BY_USER");
+    this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER");
   },
 };
 </script>

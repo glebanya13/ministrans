@@ -2,9 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Profile from '../views/Profile.vue'
-import TimeTable from '../views/TimeTable.vue'
+import Schedule from '../views/Schedule.vue'
 import Stats from '../views/Stats.vue'
-import WriteDown from '../views/WriteDown.vue'
+import Checkin from '../views/Checkin.vue'
 import Signin from '../views/Signin.vue'
 import Signup from '../views/Signup.vue'
 import Signup2 from '../views/Signup2.vue'
@@ -13,7 +13,7 @@ import Store from '../store'
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'home',
@@ -23,12 +23,12 @@ Vue.use(VueRouter)
     path: '/profile',
     name: 'profile',
     component: Profile,
-    meta: {authRequired: true}
+    meta: { authRequired: true }
   },
   {
-    path: '/timetable',
-    name: 'timetable',
-    component: TimeTable
+    path: '/schedule',
+    name: 'schedule',
+    component: Schedule
   },
   {
     path: '/stats',
@@ -36,9 +36,9 @@ Vue.use(VueRouter)
     component: Stats
   },
   {
-    path: '/write',
-    name: 'writedown',
-    component: WriteDown
+    path: '/checkin',
+    name: 'checkin',
+    component: Checkin
   },
   {
     path: '/signin',
@@ -64,17 +64,16 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   Store.dispatch('INIT_AUTH')
-  .then(user => {
-  if(to.matched.some(route => route.meta.authRequired))
-  {
-  if(user)
-    next()
-  else
-    next('/signin')
-  }else{
-    next()
-  }
-})
+    .then(user => {
+      if (to.matched.some(route => route.meta.authRequired)) {
+        if (user)
+          next()
+        else
+          next('/signin')
+      } else {
+        next()
+      }
+    })
 })
 
 export default router

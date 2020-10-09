@@ -20,7 +20,7 @@
               </v-card-title>
               <v-card-text>
                 <v-form v-model="valid">
-                  <v-alert type="warning" :value="error">{{ error }}</v-alert>
+                  <v-alert type="warning" v-if="error">{{ error }}</v-alert>
 
                   <v-dialog
                     ref="dialog1"
@@ -31,7 +31,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="date"
+                        :value="dateToView"
                         label="Выберите дату"
                         prepend-icon="event"
                         readonly
@@ -40,7 +40,7 @@
                       ></v-text-field>
                     </template>
 
-                    <v-date-picker v-model="date" scrollable>
+                    <v-date-picker v-model="date" :max="maxDate" scrollable>
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="modal = false"
                         >Отмена</v-btn
@@ -103,11 +103,13 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   data() {
     return {
       dialog: false,
-      date: new Date().toISOString().substr(0, 10),
+      date: moment().format('yyyy-MM-DD'),//new Date().toISOString().substr(0, 10),
       modal: false,
       timesDefault: ["09:00", "18:00"],
       timesSunday: ["09:30", "11:00", "13:00", "18:00"],
@@ -119,8 +121,14 @@ export default {
     };
   },
   computed: {
-    marks() {
-      return this.$store.getters.marks;
+    dateToView(){
+       return this.date ? moment(this.date).format('LL (dddd)') : ''
+    },
+    maxDate(){
+      return moment().format('yyyy-MM-DD')
+    },
+    massCheckins() {
+      return this.$store.getters.massCheckins;
     },
     error() {
       return this.$store.getters.getError;
@@ -147,7 +155,7 @@ export default {
         time: this.time,
         isSunday: this.isSunday,
       });
-      this.$store.dispatch("LOAD_MARKS_BY_USER");
+      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER");
       this.dialog = false;
       this.snackbar = true;
       this.snackbarText = "Поздравляем, вы отметились!";

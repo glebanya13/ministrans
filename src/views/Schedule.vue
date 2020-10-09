@@ -19,8 +19,8 @@
                 style="cursor: pointer"
               >
                 <td>{{ item.name }} {{ item.surname }}</td>
-                <td>{{ getSunday(item.timetable) }}</td>
-                <td>{{ getWeekdays(item.timetable) }}</td>
+                <td>{{ getSunday(item.schedule) }}</td>
+                <td>{{ getWeekdays(item.schedule) }}</td>
               </tr>
             </tbody>
           </template>
@@ -208,7 +208,7 @@ export default {
       usersTempData: [
         {
           name: "Глеб",
-          timetable: {
+          schedule: {
             vs: "09:30;11:00;18:00",
             pn: "",
             vt: "09:00",
@@ -220,7 +220,7 @@ export default {
         },
         {
           name: "Женя",
-          timetable: {
+          schedule: {
             vs: "09:30;11:00;18:00",
             pn: "",
             vt: "",
@@ -232,7 +232,7 @@ export default {
         },
         {
           name: "Макс",
-          timetable: {
+          schedule: {
             vs: "09:30;11:00;18:00",
             pn: "",
             vt: "",
@@ -244,7 +244,7 @@ export default {
         },
         {
           name: "Nikita",
-          timetable: {
+          schedule: {
             vs: "09:30;11:00;18:00",
             pn: "",
             vt: "09:00",
@@ -258,9 +258,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["usersForTimeTable", "getProcessing"]),
+    ...mapGetters(["usersForSchedule", "getProcessing"]),
     usersList() {
-      return this.usersForTimeTable || this.usersTempData;
+      return this.usersForSchedule || this.usersTempData;
     },
     weekDates() {
       var res = [];
@@ -273,82 +273,82 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["LOAD_USERS_FOR_TIMETABLE", "UPDATE_TIMETABLE_FOR_USER"]),
-    getSunday(timetable) {
-      return timetable.vs;
+    ...mapActions(["LOAD_USERS_FOR_SCHEDULE", "UPDATE_SCHEDULE_FOR_USER"]),
+    getSunday(schedule) {
+      return schedule.vs;
     },
-    getWeekdays(timetable) {
+    getWeekdays(schedule) {
       let weekdays = "";
       return weekdays.concat(
-        timetable.pn ? `пн: ${timetable.pn}; ` : "",
-        timetable.vt ? `вт: ${timetable.vt}; ` : "",
-        timetable.sr ? `ср: ${timetable.sr}; ` : "",
-        timetable.cht ? `чт: ${timetable.cht}; ` : "",
-        timetable.pt ? `пт: ${timetable.pt}; ` : "",
-        timetable.sb ? `сб: ${timetable.sb}; ` : ""
+        schedule.pn ? `пн: ${schedule.pn}; ` : "",
+        schedule.vt ? `вт: ${schedule.vt}; ` : "",
+        schedule.sr ? `ср: ${schedule.sr}; ` : "",
+        schedule.cht ? `чт: ${schedule.cht}; ` : "",
+        schedule.pt ? `пт: ${schedule.pt}; ` : "",
+        schedule.sb ? `сб: ${schedule.sb}; ` : ""
       );
     },
     edit(user) {
       this.editableUser = user;
-      this.sundayTimes = convertSundayTime(user.timetable.vs);
-      this.weekdayTimes[0].times = convertWeekdayTime(user.timetable.pn);
-      this.weekdayTimes[1].times = convertWeekdayTime(user.timetable.vt);
-      this.weekdayTimes[2].times = convertWeekdayTime(user.timetable.sr);
-      this.weekdayTimes[3].times = convertWeekdayTime(user.timetable.cht);
-      this.weekdayTimes[4].times = convertWeekdayTime(user.timetable.pt);
-      this.weekdayTimes[5].times = convertWeekdayTime(user.timetable.sb);
+      this.sundayTimes = convertSundayTime(user.schedule.vs);
+      this.weekdayTimes[0].times = convertWeekdayTime(user.schedule.pn);
+      this.weekdayTimes[1].times = convertWeekdayTime(user.schedule.vt);
+      this.weekdayTimes[2].times = convertWeekdayTime(user.schedule.sr);
+      this.weekdayTimes[3].times = convertWeekdayTime(user.schedule.cht);
+      this.weekdayTimes[4].times = convertWeekdayTime(user.schedule.pt);
+      this.weekdayTimes[5].times = convertWeekdayTime(user.schedule.sb);
       this.dialog = true;
     },
     update() {
       this.dialog = false;
-      this.editableUser.timetable.vs = convertValuesForSunday(this.sundayTimes);
-      this.editableUser.timetable.pn = convertValuesForWeekday(
+      this.editableUser.schedule.vs = convertValuesForSunday(this.sundayTimes);
+      this.editableUser.schedule.pn = convertValuesForWeekday(
         this.weekdayTimes[0].times
       );
-      this.editableUser.timetable.vt = convertValuesForWeekday(
+      this.editableUser.schedule.vt = convertValuesForWeekday(
         this.weekdayTimes[1].times
       );
-      this.editableUser.timetable.sr = convertValuesForWeekday(
+      this.editableUser.schedule.sr = convertValuesForWeekday(
         this.weekdayTimes[2].times
       );
-      this.editableUser.timetable.cht = convertValuesForWeekday(
+      this.editableUser.schedule.cht = convertValuesForWeekday(
         this.weekdayTimes[3].times
       );
-      this.editableUser.timetable.pt = convertValuesForWeekday(
+      this.editableUser.schedule.pt = convertValuesForWeekday(
         this.weekdayTimes[4].times
       );
-      this.editableUser.timetable.sb = convertValuesForWeekday(
+      this.editableUser.schedule.sb = convertValuesForWeekday(
         this.weekdayTimes[5].times
       );
-      this.UPDATE_TIMETABLE_FOR_USER(this.editableUser);
+      this.UPDATE_SCHEDULE_FOR_USER(this.editableUser);
 
       this.editableUser = {};
     },
     getUsersForDay(targetDay, time) {
-      return this.usersForTimeTable
+      return this.usersForSchedule
         .map((u) => {
           let res = "";
           switch (targetDay) {
             case 1:
-              res = u.timetable.pn;
+              res = u.schedule.pn;
               break;
             case 2:
-              res = u.timetable.vt;
+              res = u.schedule.vt;
               break;
             case 3:
-              res = u.timetable.sr;
+              res = u.schedule.sr;
               break;
             case 4:
-              res = u.timetable.cht;
+              res = u.schedule.cht;
               break;
             case 5:
-              res = u.timetable.pt;
+              res = u.schedule.pt;
               break;
             case 6:
-              res = u.timetable.sb;
+              res = u.schedule.sb;
               break;
             case 0:
-              res = u.timetable.vs;
+              res = u.schedule.vs;
               break;
           }
           return res.indexOf(time) != -1 ? `${u.name} ${u.surname}; ` : "";
@@ -357,7 +357,7 @@ export default {
     },
   },
   mounted() {
-    this.LOAD_USERS_FOR_TIMETABLE();
+    this.LOAD_USERS_FOR_SCHEDULE();
   },
 };
 

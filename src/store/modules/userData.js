@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { EventBus } from '../infrastructure/eventBus'
+import { EventBus } from '../../infrastructure/eventBus'
 import firebase from 'firebase'
 
 let defaultUserData = {
@@ -14,7 +14,7 @@ export default {
     state: {
         userData: defaultUserData,
         users: {},
-        usersForTimeTable: []
+        usersForSchedule: []
     },
     mutations: {
         SET_USER_DATA(state, payload) {
@@ -23,8 +23,8 @@ export default {
         SET_USERS(state, payload) {
             state.users = payload
         },
-        SET_USERS_FOR_TIMETABLE(state, users) {
-            state.usersForTimeTable = users
+        SET_USERS_FOR_SCHEDULE(state, users) {
+            state.usersForSchedule = users
         },
         UNSET_USER_DATA(state) {
             state.userData = defaultUserData
@@ -103,7 +103,7 @@ export default {
                     commit('SET_ERROR', error.message)
                 )
         },
-        LOAD_USERS_FOR_TIMETABLE({ commit }) {
+        LOAD_USERS_FOR_SCHEDULE({ commit }) {
             commit('SET_PROCESSING', true)
             Vue.$db.collection('userData')
                 .get()
@@ -115,7 +115,7 @@ export default {
                             uid: data.userId,
                             name: data.name,
                             surname: data.surname,
-                            timetable: data.timetable || {
+                            schedule: data.schedule || {
                                 vs: "",
                                 pn: "",
                                 vt: "",
@@ -127,7 +127,7 @@ export default {
                         }
                         users.push(user)
                     })
-                    commit('SET_USERS_FOR_TIMETABLE', users)
+                    commit('SET_USERS_FOR_SCHEDULE', users)
                     commit('SET_PROCESSING', false)
                 })
                 .catch(error => {
@@ -135,13 +135,13 @@ export default {
                     commit('SET_PROCESSING', false)
                 })
         },
-        UPDATE_TIMETABLE_FOR_USER({ commit }, user) {
+        UPDATE_SCHEDULE_FOR_USER({ commit }, user) {
 
             commit('SET_PROCESSING', true)
 
             let userDataRef = Vue.$db.collection('userData').doc(user.uid)
             userDataRef.set({
-                timetable: user.timetable
+                schedule: user.schedule
             }, { merge: true })
                 .then(() => {
                     commit('SET_PROCESSING', false)
@@ -161,6 +161,6 @@ export default {
         userBirthday: (state) => state.userData.birthday,
         userClas: (state) => state.userData.clas,
         userParafia: (state) => state.userData.parafia,
-        usersForTimeTable: (state) => state.usersForTimeTable,
+        usersForSchedule: (state) => state.usersForSchedule,
     }
 }

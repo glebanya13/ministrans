@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-flex>
-      <check-form></check-form>
+      <check-in-form></check-in-form>
     </v-flex>
     <v-flex>
       <last-day></last-day>
@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import checkForm from "../components/CheckInForm";
+import checkInForm from "../components/CheckInForm";
 import lastDay from "../components/CheckInLastDays";
 
 export default {
   components: {
-    checkForm,
+    checkInForm,
     lastDay,
   },
 };

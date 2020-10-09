@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import userModule from '../store/user'
-import generalModule from '../store/general'
-import userDataModule from '../store/userData'
-import marksModule from '../store/marks'
+import userModule from './modules/user'
+import generalModule from './modules/general'
+import userDataModule from './modules/userData'
+import checkinsModule from './modules/checkins'
 
 
 Vue.use(Vuex)
@@ -13,6 +13,6 @@ export default new Vuex.Store({
     userModule,
     generalModule,
     userDataModule,
-    marksModule,
+    checkinsModule,
   }
 })

@@ -8,7 +8,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <v-alert type="warning" :value="error">{{error}}</v-alert>
+            <v-alert type="warning" v-if="error">{{error}}</v-alert>
 
             <v-form v-model="valid">
 

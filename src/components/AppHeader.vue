@@ -84,7 +84,7 @@ export default {
             {
               icon: "mdi-text-box-multiple-outline",
               title: "Расписание",
-              route: "/timetable",
+              route: "/schedule",
             },
             {
               icon: "mdi-list-status",
@@ -94,7 +94,7 @@ export default {
             {
               icon: "mdi-check-decagram",
               title: "Отметиться",
-              route: "/write",
+              route: "/checkin",
             },
           ]
         : [

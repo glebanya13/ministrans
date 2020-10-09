@@ -8,9 +8,9 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <!-- <v-alert type="warning" :value="error">
+           <v-alert type="warning" v-if="error">
               {{ error }}
-            </v-alert> -->
+            </v-alert>
 
             <v-form v-model="valid">
               <v-text-field
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+//import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -79,7 +79,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["originalDisplayName"]),
+    //...mapGetters(['getError','getProcessing','isUserAuthenticated'])
     error() {
       return this.$store.getters.getError;
     },

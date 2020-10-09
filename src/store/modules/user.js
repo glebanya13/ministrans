@@ -1,5 +1,5 @@
 import firebase from 'firebase'
-import { EventBus } from '../infrastructure/eventBus'
+import { EventBus } from '../../infrastructure/eventBus'
 
 export default {
     state: {
@@ -84,24 +84,24 @@ export default {
 
                 })
         },
-        SOCIALSIGNIN({ commit, dispatch }) {
+        SOCIALSIGNIN({ commit }) {
             commit('SET_PROCESSING', true)
         
             const provider = new firebase.auth.GoogleAuthProvider()
 
             firebase.auth().signInWithPopup(provider)
-                .then((res) => {
+                .then(() => {
                     
                     //dispatch('INIT_AUTH')
 
-                    if(res.user.displayName){
-                        let nameParts = res.user.displayName.split(' ');
-                        dispatch('ADD_USER_DATA', {
-                            userId: res.user.uid,
-                            name: nameParts[0],
-                            surname: nameParts[1]
-                        })
-                    }
+                    // if(res.user.displayName){
+                    //     let nameParts = res.user.displayName.split(' ');
+                    //     dispatch('ADD_USER_DATA', {
+                    //         userId: res.user.uid,
+                    //         name: nameParts[0],
+                    //         surname: nameParts[1]
+                    //     })
+                    // }
 
                     commit('SET_PROCESSING', false)
                 })
@@ -113,15 +113,17 @@ export default {
         SIGNOUT() {
             firebase.auth().signOut();
         },
-        STATE_CHANGED({ commit, dispatch }, payload) {
+        STATE_CHANGED({ commit, dispatch }, firebaseUser) {
             console.log("state change")
-            if (payload) {
-                commit('SET_USER', { uid: payload.uid, email: payload.email })
-                // commit('SET_USER_PHOTO', payload.photoURL)
-                
-                dispatch('LOAD_USER_DATA', payload.uid)
-                dispatch('LOAD_MARKS_BY_USER')
-                dispatch('LOAD_MARKS')
+            commit('CLEAR_ERROR')
+            
+            if (firebaseUser) {
+                commit('SET_USER', { uid: firebaseUser.uid, email: firebaseUser.email })
+                // commit('SET_USER_PHOTO', firebaseUser.photoURL)
+
+                dispatch('LOAD_USER_DATA', firebaseUser.uid)
+                dispatch('LOAD_MASS_CHECKINS_BY_USER')
+                dispatch('LOAD_MASS_CHECKINS')
                 dispatch('LOAD_USERS')
             } else {
                 commit('UNSET_USER')
