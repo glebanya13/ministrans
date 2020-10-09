@@ -51,11 +51,12 @@ export default {
                 commit('SET_UNSUBSCRIBE_AUTH', unsubscribe)
             })
         },
-        SIGNUP({ commit }, payload) {
+        SIGNUP({ commit, dispatch }, payload) {
             commit('SET_PROCESSING', true)
             commit('CLEAR_ERROR')
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(() => {
+                    dispatch('CHECK_IF_NEED_PROFILE')
                     // firebase.auth().currentUser.updateProfile(
                     //     { photoURL: payload.photoUrl })
                     //     .then(() =>
@@ -71,11 +72,11 @@ export default {
 
                 })
         },
-        SIGNIN({ commit }, payload) {
+        SIGNIN({ commit, dispatch }, payload) {
             commit('SET_PROCESSING', true)
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-                .then((res) => {
-                    commit('SET_ORIGINAL_DISPLAY_NAME', res.user.displayName)
+                .then(() => {
+                    dispatch('CHECK_IF_NEED_PROFILE')
                     commit('SET_PROCESSING', false)
                 })
                 .catch(function (error) {
@@ -84,14 +85,16 @@ export default {
 
                 })
         },
-        SOCIALSIGNIN({ commit }) {
+        SOCIALSIGNIN({ commit,dispatch }) {
             commit('SET_PROCESSING', true)
         
             const provider = new firebase.auth.GoogleAuthProvider()
 
             firebase.auth().signInWithPopup(provider)
                 .then(() => {
-                    
+                    console.log('check')
+                    dispatch('CHECK_IF_NEED_PROFILE')
+
                     //dispatch('INIT_AUTH')
 
                     // if(res.user.displayName){
@@ -116,7 +119,7 @@ export default {
         STATE_CHANGED({ commit, dispatch }, firebaseUser) {
             console.log("state change")
             commit('CLEAR_ERROR')
-            
+
             if (firebaseUser) {
                 commit('SET_USER', { uid: firebaseUser.uid, email: firebaseUser.email })
                 // commit('SET_USER_PHOTO', firebaseUser.photoURL)
@@ -130,7 +133,7 @@ export default {
                 commit('UNSET_USER_DATA')
             }
         },
-        CHANGE_USER_PROFILE_DATA({ commit }, payload) {
+        CHANGE_USER_LOGIN_DATA({ commit }, payload) {
             let user = firebase.auth().currentUser
             let credential = firebase.auth.EmailAuthProvider.credential(
                 payload.email,

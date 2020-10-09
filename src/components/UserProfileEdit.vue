@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height" fluid>
+ <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
         <v-card class="elevation-12">
@@ -71,7 +71,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn to="/">Заполнить позже</v-btn>
+            <!-- <v-btn to="/">Заполнить позже</v-btn> -->
             <v-btn
               color="primary"
               @click.prevent="personal()"
@@ -82,8 +82,7 @@
       </v-col>
     </v-row>
   </v-container>
-</template>
-
+</template>    
 <script>
 import {mapActions,mapGetters} from 'vuex'
 export default {
@@ -108,7 +107,7 @@ export default {
         "Святой Троицы, г. Глубокое",
         "Иисуса Милосердного, г. Витебск"
       ],
-      levels: ["Асперант", "Министрант", "Лектар", "Ксендз"],
+      levels: ["Аспирант", "Министрант", "Лектар", "Ксендз"],
 
       birthday: null,
       parafia: null,
@@ -149,6 +148,7 @@ export default {
     },
   },
   mounted() {
+     
     this.$bus.$on("user-data-loaded", () => {
         this.level = this.userData.level
         this.birthday = this.userData.birthday
@@ -166,6 +166,6 @@ export default {
   },
 };
 </script>
+<style scoped>
 
-<style>
 </style>

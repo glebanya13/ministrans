@@ -14,7 +14,8 @@ export default {
     state: {
         userData: defaultUserData,
         users: {},
-        usersForSchedule: []
+        usersForSchedule: [],
+        needProfile: false
     },
     mutations: {
         SET_USER_DATA(state, payload) {
@@ -28,6 +29,12 @@ export default {
         },
         UNSET_USER_DATA(state) {
             state.userData = defaultUserData
+        },
+        NEED_PROFILE(state) {
+            state.needProfile = true;
+        },
+        PROFILE_EXISTS(state) {
+            state.needProfile = false;
         }
     },
     actions: {
@@ -37,10 +44,18 @@ export default {
             let userDataRef = Vue.$db.collection('userData').doc(payload)
             userDataRef.get()
                 .then((data) => {
-                    let userData = data.exists ? data.data() : defaultUserData
 
-                    if (!userData)
-                        userData = null
+                    let userData = defaultUserData
+                    if(data.exists){
+                        userData = data.data();
+                    }else{
+                        let dn = firebase.auth().currentUser.displayName
+                        if(dn){
+                            let dnParts = dn.split(' ');
+                            userData.name = dnParts[0]
+                            userData.surname = dnParts[1]
+                        }
+                    }
 
                     commit('SET_USER_DATA', userData)
                     commit('SET_PROCESSING', false)
@@ -149,6 +164,21 @@ export default {
                 .catch(() => {
                     commit('SET_PROCESSING', false)
                 })
+        },
+        CHECK_IF_NEED_PROFILE({ commit }) {
+            commit('PROFILE_EXISTS')
+            var docRef = Vue.$db.collection("userData").doc(firebase.auth().currentUser.uid);
+ 
+            docRef.get().then(function (doc) {
+                if (!doc.exists) {
+                    commit('NEED_PROFILE')
+                }
+                
+                EventBus.notify('checked-if-need-profile')
+            }).catch(function (error) {
+                commit('SET_ERROR', error.message)
+            });
+
         }
     },
 
@@ -162,5 +192,6 @@ export default {
         userClas: (state) => state.userData.clas,
         userParafia: (state) => state.userData.parafia,
         usersForSchedule: (state) => state.usersForSchedule,
+        needProfile: (state) => state.needProfile
     }
 }

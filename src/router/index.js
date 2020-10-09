@@ -7,7 +7,7 @@ import Stats from '../views/Stats.vue'
 import Checkin from '../views/Checkin.vue'
 import Signin from '../views/Signin.vue'
 import Signup from '../views/Signup.vue'
-import Signup2 from '../views/Signup2.vue'
+import EditProfile from '../views/EditProfile.vue'
 import Store from '../store'
 
 
@@ -51,10 +51,10 @@ const routes = [
     component: Signup
   },
   {
-    path: '/signup2',
-    name: 'signup2',
-    component: Signup2
-  },
+    path: '/edit-profile/:tab',
+    name: 'edit-profile',
+    component: EditProfile
+  }
 ]
 
 const router = new VueRouter({

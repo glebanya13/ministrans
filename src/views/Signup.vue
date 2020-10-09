@@ -81,7 +81,7 @@ export default {
   },
   watch: {
     isUserAuthenticated(val) {
-      if (val === true) this.$router.push("/signup2");
+      if (val === true) this.$router.push({name: "edit-profile", params:{tab:1}});
     },
   },
   methods: {

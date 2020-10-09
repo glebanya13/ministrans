@@ -89,11 +89,20 @@ export default {
     isUserAuthenticated() {
       return this.$store.getters.isUserAuthenticated;
     },
+    needProfile() {
+      return this.$store.getters.needProfile;
+    },
   },
   watch: {
     isUserAuthenticated(val) {
       if (val === true) {
-          this.$router.push("/");
+      //    this.$router.push("/");
+      }
+    },
+    needProfile(val) {
+      if (val === true && this.isUserAuthenticated) {
+        this.$router.push({name: "edit-profile", params:{tab:1}});
+         // this.$router.push("/");
       }
     },
   },
@@ -107,6 +116,17 @@ export default {
     socialSignIn() {
       this.$store.dispatch("SOCIALSIGNIN");
     },
+  },
+  created() {
+    this.$bus.$on("checked-if-need-profile", () => {
+      if(!this.needProfile){
+        this.$router.push("/profile");
+      }
+     // this.$router.push({name: "edit-profile", params:{tab:1}});
+    });
+  },
+  beforeDestroy() {
+    this.$bus.$off("checked-if-need-profile");
   },
 };
 </script>
