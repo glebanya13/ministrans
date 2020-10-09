@@ -5,7 +5,7 @@
         <v-card-text>
           <v-flex class="mb-4">
             <v-avatar size="100" class="mr-4">
-              <img src="https://firebasestorage.googleapis.com/v0/b/ministrans-60ff9.appspot.com/o/user.png?alt=media&token=4ebbd785-fb2e-4022-b4e6-98a4d4761511" />
+              <v-img :src="newPhotoUrl || defaultImg" ></v-img>
             </v-avatar>
           <!-- <v-dialog v-model="dialogAva" persistent max-width="320">
             <template v-slot:activator="{ on }">
@@ -164,6 +164,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      defaultImg: "https://firebasestorage.googleapis.com/v0/b/ministrans-60ff9.appspot.com/o/user.png?alt=media&token=4ebbd785-fb2e-4022-b4e6-98a4d4761511",
       dialog: false,
       tabMode: 'reduct',
 
