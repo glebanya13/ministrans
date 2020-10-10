@@ -45,7 +45,7 @@
             >
           </v-card-actions>
         </v-card>
-        <div class="text-center">
+        <div class="text-center" v-if="socialEnabled">
           <br /><br />
           Или войти с помощью Google Accout <br />
           <button class="social-button" @click="socialSignIn()">
@@ -63,6 +63,7 @@
 export default {
   data() {
     return {
+      socialEnabled: false,
       email: null,
       password: null,
       valid: false,
