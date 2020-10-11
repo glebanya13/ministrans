@@ -32,7 +32,7 @@
 
 <script>
 import Vue from "vue";
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     deleteDate(checkin) {
-      Vue.$db.collection("masCheckins").doc(checkin).delete();
+      Vue.$db.collection("massCheckins").doc(checkin).delete();
       this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER");
     },
   },
