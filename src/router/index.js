@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Profile from '../views/Profile.vue'
+import ListOfMinistrans from '../views/ListOfMinistrans.vue'
 import Schedule from '../views/Schedule.vue'
 import Stats from '../views/Stats.vue'
 import Checkin from '../views/Checkin.vue'
@@ -24,6 +25,11 @@ const routes = [
     name: 'profile',
     component: Profile,
     meta: { authRequired: true }
+  },
+  {
+    path: '/ministrans',
+    name: 'ministrans',
+    component: ListOfMinistrans
   },
   {
     path: '/schedule',

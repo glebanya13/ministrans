@@ -75,7 +75,12 @@ export default {
     },
     menuItems() {
       return this.isUserAuthenticated
-        ? [
+        ? [ 
+            {
+              icon: "mdi-account-multiple",
+              title: "Список министрантов",
+              route: "/ministrans"
+            },
             {
               icon: "mdi-account",
               title: "Профиль",
