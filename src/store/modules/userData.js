@@ -108,7 +108,13 @@ export default {
                         const data = s.data()
                         let user = {
                             uid: data.userId,
-                            name: data.name
+                            name: data.name,
+                            surname: data.surname,
+                            birthday: data.birthday,
+                            clas: data.clas,
+                            level: data.level,
+                            parafia: data.parafia,
+                            schedule: data.schedule
                         }
                         users.push(user)
                     })
@@ -138,7 +144,7 @@ export default {
                                 cht: "",
                                 pt: "",
                                 sb: "",
-                            }
+                            },
                         }
                         users.push(user)
                     })

@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     deleteDate(checkin) {
-      Vue.$db.collection("masCheckins").doc(checkin).delete();
+      Vue.$db.collection("massCheckins").doc(checkin).delete();
       this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER");
     },
   },
