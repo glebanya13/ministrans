@@ -29,22 +29,26 @@ const routes = [
   {
     path: '/ministrans',
     name: 'ministrans',
-    component: ListOfMinistrans
+    component: ListOfMinistrans,
+    meta: { authRequired: true }
   },
   {
     path: '/schedule',
     name: 'schedule',
-    component: Schedule
+    component: Schedule,
+    meta: { authRequired: true }
   },
   {
     path: '/stats',
     name: 'stats',
-    component: Stats
+    component: Stats,
+    meta: { authRequired: true }
   },
   {
     path: '/checkin',
     name: 'checkin',
-    component: Checkin
+    component: Checkin,
+    meta: { authRequired: true }
   },
   {
     path: '/signin',
@@ -59,7 +63,8 @@ const routes = [
   {
     path: '/edit-profile/:tab',
     name: 'edit-profile',
-    component: EditProfile
+    component: EditProfile,
+    meta: { authRequired: true }
   }
 ]
 
