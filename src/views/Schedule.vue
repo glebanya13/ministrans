@@ -14,7 +14,7 @@
             <tbody>
               <tr
                 v-for="item in usersList"
-                :key="item.name"
+                :key="item.uid"
                 @click="edit(item)"
                 style="cursor: pointer"
               >
