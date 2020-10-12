@@ -8,7 +8,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <v-alert v-if="getError" :value="getError" type="warning">{{ getError }}</v-alert>
+            <v-alert v-if="error" :value="error" type="error">{{ error }}</v-alert>
             <v-form v-model="valid">
               <v-text-field
                 label="Е-мейл"
@@ -77,6 +77,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import messages from '@/utils/messages.js'
 export default {
   data() {
     return {
@@ -106,7 +107,13 @@ export default {
       // photoURLRules: [(v) => !!v || "Пожалуйста введите адресную строку вашей фотографии"]
     };
   },
-  computed: mapGetters(['getError','getProcessing']),
+  computed: {
+    ...mapGetters(['getProcessing']),
+    error(){
+      let e = this.$store.getters.getError
+      return messages[e.code] || messages['default-error']
+    }
+    },
   methods: {
       ...mapActions(['CHANGE_USER_LOGIN_DATA']),
     changeUserData() {

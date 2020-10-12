@@ -8,7 +8,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <v-alert type="warning" v-if="error">{{error}}</v-alert>
+            <v-alert type="error" v-if="error">{{error}}</v-alert>
 
             <v-form v-model="valid">
 
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import messages from '@/utils/messages.js'
 export default {
   data() {
     return {
@@ -72,7 +73,8 @@ export default {
       return this.$store.getters.getProcessing;
     },
     error() {
-      return this.$store.getters.getError;
+      let e = this.$store.getters.getError
+      return messages[e.code] || messages['default-error']
     },
     isUserAuthenticated() {
       return this.$store.getters.isUserAuthenticated;

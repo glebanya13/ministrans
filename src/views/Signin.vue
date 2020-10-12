@@ -8,7 +8,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-           <v-alert type="warning" v-if="error">
+           <v-alert type="error" v-if="error">
               {{ error }}
             </v-alert>
 
@@ -59,7 +59,7 @@
 
 <script>
 //import { mapGetters } from "vuex";
-
+import messages from '@/utils/messages.js'
 export default {
   data() {
     return {
@@ -82,7 +82,8 @@ export default {
   computed: {
     //...mapGetters(['getError','getProcessing','isUserAuthenticated'])
     error() {
-      return this.$store.getters.getError;
+      let e = this.$store.getters.getError
+      return e && (messages[e.code] || messages['default-error']);
     },
     processing() {
       return this.$store.getters.getProcessing;

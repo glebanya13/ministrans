@@ -61,8 +61,10 @@ export default {
                     commit('SET_PROCESSING', false)
                     EventBus.notify('user-data-loaded')
                 })
-                .catch(() => {
+                .catch(error => {
                     commit('SET_PROCESSING', false)
+                    commit('SET_ERROR', error)
+                    throw error
                 })
         },
         ADD_USER_DATA({ commit, getters }, payload) {
@@ -77,7 +79,8 @@ export default {
                 }).then(function () {
                     // Update successful.
                 }).catch(function (error) {
-                    commit('SET_ERROR', error.message)
+                    commit('SET_ERROR', error)
+                    throw error
                 });
             }
 
@@ -95,8 +98,9 @@ export default {
                     commit('SET_PROCESSING', false)
                 })
                 .catch((e) => {
-                    console.error(e)
+                    commit('SET_ERROR', e)
                     commit('SET_PROCESSING', false)
+                    throw e
                 })
         },
         LOAD_USERS({ commit }) {
@@ -120,9 +124,10 @@ export default {
                     })
                     commit('SET_USERS', users)
                 })
-                .catch(error =>
-                    commit('SET_ERROR', error.message)
-                )
+                .catch(error =>{
+                    commit('SET_ERROR', error)
+                    throw error
+                })
         },
         LOAD_USERS_FOR_SCHEDULE({ commit }) {
             commit('SET_PROCESSING', true)
@@ -152,8 +157,9 @@ export default {
                     commit('SET_PROCESSING', false)
                 })
                 .catch(error => {
-                    commit('SET_ERROR', error.message)
+                    commit('SET_ERROR', error)
                     commit('SET_PROCESSING', false)
+                    throw error
                 })
         },
         UPDATE_SCHEDULE_FOR_USER({ commit }, user) {
@@ -182,7 +188,8 @@ export default {
                 
                 EventBus.notify('checked-if-need-profile')
             }).catch(function (error) {
-                commit('SET_ERROR', error.message)
+                commit('SET_ERROR', error)
+                throw error
             });
 
         }

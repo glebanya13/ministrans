@@ -41,7 +41,8 @@ export default {
                 })
                 .catch((error) => {
                     commit('SET_PROCESSING', false)
-                    commit('SET_ERROR', error.message)
+                    commit('SET_ERROR', error)
+                    throw error
                 })
         },
         LOAD_MASS_CHECKINS_BY_USER({ commit, getters }) {
@@ -63,9 +64,10 @@ export default {
                     })
                     commit('SET_USER_MASS_CHECKINS', userCheckins)
                 })
-                .catch(error =>
-                    commit('SET_ERROR', error.message)
-                )
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
+                })
         },
         LOAD_MASS_CHECKINS({ commit }) {
             Vue.$db.collection('massCheckins')
@@ -86,8 +88,10 @@ export default {
                     })
                     commit('SET_MASS_CHECKINS', checkins)
                 })
-                .catch(error =>
-                    commit('SET_ERROR', error.message)
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
+                }
                 )
         },
         LOAD_STATS({ commit }) {
@@ -109,8 +113,10 @@ export default {
                     var res = groupByKey(checkins, 'uid')
                     commit('SET_STATS', res)
                 })
-                .catch(error =>
-                    commit('SET_ERROR', error.message)
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
+                }
                 )
         }
     },

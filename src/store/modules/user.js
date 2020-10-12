@@ -68,8 +68,8 @@ export default {
                 })
                 .catch(function (error) {
                     commit('SET_PROCESSING', false)
-                    commit('SET_ERROR', error.message)
-
+                    commit('SET_ERROR', error)
+                    throw error
                 })
         },
         SIGNIN({ commit, dispatch }, payload) {
@@ -81,8 +81,8 @@ export default {
                 })
                 .catch(function (error) {
                     commit('SET_PROCESSING', false)
-                    commit('SET_ERROR', error.message)
-
+                    commit('SET_ERROR', error)
+                    throw error
                 })
         },
         SOCIALSIGNIN({ commit,dispatch }) {
@@ -110,11 +110,13 @@ export default {
                 })
                 .catch(function (error) {
                     commit('SET_PROCESSING', false)
-                    commit('SET_ERROR', error.message)
+                    commit('SET_ERROR', error)
+                    throw error
                 })
         },
-        SIGNOUT() {
+        SIGNOUT({commit}) {
             firebase.auth().signOut();
+            commit('SET_MESSAGE', 'logout');
         },
         STATE_CHANGED({ commit, dispatch }, firebaseUser) {
             console.log("state change")
@@ -155,7 +157,8 @@ export default {
                         })
                         .catch(error => {
                             commit('SET_PROCESSING', false)
-                            commit('SET_ERROR', error.message)
+                            commit('SET_ERROR', error)
+                            throw error
                         })
                 }
                 if (payload.changeType == 'password') {
@@ -166,12 +169,14 @@ export default {
                         })
                         .catch(error => {
                             commit('SET_PROCESSING', false)
-                            commit('SET_ERROR', error.message)
+                            commit('SET_ERROR', error)
+                            throw error
                         })
                 }
             }).catch(function (error) {
                 commit('SET_PROCESSING', false)
-                commit('SET_ERROR', error.message)
+                commit('SET_ERROR', error)
+                throw error
             });
         },
         // CHANGE_USER_IMAGE({ commit}, payload) {
