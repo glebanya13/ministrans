@@ -37,7 +37,7 @@
         class="hidden-md-and-up"
       ></v-app-bar-nav-icon>
 
-      <router-link to="/" tag="span" style="cursor: pointer">
+      <router-link :to="homeLink" tag="span" style="cursor: pointer">
         <v-toolbar-title>Ministrants</v-toolbar-title>
       </router-link>
 
@@ -70,6 +70,9 @@ export default {
     };
   },
   computed: {
+    homeLink(){
+      return `${this.$store.getters.isUserAuthenticated ? 'checkin' : '/'}`
+    },
     isUserAuthenticated() {
       return this.$store.getters.isUserAuthenticated;
     },
