@@ -111,7 +111,7 @@ export default {
     ...mapGetters(['getProcessing']),
     error(){
       let e = this.$store.getters.getError
-      return messages[e.code] || messages['default-error']
+      return  e && (messages[e.code] || messages['default-error']);
     }
     },
   methods: {
