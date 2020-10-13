@@ -111,7 +111,7 @@ export default {
                     querySnapshot.forEach(s => {
                         const data = s.data()
                         let user = {
-                            uid: data.userId,
+                            uid: s.id,
                             name: data.name,
                             surname: data.surname,
                             birthday: data.birthday,

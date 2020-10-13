@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import helpers from '@/utils/helpers.js'
 
 export default {
     state: {
@@ -76,11 +77,12 @@ export default {
                     let checkins = []
                     querySnapshot.forEach(s => {
                         const data = s.data()
+                        const user = s.user || {}
                         let checkin = {
-                            uid: data.user.uid,
+                            uid: user.uid,
                             data: data.date,
-                            name: data.user.name,
-                            surname: data.user.surname,
+                            name: user.name,
+                            surname: user.surname,
                             isSunday: data.isSunday,
                             time: data.time
                         }
@@ -110,7 +112,7 @@ export default {
                         }
                         checkins.push(checkin)
                     })
-                    var res = groupByKey(checkins, 'uid')
+                    var res = helpers.groupByKey(checkins, 'uid')
                     commit('SET_STATS', res)
                 })
                 .catch(error => {
@@ -129,10 +131,4 @@ export default {
 
 }
 
-function groupByKey(array, key) {
-    return array
-        .reduce((hash, obj) => {
-            if (obj[key] === undefined) return hash;
-            return Object.assign(hash, { [obj[key]]: (hash[obj[key]] || []).concat(obj) })
-        }, {})
-}
+

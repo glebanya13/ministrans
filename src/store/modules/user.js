@@ -7,6 +7,7 @@ export default {
             isAuthenticated: false,
             uid: null,
             email: null,
+            isAdmin: false
         },
         unsubscribeAuth: null
     },
@@ -15,6 +16,7 @@ export default {
             state.user.isAuthenticated = true
             state.user.uid = payload.uid
             state.user.email = payload.email
+            state.user.isAdmin = payload.isAdmin
         },
         UNSET_USER(state) {
             state.user = {
@@ -31,7 +33,7 @@ export default {
         SET_UNSUBSCRIBE_AUTH(state, payload) {
             state.unsubscribeAuth = payload
         },
-        SET_ORIGINAL_DISPLAY_NAME(state, payload){
+        SET_ORIGINAL_DISPLAY_NAME(state, payload) {
             state.originalDisplayName = payload
         }
     },
@@ -62,8 +64,6 @@ export default {
                     //     .then(() =>
                     //         commit('SET_USER_PHOTO', payload.photoURL)
                     //     )
-
-
                     commit('SET_PROCESSING', false)
                 })
                 .catch(function (error) {
@@ -85,14 +85,13 @@ export default {
                     throw error
                 })
         },
-        SOCIALSIGNIN({ commit,dispatch }) {
+        SOCIALSIGNIN({ commit, dispatch }) {
             commit('SET_PROCESSING', true)
-        
+
             const provider = new firebase.auth.GoogleAuthProvider()
 
             firebase.auth().signInWithPopup(provider)
                 .then(() => {
-                    console.log('check')
                     dispatch('CHECK_IF_NEED_PROFILE')
 
                     //dispatch('INIT_AUTH')
@@ -114,7 +113,7 @@ export default {
                     throw error
                 })
         },
-        SIGNOUT({commit}) {
+        SIGNOUT({ commit }) {
             firebase.auth().signOut();
             commit('SET_MESSAGE', 'logout');
         },
@@ -123,13 +122,23 @@ export default {
             commit('CLEAR_ERROR')
 
             if (firebaseUser) {
-                commit('SET_USER', { uid: firebaseUser.uid, email: firebaseUser.email })
-                // commit('SET_USER_PHOTO', firebaseUser.photoURL)
 
-                dispatch('LOAD_USER_DATA', firebaseUser.uid)
-                dispatch('LOAD_MASS_CHECKINS_BY_USER')
-                dispatch('LOAD_MASS_CHECKINS')
-                dispatch('LOAD_USERS')
+                firebaseUser.getIdTokenResult()
+                    .then((r) => {
+                        commit('SET_USER', {
+                            uid: firebaseUser.uid,
+                            email: firebaseUser.email,
+                            isAdmin: r.admin == true
+                        })
+                        // commit('SET_USER_PHOTO', firebaseUser.photoURL)
+
+                        dispatch('LOAD_USER_DATA', firebaseUser.uid)
+                        dispatch('LOAD_MASS_CHECKINS_BY_USER')
+                        dispatch('LOAD_MASS_CHECKINS')
+                        dispatch('LOAD_USERS')
+                    })
+
+
             } else {
                 commit('UNSET_USER')
                 commit('UNSET_USER_DATA')
@@ -147,7 +156,7 @@ export default {
 
             user.reauthenticateAndRetrieveDataWithCredential(credential).then(function () {
                 let currentUser = firebase.auth().currentUser
-              
+
                 if (payload.changeType == 'email') {
                     currentUser.updateEmail(payload.newEmail)
                         .then(() => {
@@ -200,6 +209,7 @@ export default {
         userId: (state) => state.user.uid,
         // userPhoto: (state) => state.user.photoUrl,
         userEmail: (state) => state.user.email,
-        isUserAuthenticated: (state) => state.user.isAuthenticated
+        isUserAuthenticated: (state) => state.user.isAuthenticated,
+        isAdmin: s => s.user.isAdmin
     }
 }

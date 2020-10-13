@@ -9,6 +9,7 @@ import Checkin from '../views/Checkin.vue'
 import Signin from '../views/Signin.vue'
 import Signup from '../views/Signup.vue'
 import EditProfile from '../views/EditProfile.vue'
+import Admin from '../views/Admin.vue'
 import Store from '../store'
 
 
@@ -30,6 +31,12 @@ const routes = [
     path: '/ministrans',
     name: 'ministrans',
     component: ListOfMinistrans,
+    meta: { authRequired: true }
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: Admin,
     meta: { authRequired: true }
   },
   {

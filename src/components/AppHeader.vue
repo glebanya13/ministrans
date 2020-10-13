@@ -79,6 +79,11 @@ export default {
     menuItems() {
       return this.isUserAuthenticated
         ? [ 
+          {
+              icon: "mdi-text-box-multiple-outline",
+              title: "Admin",
+              route: "/admin",
+            },
             {
               icon: "mdi-account-multiple",
               title: "Список министрантов",

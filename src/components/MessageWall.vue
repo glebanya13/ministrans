@@ -49,7 +49,6 @@ export default {
     },
     message(msg) {
       if (msg) {
-        console.log(msg);
         this.messageText = messages[msg] || msg;
         this.messageSnackbar = true;
       } else {
