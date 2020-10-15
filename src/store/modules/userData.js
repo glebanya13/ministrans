@@ -1,6 +1,6 @@
-import Vue from 'vue'
-import { EventBus } from '../../infrastructure/eventBus'
-import firebase from 'firebase'
+import Vue from 'vue';
+import { EventBus } from '../../infrastructure/eventBus';
+import firebase from 'firebase';
 
 let defaultUserData = {
     level: null,
@@ -9,7 +9,7 @@ let defaultUserData = {
     birthday: null,
     surname: null,
     parafia: null,
-}
+};
 export default {
     state: {
         userData: defaultUserData,
@@ -46,12 +46,12 @@ export default {
                 .then((data) => {
 
                     let userData = defaultUserData
-                    if(data.exists){
+                    if (data.exists) {
                         userData = data.data();
                     }else{
                         // in case of google auth
                         let dn = firebase.auth().currentUser.displayName
-                        if(dn){
+                        if (dn) {
                             let dnParts = dn.split(' ');
                             userData.name = dnParts[0]
                             userData.surname = dnParts[1]
@@ -72,9 +72,9 @@ export default {
                 })
         },
         ADD_USER_DATA({ commit, getters }, payload) {
-            commit('SET_PROCESSING', true)
+            commit('SET_PROCESSING', true);
 
-            let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId)
+            let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
 
             var user = firebase.auth().currentUser;
             if (payload.name && !user.displayName) {
@@ -83,8 +83,8 @@ export default {
                 }).then(function () {
                     // Update successful.
                 }).catch(function (error) {
-                    commit('SET_ERROR', error)
-                    throw error
+                    commit('SET_ERROR', error);
+                    throw error;
                 });
             }
 
@@ -99,13 +99,35 @@ export default {
             }, { merge: true })
 
                 .then(() => {
-                    commit('SET_PROCESSING', false)
+                    commit('SET_PROCESSING', false);
                 })
                 .catch((e) => {
-                    commit('SET_ERROR', e)
-                    commit('SET_PROCESSING', false)
-                    throw e
-                })
+                    commit('SET_ERROR', e);
+                    commit('SET_PROCESSING', false);
+                    throw e;
+                });
+        },
+        async BATCH({ getters }, payload) {
+            var batch = Vue.$db.batch();
+
+            var refs = [];
+            await Vue.$db.collection("massCheckins").where("user.uid", "==", getters.userId)
+            .get()
+            .then(querySnapshot => {
+                refs = querySnapshot.docs.map(doc =>
+                    doc.ref
+                )
+            })
+            
+            refs.forEach(function(r) {
+                batch.update(r, {'user.name': payload.name,
+                'user.surname': payload.surname
+                });
+
+            })
+            batch.commit().then(function () {
+                // ...
+            });
         },
         LOAD_USERS({ commit }) {
             Vue.$db.collection('userData')
@@ -128,7 +150,7 @@ export default {
                     })
                     commit('SET_USERS', users)
                 })
-                .catch(error =>{
+                .catch(error => {
                     commit('SET_ERROR', error)
                     throw error
                 })
@@ -184,12 +206,12 @@ export default {
         CHECK_IF_NEED_PROFILE({ commit }) {
             commit('PROFILE_EXISTS')
             var docRef = Vue.$db.collection("userData").doc(firebase.auth().currentUser.uid);
- 
+
             docRef.get().then(function (doc) {
                 if (!doc.exists) {
                     commit('NEED_PROFILE')
                 }
-                
+
                 EventBus.notify('checked-if-need-profile')
             }).catch(function (error) {
                 commit('SET_ERROR', error)
