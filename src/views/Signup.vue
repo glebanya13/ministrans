@@ -74,7 +74,7 @@ export default {
     },
     error() {
       let e = this.$store.getters.getError
-      return messages[e.code] || messages['default-error']
+      return e && (messages[e.code] || messages['default-error']);
     },
     isUserAuthenticated() {
       return this.$store.getters.isUserAuthenticated;

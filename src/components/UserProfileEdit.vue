@@ -134,6 +134,8 @@ export default {
   methods: {
     ...mapActions(['LOAD_USER_DATA']),
     personal() {
+      this.$store.dispatch("BATCH", {name: this.name,
+      surname: this.surname});
 
       this.$store.dispatch("ADD_USER_DATA", {
         level: this.level,
@@ -146,6 +148,7 @@ export default {
       });
       this.$router.push("/profile");
     },
+
   },
   mounted() {
      

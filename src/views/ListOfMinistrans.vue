@@ -16,6 +16,8 @@ export default {
     loadJSON() {
       // this.LOAD_USERS_DATA()
       // this.LOAD_MARKS_DATA()
+      this.$store.dispatch("BATCH");
+
     },
   },
   computed: {
