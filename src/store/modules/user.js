@@ -7,7 +7,9 @@ export default {
             isAuthenticated: false,
             uid: null,
             email: null,
-            isAdmin: false
+            isAdmin: false,
+            isPriest: false,
+            isSenior: false
         },
         unsubscribeAuth: null
     },
@@ -17,6 +19,8 @@ export default {
             state.user.uid = payload.uid
             state.user.email = payload.email
             state.user.isAdmin = payload.isAdmin
+            state.user.isPriest = payload.isPriest
+            state.user.isSenior = payload.isSenior
         },
         UNSET_USER(state) {
             state.user = {
@@ -128,7 +132,9 @@ export default {
                         commit('SET_USER', {
                             uid: firebaseUser.uid,
                             email: firebaseUser.email,
-                            isAdmin: r.admin == true
+                            isAdmin: r.claims.admin == true,
+                            isPriest: r.claims.priest == true,
+                            isSenior: r.claims.senior == true
                         })
                         // commit('SET_USER_PHOTO', firebaseUser.photoURL)
 

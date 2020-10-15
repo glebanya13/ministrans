@@ -2,7 +2,7 @@
   <v-container grid-list-md>
     <v-layout row wrap>
       <v-flex xs12 sm10 offset-sm-1>
-        <v-simple-table>
+        <v-simple-table dense>
           <template v-slot:default>
             <thead>
               <tr>
@@ -258,7 +258,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["usersForSchedule", "getProcessing"]),
+    ...mapGetters(["usersForSchedule", "getProcessing", "userId", 'isAdmin', 'isPriest', 'isSenior']),
     usersList() {
       return this.usersForSchedule || this.usersTempData;
     },
@@ -289,15 +289,18 @@ export default {
       );
     },
     edit(user) {
-      this.editableUser = user;
-      this.sundayTimes = convertSundayTime(user.schedule.vs);
-      this.weekdayTimes[0].times = convertWeekdayTime(user.schedule.pn);
-      this.weekdayTimes[1].times = convertWeekdayTime(user.schedule.vt);
-      this.weekdayTimes[2].times = convertWeekdayTime(user.schedule.sr);
-      this.weekdayTimes[3].times = convertWeekdayTime(user.schedule.cht);
-      this.weekdayTimes[4].times = convertWeekdayTime(user.schedule.pt);
-      this.weekdayTimes[5].times = convertWeekdayTime(user.schedule.sb);
-      this.dialog = true;
+      //console.log(this.isAdmin)
+        this.checkPermissions(user.uid, () => { 
+        this.editableUser = user;
+        this.sundayTimes = convertSundayTime(user.schedule.vs);
+        this.weekdayTimes[0].times = convertWeekdayTime(user.schedule.pn);
+        this.weekdayTimes[1].times = convertWeekdayTime(user.schedule.vt);
+        this.weekdayTimes[2].times = convertWeekdayTime(user.schedule.sr);
+        this.weekdayTimes[3].times = convertWeekdayTime(user.schedule.cht);
+        this.weekdayTimes[4].times = convertWeekdayTime(user.schedule.pt);
+        this.weekdayTimes[5].times = convertWeekdayTime(user.schedule.sb);
+        this.dialog = true;
+      })
     },
     update() {
       this.dialog = false;
@@ -355,6 +358,26 @@ export default {
         })
         .join(" ");
     },
+    checkPermissions(uid, func){
+      //TODO - refactoring: check permission checkRole(roleName)
+      if(this.isAdmin){
+        func()
+      }else{
+        if(this.isPriest){
+          func()
+        }
+        else{
+          if(this.isSenior){
+            func()
+          }else{
+            if(uid == this.userId){
+              func()
+            }
+          }
+        }
+      }
+      return false
+    }
   },
   mounted() {
     this.LOAD_USERS_FOR_SCHEDULE();

@@ -85,6 +85,11 @@ export default {
               route: "/admin",
             },
             {
+              icon: "mdi-text-box-multiple-outline",
+              title: "Parish",
+              route: "/parish",
+            },
+            {
               icon: "mdi-account-multiple",
               title: "Список министрантов",
               route: "/ministrans"

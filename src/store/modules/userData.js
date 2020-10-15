@@ -38,7 +38,7 @@ export default {
         }
     },
     actions: {
-        LOAD_USER_DATA({ commit }, payload) {
+        LOAD_USER_DATA({ commit, dispatch }, payload) {
 
             commit('SET_PROCESSING', true)
             let userDataRef = Vue.$db.collection('userData').doc(payload)
@@ -49,6 +49,7 @@ export default {
                     if(data.exists){
                         userData = data.data();
                     }else{
+                        // in case of google auth
                         let dn = firebase.auth().currentUser.displayName
                         if(dn){
                             let dnParts = dn.split(' ');
@@ -57,6 +58,9 @@ export default {
                         }
                     }
 
+                    if(userData.parish && userData.parish.id){
+                        dispatch('LOAD_PARISH', userData.parish.id)
+                    }
                     commit('SET_USER_DATA', userData)
                     commit('SET_PROCESSING', false)
                     EventBus.notify('user-data-loaded')

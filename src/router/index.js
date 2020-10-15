@@ -10,6 +10,7 @@ import Signin from '../views/Signin.vue'
 import Signup from '../views/Signup.vue'
 import EditProfile from '../views/EditProfile.vue'
 import Admin from '../views/Admin.vue'
+import Parish from '../views/Parish.vue'
 import Store from '../store'
 
 
@@ -37,6 +38,12 @@ const routes = [
     path: '/admin',
     name: 'admin',
     component: Admin,
+    meta: { authRequired: true }
+  },
+  {
+    path: '/parish',
+    name: 'parish',
+    component: Parish,
     meta: { authRequired: true }
   },
   {
