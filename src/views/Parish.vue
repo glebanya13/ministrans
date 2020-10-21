@@ -50,7 +50,8 @@
             </v-simple-table>
             
                       
-                    <v-row dense>
+                    <v-row dense  align="center"
+      justify="center">
                         <v-col col-4>
                             <v-overflow-btn
                         dense
@@ -62,7 +63,7 @@
                         item-text="text"
                       ></v-overflow-btn>
                       </v-col>
-                            <v-col col-4><v-overflow-btn
+                            <v-col col-4 ><v-overflow-btn
                         dense
                         class="my-2"
                         label="Время"

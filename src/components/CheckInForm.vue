@@ -55,22 +55,8 @@
                   </v-dialog>
 
                   <v-select
-                    v-if="isSunday == true"
                     v-model="time"
-                    :items="timesSunday"
-                    menu-props="auto"
-                    label="Выберите время"
-                    hide-details
-                    prepend-icon="event"
-                    single-line
-                    :rules="timeRules"
-                    required
-                  ></v-select>
-
-                  <v-select
-                    v-if="isSunday == false"
-                    v-model="time"
-                    :items="timesDefault"
+                    :items="timesToChoose"
                     menu-props="auto"
                     label="Выберите время"
                     hide-details
@@ -104,6 +90,8 @@
 
 <script>
 import moment from 'moment'
+import { mapGetters } from "vuex";
+import helpers from "@/utils/helpers.js"; 
 
 export default {
   data() {
@@ -111,8 +99,7 @@ export default {
       dialog: false,
       date: moment().format('yyyy-MM-DD'),//new Date().toISOString().substr(0, 10),
       modal: false,
-      timesDefault: ["09:00", "18:00"],
-      timesSunday: ["09:30", "11:00", "13:00", "18:00"],
+      timesDefault: {},
       time: "",
       snackbar: false,
       snackbarText: null,
@@ -121,6 +108,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['parish']),
     dateToView(){
        return this.date ? moment(this.date).format('LL (dddd)') : ''
     },
@@ -134,32 +122,47 @@ export default {
       return this.$store.getters.getError;
     },
     day() {
-      let newday = new Date(this.date).getDay();
-      return newday;
+      return moment(this.date, 'yyyy-MM-DD').format('e') // sunday == 6
     },
     processing() {
       return this.$store.getters.getProcessing;
     },
-    isSunday() {
-      let isSunday = false;
-      if (this.day == 0) {
-        isSunday = true;
-      }
-      return isSunday;
-    },
+    timesToChoose(){
+      let times = this.timesDefault[this.day] 
+      ? this.timesDefault[this.day] 
+      : this.timesDefault[7] // for weekday
+      return times && times.map(td => td.time)
+       
+    }
   },
   methods: {
     checkin() {
       this.$store.dispatch("CHECK_IN", {
         date: this.date,
         time: this.time,
-        isSunday: this.isSunday,
+        isSunday: this.day == 6,
       });
       this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER");
       this.dialog = false;
       this.snackbar = true;
       this.snackbarText = "Поздравляем, вы отметились!";
     },
+    assignTimes(){
+      if(this.parish.schedule){
+        this.timesDefault = helpers.groupByKey(this.parish.schedule, 'day')
+      }
+    }
+  },
+  created() {
+    if (this.parish) {
+      this.assignTimes();
+    }
+    this.$bus.$on("parish-is-loaded", () => {
+      this.assignTimes();
+    });
+  },
+  beforeDestroy() {
+    this.$bus.$off("parish-is-loaded");
   },
 };
 </script>

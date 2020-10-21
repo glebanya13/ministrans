@@ -144,63 +144,34 @@ export default {
                             clas: data.clas,
                             level: data.level,
                             parafia: data.parafia,
-                            schedule: data.schedule
+                            myschedule: data.myschedule
                         }
                         users.push(user)
                     })
                     commit('SET_USERS', users)
+                    EventBus.notify('users-are-loaded')
                 })
                 .catch(error => {
                     commit('SET_ERROR', error)
                     throw error
                 })
         },
-        LOAD_USERS_FOR_SCHEDULE({ commit }) {
-            commit('SET_PROCESSING', true)
-            Vue.$db.collection('userData')
-                .get()
-                .then(querySnapshot => {
-                    let users = []
-                    querySnapshot.forEach(s => {
-                        const data = s.data()
-                        let user = {
-                            uid: data.userId,
-                            name: data.name,
-                            surname: data.surname,
-                            schedule: data.schedule || {
-                                vs: "",
-                                pn: "",
-                                vt: "",
-                                sr: "",
-                                cht: "",
-                                pt: "",
-                                sb: "",
-                            },
-                        }
-                        users.push(user)
-                    })
-                    commit('SET_USERS_FOR_SCHEDULE', users)
-                    commit('SET_PROCESSING', false)
-                })
-                .catch(error => {
-                    commit('SET_ERROR', error)
-                    commit('SET_PROCESSING', false)
-                    throw error
-                })
-        },
-        UPDATE_SCHEDULE_FOR_USER({ commit }, user) {
+        UPDATE_SCHEDULE_FOR_USER({ commit,dispatch }, user) {
 
             commit('SET_PROCESSING', true)
 
             let userDataRef = Vue.$db.collection('userData').doc(user.uid)
             userDataRef.set({
-                schedule: user.schedule
+                myschedule: user.myschedule
             }, { merge: true })
                 .then(() => {
                     commit('SET_PROCESSING', false)
+                    dispatch('LOAD_USERS')
                 })
-                .catch(() => {
+                .catch((error) => {
                     commit('SET_PROCESSING', false)
+                    commit('SET_ERROR', error)
+                    throw error
                 })
         },
         CHECK_IF_NEED_PROFILE({ commit }) {

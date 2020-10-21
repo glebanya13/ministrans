@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { EventBus } from '../../infrastructure/eventBus'
 
 export default {
     state: {
@@ -19,6 +20,7 @@ export default {
                 .then((data) => {
                     if(data.exists){
                         commit('SET_PARISH', data.data())
+                        EventBus.notify('parish-is-loaded')
                     }
                 })
                 .catch(error => {
