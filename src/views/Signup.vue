@@ -2,13 +2,14 @@
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
+        <h1 class="text-center">Добро пожаловать!</h1><br>
         <v-card class="elevation-12">
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title>Регистрация</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <v-alert type="error" v-if="error">{{error}}</v-alert>
+          <v-alert type="error" v-if="error">{{error}}</v-alert>
 
             <v-form v-model="valid">
 
@@ -33,6 +34,12 @@
                 :rules="passwordRules"
               ></v-text-field>
             </v-form>
+            
+          </v-card-text>
+          
+          <v-card-text>
+            <h2 class="black--text">Или:</h2> <br>
+            <v-btn class="indigo white--text" @click="phone()"><v-icon>phone</v-icon>Телефон</v-btn>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -44,11 +51,12 @@
           </v-card-actions>
         </v-card>
       </v-col>
-    </v-row>
+   </v-row>
   </v-container>
 </template>
 
 <script>
+// import phoneAuth from '../components/PhoneAuth'
 import messages from '@/utils/messages.js'
 export default {
   data() {
@@ -87,6 +95,9 @@ export default {
     },
   },
   methods: {
+    phone(){
+      this.$router.push({ path: '/phone' })
+    },
     signup() {
       this.$store.dispatch("SIGNUP", {
         email: this.email,
@@ -98,4 +109,5 @@ export default {
 </script>
 
 <style>
+
 </style>

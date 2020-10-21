@@ -4,37 +4,30 @@
       <v-card class="mx-auto" width="600" outlined>
         <v-card-text>
           <v-flex class="mb-4">
-            <v-avatar size="100" class="mr-4">
-              <v-img :src="defaultImg"></v-img>
-            </v-avatar>
-            <!-- <v-dialog v-model="dialogAva" persistent max-width="320">
+            <v-dialog v-model="dialogAva" persistent max-width="320">
             <template v-slot:activator="{ on }">
-            <v-btn v-on="on">Изменить Аватар</v-btn>
+            <v-avatar size="100" class="mr-4">
+              <v-img v-if="!userImage" src="../assets/user.png" v-on="on"></v-img>
+              <v-img v-else :src="userImage" v-on="on"></v-img>
+            </v-avatar>
             </template>
             <v-card>
-              <v-card-title>Вы точно хотите поменять аватар?</v-card-title> -->
-            <!-- <v-card-text>
-                <v-form v-model="valid">
-                  <v-text-field
-                    label="Аватар"
-                    prepend-icon="mdi-image"
-                    required
-                    v-model="newPhotoUrl"
-                    :rules="photoURLRules"
-                  ></v-text-field>
-                  </v-form>
-              </v-card-text> -->
-            <!-- <v-card-actions>
+              <v-card-title>Вы точно хотите поменять аватар?</v-card-title>
+            <v-card-text>
+                <input type="file" @change="onFileChanged"/>
+              </v-card-text>
+            <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="dialogAva = false">Отмена</v-btn>
                 <v-btn
                   color="primary"
-                  @click.prevent="changeImage()"
-                  :disabled="getProcessing || !valid"
-                >Изменить</v-btn>
+                  @click.prevent="onUpload()"
+                  :disabled="getProcessing"
+                >Подтвердить</v-btn>
               </v-card-actions>
             </v-card>
-          </v-dialog> -->
+          </v-dialog>
+
           </v-flex>
           <h2 class="headline mb-0">
             <h4 v-if="!userName && !userSurname">
@@ -85,14 +78,18 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      defaultImg:
-        "https://firebasestorage.googleapis.com/v0/b/ministrans-60ff9.appspot.com/o/user.png?alt=media&token=4ebbd785-fb2e-4022-b4e6-98a4d4761511",
-
-    };
+      dialogAva: false,
+      valid: null,
+      imageData: null,
+      picture: null,
+      uploadValue: null,
+    }
   },
   computed: {
     ...mapGetters([
@@ -106,12 +103,40 @@ export default {
       "userBirthday",
       "userParafia",
     ]),
-    // photoUrl() {
-    //   return this.$store.getters.userPhoto;
-    // },
+    userImage(){
+      let image = this.$store.getters.url
+      return image
+    },
+  },
+  methods:{
+  onFileChanged (event) {
+    const file = event.target.files[0]
+    this.uploadValue=0;
+    this.picture=null;
+    this.imageData=file
+    console.log(this.messagesRef)
+  },
+  onUpload(){
+   this.picture=null;
+   const storageRef=firebase.storage().ref(`/${this.$store.getters.userId}/${this.imageData.name}`).put(this.imageData);
+   storageRef.on('state_changed', snapshot =>{
+     this.uploadValue=(snapshot.bytesTransferred/snapshot.totalBytes)*100;
+   }, error=>{console.log(error.message)},
+   () =>{this.uploadValue=100;
+   storageRef.snapshot.ref.getDownloadURL().then((url)=>{
+     this.picture=url;
+     this.$store.dispatch('ADD_USER_IMG', {url: this.picture})
+   });
   }
-};
+  ),
+  this.dialogAva=false
+  }
+  },
+}
 </script>
 
-<style>
+<style scoped>
+  img.preview{
+    width: 20px;
+  };
 </style>

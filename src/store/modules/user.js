@@ -9,7 +9,7 @@ export default {
             email: null,
             isAdmin: false,
             isPriest: false,
-            isSenior: false
+            isSenior: false,
         },
         unsubscribeAuth: null
     },
@@ -28,9 +28,6 @@ export default {
                 uid: null
             }
         },
-        // SET_USER_PHOTO(state, payload) {
-        //     state.user.photoUrl = payload
-        // },
         SET_USER_EMAIL(state, payload) {
             state.user.email = payload
         },
@@ -194,28 +191,11 @@ export default {
                 throw error
             });
         },
-        // CHANGE_USER_IMAGE({ commit}, payload) {
-        //     commit('SET_PROCESSING', true)
-        //     commit('CLEAR_ERROR')
-
-        //     let currentUser = firebase.auth().currentUser
-
-        //     currentUser.updateProfile({ photoURL: payload.newPhotoUrl })
-        //         .then(() => {
-        //             commit('SET_USER_PHOTO', payload.newPhotoUrl)
-        //             commit('SET_PROCESSING', false)
-        //         })
-        //         .catch(error => {
-        //             commit('SET_PROCESSING', false)
-        //             commit('SET_ERROR', error.message)
-        //         })
-        // }
     },
     getters: {
         userId: (state) => state.user.uid,
-        // userPhoto: (state) => state.user.photoUrl,
         userEmail: (state) => state.user.email,
         isUserAuthenticated: (state) => state.user.isAuthenticated,
-        isAdmin: s => s.user.isAdmin
+        isAdmin: s => s.user.isAdmin,
     }
 }
