@@ -2,6 +2,14 @@
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
+
+        <div>
+        <a @click="home()">
+          <center><v-img src="../assets/bird.png" width="50px" class="bird"></v-img></center>
+        </a>
+        </div>
+
+        <h1 class="text-center">Рады видеть Вас снова!</h1><br>
         <v-card class="elevation-12">
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title>Вход</v-toolbar-title>
@@ -47,9 +55,12 @@
         </v-card>
         <div class="text-center" v-if="socialEnabled">
           <br /><br />
-          Или войти с помощью Google Accout <br />
+          Или войти с помощью:  <br />
           <button class="social-button" @click="socialSignIn()">
             <img src="../assets/google-logo.png" alt="" />
+          </button>
+          <button class="social-button" @click="phone()">
+            <img src="../assets/phone.png" alt="" />
           </button>
         </div>
       </v-col>
@@ -63,7 +74,7 @@ import messages from '@/utils/messages.js'
 export default {
   data() {
     return {
-      socialEnabled: false,
+      socialEnabled: true,
       email: null,
       password: null,
       valid: false,
@@ -118,6 +129,12 @@ export default {
     socialSignIn() {
       this.$store.dispatch("SOCIALSIGNIN");
     },
+    home(){
+      this.$router.push({ path: '/' })
+    },
+    phone(){
+      this.$router.push({ path: '/loginPhone' })
+    }
   },
   created() {
     this.$bus.$on("checked-if-need-profile", () => {
@@ -150,5 +167,9 @@ export default {
 
 .social-button img {
   width: 100%;
+}
+
+.bird{
+  text-align: center;
 }
 </style>

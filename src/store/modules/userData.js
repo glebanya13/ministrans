@@ -9,6 +9,7 @@ let defaultUserData = {
     birthday: null,
     surname: null,
     parafia: null,
+    url: null
 };
 export default {
     state: {
@@ -44,7 +45,6 @@ export default {
             let userDataRef = Vue.$db.collection('userData').doc(payload)
             userDataRef.get()
                 .then((data) => {
-
                     let userData = defaultUserData
                     if (data.exists) {
                         userData = data.data();
@@ -95,7 +95,7 @@ export default {
                 name: payload.name,
                 surname: payload.surname,
                 parafia: payload.parafia,
-                userId: getters.userId || payload.userId
+                userId: getters.userId || payload.userId,
             }, { merge: true })
 
                 .then(() => {
@@ -106,6 +106,23 @@ export default {
                     commit('SET_PROCESSING', false);
                     throw e;
                 });
+        },
+        ADD_USER_IMG({commit, getters}, payload){
+            commit('SET_PROCESSING', true);
+            console.log(payload)
+            let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
+            userDataRef.set({
+                url: payload.url
+            }, { merge: true })
+
+            .then(() => {
+                commit('SET_PROCESSING', false);
+            })
+            .catch((e) => {
+                commit('SET_ERROR', e);
+                commit('SET_PROCESSING', false);
+                throw e;
+            });
         },
         async BATCH({ getters }, payload) {
             var batch = Vue.$db.batch();
@@ -202,6 +219,7 @@ export default {
         userClas: (state) => state.userData.clas,
         userParafia: (state) => state.userData.parafia,
         usersForSchedule: (state) => state.usersForSchedule,
-        needProfile: (state) => state.needProfile
+        needProfile: (state) => state.needProfile,
+        url: (s) => s.userData.url
     }
 }

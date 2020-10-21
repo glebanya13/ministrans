@@ -12,11 +12,20 @@ import EditProfile from '../views/EditProfile.vue'
 import Admin from '../views/Admin.vue'
 import Parish from '../views/Parish.vue'
 import Store from '../store'
+import phoneAuth from '../components/PhoneAuth.vue'
+import setPassword from '../components/phonePassword.vue'
+import PhoneLogin from '../components/PhoneLogin.vue'
 
 
 Vue.use(VueRouter)
 
 const routes = [
+  { path: '/loginPhone',
+component: PhoneLogin },
+  {
+  path: '/setPassword',
+  name: 'Set Password',
+  component: setPassword},
   {
     path: '/',
     name: 'home',
@@ -33,6 +42,11 @@ const routes = [
     name: 'ministrans',
     component: ListOfMinistrans,
     meta: { authRequired: true }
+  },
+  {
+    path: '/phone',
+    name: 'phone',
+    component: phoneAuth,
   },
   {
     path: '/admin',

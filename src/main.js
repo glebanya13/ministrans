@@ -46,6 +46,5 @@ new Vue({
   vuetify,
   render: h => h(App),
   created(){
-    // this.$store.dispatch("LOAD_MARKS")
   },
 }).$mount('#app')
