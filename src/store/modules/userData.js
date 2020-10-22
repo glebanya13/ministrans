@@ -124,7 +124,7 @@ export default {
                 throw e;
             });
         },
-        async BATCH({ getters }, payload) {
+        async BATCH({ getters, commit }, payload) {
             var batch = Vue.$db.batch();
 
             var refs = [];
@@ -144,6 +144,28 @@ export default {
             })
             batch.commit().then(function () {
                 // ...
+            })
+            .catch(error => {
+                commit('SET_ERROR', error)
+                throw error
+            });
+        },
+        async SET_DEFAULT_PARISH_FOR_USERS({ commit }, users) {
+            var batch = Vue.$db.batch();
+            
+            users.forEach(function(u) {
+                batch.update(Vue.$db.collection("userData").doc(u.uid), 
+                {'parish.name': "Святой Троицы, г. Глубокое",
+                'parish.id': "FE3rlsXPCXvXkiN5wJix"
+                });
+
+            })
+            batch.commit().then(function (r) {
+                console.log('set def parish result', r)
+            })
+            .catch(error => {
+                commit('SET_ERROR', error)
+                throw error
             });
         },
         LOAD_USERS({ commit }) {
@@ -167,6 +189,9 @@ export default {
                     })
                     commit('SET_USERS', users)
                     EventBus.notify('users-are-loaded')
+                    // run only one time!
+                    //dispatch('SET_DEFAULT_PARISH_FOR_USERS', users)
+                    //
                 })
                 .catch(error => {
                     commit('SET_ERROR', error)

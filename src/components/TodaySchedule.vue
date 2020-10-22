@@ -112,7 +112,7 @@ export default {
         }
 
         if (todayTimes.length == 0) return;
-        let checkins = helpers.groupByKey(this.dateCheckins, "uid");
+        let checkins = this.dateCheckins ? helpers.groupByKey(this.dateCheckins, "uid") : {};
 
         this.currentState = {};
         todayTimes.forEach((tt) => (this.currentState[tt] = []));
@@ -194,6 +194,7 @@ export default {
     this.LOAD_MASS_CHECKINS_BY_DATE(this.today.format("yyyy-MM-DD"));
     if (this.users) {
       this.usersList = this.users;
+      
     }
     this.$bus.$on("users-are-loaded", () => {
       this.usersList = this.users;

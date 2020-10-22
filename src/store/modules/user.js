@@ -195,5 +195,7 @@ export default {
         userEmail: (state) => state.user.email,
         isUserAuthenticated: (state) => state.user.isAuthenticated,
         isAdmin: s => s.user.isAdmin,
+        isPriest: s => s.user.isPriest,
+        isSenior: s => s.user.isSenior,
     }
 }

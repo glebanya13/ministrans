@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import helpers from '@/utils/helpers.js'
+import { EventBus } from '../../infrastructure/eventBus';
 
 export default {
     state: {
-        userMassCheckins: {},
+        userMassCheckins: [],
         massCheckins: {},
         dateCheckins: null,
         stats: {}
@@ -50,8 +51,8 @@ export default {
                     throw error
                 })
         },
-        LOAD_MASS_CHECKINS_BY_USER({ commit, getters }) {
-            Vue.$db.collection('massCheckins').where('user.uid', '==', getters.userId).limit(10)
+        LOAD_MASS_CHECKINS_BY_USER({ commit, getters }, uid, limit = 1000) {
+            Vue.$db.collection('massCheckins').where('user.uid', '==', uid || getters.userId).limit(limit)
                 .get()
                 .then(querySnapshot => {
                     let userCheckins = []
@@ -67,6 +68,7 @@ export default {
                         }
                         userCheckins.push(userCheckin)
                     })
+                    EventBus.notify('mass-checkins-for-user-are-loaded')
                     commit('SET_USER_MASS_CHECKINS', userCheckins)
                 })
                 .catch(error => {

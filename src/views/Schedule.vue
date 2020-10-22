@@ -3,10 +3,9 @@
     <v-layout row wrap>
       <v-flex xs12 sm10 offset-sm-1>
         <today-schedule :target-date="targetDate"></today-schedule>
-
         <v-tabs v-model="mainTab">
           <v-tab>Дни</v-tab>
-          <v-tab>Министранты</v-tab>
+          <v-tab>Министранты {{ministrantsCount}}</v-tab>
         </v-tabs>
         <v-tabs-items v-model="mainTab">
           <v-tab-item>
@@ -43,7 +42,7 @@
 </template>
 
 <script>
-//import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import moment from "moment";
 import ScheduleForUsers from "@/components/ScheduleForUsers";
 import SundaySchedule from "@/components/SundaySchedule";
@@ -56,6 +55,13 @@ export default {
       mainTab: null,
       targetDate: moment().format("yyyy-MM-DD"), // today
     };
+  },
+  computed:{
+    ...mapGetters(['users']),
+    ministrantsCount(){
+      return this.users ? `(${this.users.length})` : ''
+      //return (this.users && this.users.length != 0)  ? ` (${this.users.filter(u => !u.isPriest).length})` : ''
+    }
   },
   mounted() {
     this.panel.push(moment().format("e") == 6 ? 0 : 1); //expend for sunday or for weekday

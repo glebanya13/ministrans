@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout column>
-      <v-card class="mx-auto" width="500" outlined>
+      <v-card class="mx-auto" width="600" outlined>
         <v-card-text>
           <h1 class="text-center black--text">Вы сегодня были на Имше?</h1>
           <br />

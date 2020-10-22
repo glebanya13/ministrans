@@ -4,7 +4,7 @@
       <template v-slot:default>
         <thead>
           <tr>
-            <th class="text-left">Имя</th>
+            <th :class="showHeaders">Имя</th>
             <th class="text-left">Воскресенье</th>
             <th class="text-left">Будний</th>
           </tr>
@@ -16,7 +16,7 @@
             @click="edit(item)"
             style="cursor: pointer"
           >
-            <td>{{ item.name }} {{ item.surname }}</td>
+            <td :class="showHeaders">{{ item.name }} {{ item.surname }}</td>
             <td>{{ showSunday(item.myschedule) }}</td>
             <td>{{ showWeekdays(item.myschedule) }}</td>
           </tr>
@@ -108,6 +108,7 @@ export default {
       timesToChoose: [],
     };
   },
+  props:['targetId', 'hideHeaders'],
   computed: {
     ...mapGetters([
       "parish",
@@ -117,6 +118,9 @@ export default {
       "isPriest",
       "isSenior",
     ]),
+    showHeaders(){
+      return !this.hideHeaders ? '' : 'd-none'
+    },
   },
   methods: {
     ...mapActions(["UPDATE_SCHEDULE_FOR_USER"]),
@@ -259,12 +263,12 @@ export default {
     },
   },
   created() {
-    if (this.usersList) {
-      this.usersList = this.users;
+    if (this.users && this.users.length >= 0) {
+      this.usersList = this.users.filter(u => this.targetId ? u.uid == this.targetId : true);
       this.loading = false;
     }
     this.$bus.$on("users-are-loaded", () => {
-      this.usersList = this.users;
+      this.usersList = this.users.filter(u =>  this.targetId ? u.uid == this.targetId : true);
       this.loading = false;
     });
     if (this.parish) {

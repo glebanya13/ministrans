@@ -70,51 +70,90 @@ export default {
     };
   },
   computed: {
-    homeLink(){
-      return `${this.$store.getters.isUserAuthenticated ? 'checkin' : '/'}`
+    homeLink() {
+      return `${this.$store.getters.isUserAuthenticated ? "checkin" : "/"}`;
     },
     isUserAuthenticated() {
       return this.$store.getters.isUserAuthenticated;
     },
+    isAdmin() {
+      return this.$store.getters.isAdmin;
+    },
+    isPriest() {
+      return this.$store.getters.isPriest;
+    },
+    isSenior() {
+      return this.$store.getters.isSenior;
+    },
     menuItems() {
       return this.isUserAuthenticated
-        ? [ 
-          {
-              icon: "mdi-text-box-multiple-outline",
-              title: "Admin",
-              route: "/admin",
-            },
-            {
-              icon: "mdi-text-box-multiple-outline",
-              title: "Parish",
-              route: "/parish",
-            },
-            {
-              icon: "mdi-account-multiple",
-              title: "Список министрантов",
-              route: "/ministrans"
-            },
-            {
-              icon: "mdi-account",
-              title: "Профиль",
-              route: "/profile",
-            },
-            {
-              icon: "mdi-text-box-multiple-outline",
-              title: "Расписание",
-              route: "/schedule",
-            },
-            {
-              icon: "mdi-list-status",
-              title: "Посещение",
-              route: "/stats",
-            },
-            {
-              icon: "mdi-check-decagram",
-              title: "Отметиться",
-              route: "/checkin",
-            },
-          ]
+        ? this.isAdmin
+          ? // is Admin
+            [
+              {
+                icon: "mdi-text-box-multiple-outline",
+                title: "Admin",
+                route: "/admin",
+              },
+              {
+                icon: "mdi-text-box-multiple-outline",
+                title: "Parish",
+                route: "/parish",
+              },
+              {
+                icon: "mdi-account-multiple",
+                title: "Список министрантов",
+                route: "/ministrans",
+              },
+              {
+                icon: "mdi-account",
+                title: "Профиль",
+                route: "/profile",
+              },
+              {
+                icon: "mdi-text-box-multiple-outline",
+                title: "Расписание",
+                route: "/schedule",
+              },
+              {
+                icon: "mdi-list-status",
+                title: "Посещение",
+                route: "/stats",
+              },
+              {
+                icon: "mdi-check-decagram",
+                title: "Отметиться",
+                route: "/checkin",
+              },
+            ]
+          : //is Authenticated , is not Admin
+            [
+              {
+                icon: "mdi-account-multiple",
+                title: "Список министрантов",
+                route: "/ministrans",
+              },
+              {
+                icon: "mdi-account",
+                title: "Профиль",
+                route: "/profile",
+              },
+              {
+                icon: "mdi-text-box-multiple-outline",
+                title: "Расписание",
+                route: "/schedule",
+              },
+              {
+                icon: "mdi-list-status",
+                title: "Посещение",
+                route: "/stats",
+              },
+              {
+                icon: "mdi-check-decagram",
+                title: "Отметиться",
+                route: "/checkin",
+              },
+            ]
         : [
             {
               icon: "mdi-lock-open",
