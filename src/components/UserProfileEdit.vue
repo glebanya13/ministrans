@@ -44,8 +44,10 @@
                 label="Парафия"
                 prepend-icon="mdi-church"
                 required
-                :items="parafias"
-                v-model="parafia"
+                :items="parishes"
+                item-text="name"
+                item-value="id"
+                v-model="parish"
                 :rules="parafiasRules"
               ></v-overflow-btn>
 
@@ -113,14 +115,10 @@ export default {
         "Одиннадцатый",
         "Школу закончил",
       ],
-      parafias:[
-        "Святой Троицы, г. Глубокое",
-        "Иисуса Милосердного, г. Витебск"
-      ],
       levels: ["Аспирант", "Министрант", "Лектар", "Ксендз"],
 
       birthday: null,
-      parafia: null,
+      parish: null,
       clas: null,
       name: null,
       surname: null,
@@ -138,25 +136,33 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['userId', 'userData']),
+    ...mapGetters(['userId', 'userData', 'parishList']),
     processing() {
       return this.$store.getters.getProcessing;
     },
+    parishes(){
+      return this.parishList || []
+    }
   },
   methods: {
-    ...mapActions(['LOAD_USER_DATA']),
+    ...mapActions(['LOAD_USER_DATA', 'LOAD_ALL_PARISHES']),
     personal() {
+
+let parishItem = this.parishList.find(p => p.id == this.parish) || {}
+
       this.$store.dispatch("BATCH", {name: this.name,
       surname: this.surname});
-
       this.$store.dispatch("ADD_USER_DATA", {
         level: this.level,
         birthday: this.birthday,
         clas: this.clas,
         name: this.name, 
         surname: this.surname,
-        parafia: this.parafia, 
-        userId: this.$store.getters.userId,
+        parish:  {
+          name: parishItem.name,
+          id: parishItem.id
+        },
+        userId: this.userId,
         phone: this.phone
       });
       this.$router.push("/profile");
@@ -172,14 +178,23 @@ export default {
         this.name = this.userData.name
         this.surname = this.userData.surname
         this.clas = this.userData.clas
-        this.parafia = this.userData.parafia
+        this.parish = this.userData.parish ? this.userData.parish.id : ''
         this.phone = this.userData.phone
     });
-    
+    this.$bus.$on("user-data-loaded", (
+
+    ) => {})
     //this.LOAD_USER_DATA(this.userId);
+  },
+  created(){
+    this.LOAD_ALL_PARISHES()
+    if(this.parishList){
+      //this.parishes = this.parishList
+    }
   },
   beforeDestroy() {
     this.$bus.$off("user-data-loaded");
+    this.$bus.$off("parish-is-loaded");
   },
 };
 </script>

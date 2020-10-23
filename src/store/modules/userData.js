@@ -8,7 +8,7 @@ let defaultUserData = {
     name: null,
     birthday: null,
     surname: null,
-    parafia: null,
+    parish: {},
     url: null,
     phone: null
 };
@@ -74,7 +74,6 @@ export default {
         },
         ADD_USER_DATA({ commit, getters }, payload) {
             commit('SET_PROCESSING', true);
-
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
 
             var user = firebase.auth().currentUser;
@@ -95,7 +94,7 @@ export default {
                 clas: payload.clas,
                 name: payload.name,
                 surname: payload.surname,
-                parafia: payload.parafia,
+                parish: payload.parish,
                 userId: getters.userId || payload.userId,
                 phone: payload.phone
             }, { merge: true })
@@ -189,6 +188,25 @@ export default {
                     throw error
                 });
         },
+        async REMOVE_FIELD_PARAFIA_FOR_USERS({ commit }, users) {
+            var batch = Vue.$db.batch();
+
+            users.forEach(function (u) {
+                batch.update(Vue.$db.collection("userData").doc(u.uid),
+                    {
+                        parafia: firebase.firestore.FieldValue.delete()
+                    });
+
+            })
+            batch.commit().then(function (r) {
+                commit('SET_MESSAGE', `For ${users.length} users PARAFIA field was deleted`)
+                console.log('field schedule was deleted', r)
+            })
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
+                });
+        },
         async SET_DEFAULT_PARISH_FOR_USERS({ commit }, users) {
             var batch = Vue.$db.batch();
 
@@ -223,7 +241,6 @@ export default {
                             birthday: data.birthday,
                             clas: data.clas,
                             level: data.level,
-                            parafia: data.parafia,
                             parish: data.parish,
                             url: data.url,
                             myschedule: data.myschedule
