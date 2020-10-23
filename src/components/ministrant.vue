@@ -3,10 +3,10 @@
     <v-layout column>
       <v-card class="mx-auto" width="600" outlined>
         <v-card-text>
-            <v-avatar size="100" class="mr-4">
-          <v-img v-if="!userImage" src="../assets/user.png"></v-img>
-              <v-img v-else :src="userImage"></v-img>
-            </v-avatar>
+          <v-avatar size="100" class="mr-4">
+            <v-img v-if="!userImage" src="../assets/user.png"></v-img>
+            <v-img v-else :src="userImage"></v-img>
+          </v-avatar>
           <h2 class="headline mb-0">
             <h4 v-if="userName && userSurname">
               <v-icon>person</v-icon> {{ userName }} {{ userSurname }}
@@ -36,18 +36,22 @@
           </h2>
         </v-card-text>
       </v-card>
+      <br />
+      <last-day :target-id="currentId" :disable-remove="true"></last-day>
     </v-layout>
   </v-container>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import lastDay from "../components/CheckInLastDays";
 export default {
   data() {
     return {};
   },
   computed: {
     ...mapGetters([
+      "userData",
       "userName",
       "userClas",
       "userLevel",
@@ -59,16 +63,20 @@ export default {
       "userParafia",
       "phone",
     ]),
-    userImage(){
-      let image = this.$store.getters.url
-      return image
+    userImage() {
+      let image = this.$store.getters.url;
+      return image;
     },
+    currentId(){
+      return this.$route.params.uid
+    }
   },
-  methods: {
-    
+  methods: {},
+  created() {
+    this.$store.dispatch("LOAD_USER_DATA", this.$route.params.uid);
   },
-  created(){
-    this.$store.dispatch("LOAD_USER_DATA", this.$route.params.uid)
-  }
+  components: {
+    lastDay,
+  },
 };
 </script>

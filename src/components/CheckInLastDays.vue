@@ -14,7 +14,7 @@
             {{ item.date | moment("DD.MM.YY ddd") }}
           </template>
           <template v-slot:item.id="{ item }">
-            <v-icon style="cursor: pointer" @click="deleteDate(item.id)">
+            <v-icon style="cursor: pointer" @click="deleteDate(item.id)" :disabled="disableRemove">
               mdi-delete-off</v-icon
             >
           </template>
@@ -69,6 +69,7 @@ export default {
       myWeekdays: 0
     };
   },
+  props:['targetId', 'disableRemove'],
   computed: {
     ...mapGetters(["userMassCheckins", "userId", "userData"]),
     allCheckinsCount() {
@@ -108,8 +109,9 @@ export default {
   },
   methods: {
     deleteDate(checkin) {
+      if(this.disableRemove) return
       Vue.$db.collection("massCheckins").doc(checkin).delete();
-      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", this.userId);
+      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", this.targetId || this.userId);
     },
      thisMonthCheckinsSchedule() {
       if (this.userData && this.userData.myschedule) {
@@ -145,7 +147,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", this.userId);
+    this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", this.targetId || this.userId);
     // if(this.userMassCheckins && this.userMassCheckins.length > 0)
     // {
     //   this.massCheckins = this.userMassCheckins

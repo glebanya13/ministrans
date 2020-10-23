@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     users() {
-      return this.$store.getters.users;
+      return (this.$store.getters.users && this.$store.getters.users.length > 0)  ? this.$store.getters.users.filter(u => u.level != "Ксендз") : [];
     },
   },
 };

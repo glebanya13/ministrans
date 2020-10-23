@@ -265,10 +265,12 @@ export default {
   created() {
     if (this.users && this.users.length >= 0) {
       this.usersList = this.users.filter(u => this.targetId ? u.uid == this.targetId : true);
+      this.usersList = this.usersList.filter(u => u.level != "Ксендз" );
       this.loading = false;
     }
     this.$bus.$on("users-are-loaded", () => {
       this.usersList = this.users.filter(u =>  this.targetId ? u.uid == this.targetId : true);
+      this.usersList = this.usersList.filter(u => u.level != "Ксендз" );
       this.loading = false;
     });
     if (this.parish) {
