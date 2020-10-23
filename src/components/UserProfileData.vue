@@ -39,13 +39,22 @@
             <h4 v-if="!userName && !userSurname">
               <v-icon>person</v-icon> Нет данных
             </h4>
-            <h4 v-if="userBirthday">
+            <h4 v-if="userName && userSurname">
               <v-icon>person</v-icon> {{ userName }} {{ userSurname }}
             </h4>
           </h2>
           <h2 class="headline mb-0">
             <h4><v-icon>email</v-icon> {{ userEmail }}</h4>
           </h2>
+
+          <h2 class="headline mb-0">
+            <h4 v-if="!phone"><v-icon>phone</v-icon>Нет данных</h4>
+          </h2>
+
+          <h2 class="headline mb-0">
+            <h4 v-if="phone"><v-icon>phone</v-icon> {{ phone }}</h4>
+          </h2>
+
           <h2 class="headline mb-0">
             <h4 v-if="!userBirthday">
               <v-icon>mdi-calendar-today</v-icon> Нет данных
@@ -117,6 +126,7 @@ export default {
       "getError",
       "userBirthday",
       "userParafia",
+      "phone"
     ]),
     userImage() {
       let image = this.$store.getters.url;

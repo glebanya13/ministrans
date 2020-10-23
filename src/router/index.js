@@ -15,6 +15,8 @@ import Store from '../store'
 import phoneAuth from '../components/PhoneAuth.vue'
 import setPassword from '../components/phonePassword.vue'
 import PhoneLogin from '../components/PhoneLogin.vue'
+import ministrant from '../components/ministrant.vue'
+import migration from '../components/Migration.vue'
 
 
 Vue.use(VueRouter)
@@ -26,6 +28,11 @@ component: PhoneLogin },
   path: '/setPassword',
   name: 'Set Password',
   component: setPassword},
+  {
+    path: '/migration',
+    name: 'migration',
+    component: migration
+  },
   {
     path: '/',
     name: 'home',
@@ -92,6 +99,12 @@ component: PhoneLogin },
     path: '/edit-profile/:tab',
     name: 'edit-profile',
     component: EditProfile,
+    meta: { authRequired: true }
+  },
+  {
+    path: '/ministrant/:uid',
+    name: 'ministrant',
+    component: ministrant,
     meta: { authRequired: true }
   }
 ]

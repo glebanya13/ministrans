@@ -97,7 +97,6 @@ export default {
       } else {
         let vm = this
         var code = this.otp;
-        console.log(code);
 
         var credential = firebase.auth.PhoneAuthProvider.credential(
           window.confirmationResult.verificationId,

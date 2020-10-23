@@ -9,7 +9,8 @@ let defaultUserData = {
     birthday: null,
     surname: null,
     parafia: null,
-    url: null
+    url: null,
+    phone: null
 };
 export default {
     state: {
@@ -96,6 +97,7 @@ export default {
                 surname: payload.surname,
                 parafia: payload.parafia,
                 userId: getters.userId || payload.userId,
+                phone: payload.phone
             }, { merge: true })
 
                 .then(() => {
@@ -124,6 +126,22 @@ export default {
                     commit('SET_PROCESSING', false);
                     throw e;
                 });
+        },
+        ADD_USER_PHONE({commit, getters}, payload){
+            commit('SET_PROCESSING', true);
+            let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
+            userDataRef.set({
+                phone: payload.phone
+            }, { merge: true })
+
+            .then(() => {
+                commit('SET_PROCESSING', false);
+            })
+            .catch((e) => {
+                commit('SET_ERROR', e);
+                commit('SET_PROCESSING', false);
+                throw e;
+            });
         },
         async BATCH({ getters, commit }, payload) {
             var batch = Vue.$db.batch();
@@ -207,6 +225,7 @@ export default {
                             level: data.level,
                             parafia: data.parafia,
                             parish: data.parish,
+                            url: data.url,
                             myschedule: data.myschedule
                         }
                         users.push(user)
@@ -269,6 +288,7 @@ export default {
         userParafia: (state) => state.userData.parish ? state.userData.parish.name : '',
         usersForSchedule: (state) => state.usersForSchedule,
         needProfile: (state) => state.needProfile,
-        url: (s) => s.userData.url
+        url: (s) => s.userData.url,
+        phone: (s) => s.userData.phone
     }
 }

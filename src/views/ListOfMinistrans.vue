@@ -1,36 +1,65 @@
 <template>
-  <div>
-    <h3>{{ this.users }}</h3>
-    <button @click="loadJSON()">Загрузка на сервер</button>
-  </div>
+  <v-container class="fill-height" fluid>
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="6">
+        <v-card>
+          <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Имя Фамилия
+          </th>
+          <th class="text-left">
+            Профиль
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="user in users"
+          :key="user.uid"
+          :user="user"
+        >
+          <td> {{user.name}} {{user.surname}} </td>
+          <td> <button class="blue--text" @click="currentUser(user.uid)">Перейти</button> </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import { mapActions } from "vuex";
 export default {
   data() {
-    return {};
+    return {
+    };
   },
-  methods: {
-    ...mapActions(["LOAD_MARKS_DATA", "LOAD_USERS_DATA", "BATCH"]),
-    loadJSON() {
-      // this.LOAD_USERS_DATA()
-      // this.LOAD_MARKS_DATA()
-      this.$store.dispatch("BATCH");
-
+  methods:{
+    currentUser(uid){ 
+      this.$router.push({name: "ministrant", params: {uid}})
     },
+    cs(){
+      console.log(this.userImage)
+    }
   },
   computed: {
     users() {
       return this.$store.getters.users;
-    },
-    filejson() {
-      var x = JSON.stringify(this.users);
-      return x;
     },
   },
 };
 </script>
 
 <style>
+a { 
+    text-decoration: none;
+   }
+   a:hover { 
+    text-decoration: underline;
+   }
 </style>

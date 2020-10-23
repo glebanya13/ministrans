@@ -55,14 +55,16 @@
         }else{
           let vm = this
           var user = firebase.auth().currentUser;
-          //
+          
+          let userPhone = firebase.auth().currentUser.phoneNumber
           let newEmail = firebase.auth().currentUser.phoneNumber + '@site.com'
           let newPassword = this.password
           //
           user.updateEmail(newEmail).then(function() {
             user.updatePassword(newPassword).then(function() {
               alert('Регистрация выполнена!')
-              vm.$router.push('/')  //route to app home !
+              vm.$router.push({name: "edit-profile", params:{tab:1}})
+              vm.$store.dispatch('ADD_USER_PHONE', {phone: userPhone})
             }).catch(function(error) {
               alert('Error :' + error.message)
             });
