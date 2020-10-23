@@ -7,6 +7,9 @@
     <template v-slot:default>
       <thead>
         <tr>
+          <th class="text-left" width="1%">
+
+          </th>
           <th class="text-left">
             Имя Фамилия
           </th>
@@ -21,7 +24,9 @@
           :key="user.uid"
           :user="user"
         >
-          <td> {{user.name}} {{user.surname}} </td>
+          <td width="1%" ><v-avatar v-if="user.url"><v-img :src="user.url" class="ma-2"></v-img></v-avatar>
+          <v-avatar v-else><v-img src="../assets/user.png" class="ma-2"></v-img></v-avatar></td>
+          <td>{{user.name}} {{user.surname}} </td>
           <td> <button class="blue--text" @click="currentUser(user.uid)">Перейти</button> </td>
         </tr>
       </tbody>
@@ -43,9 +48,6 @@ export default {
     currentUser(uid){ 
       this.$router.push({name: "ministrant", params: {uid}})
     },
-    cs(){
-      console.log(this.userImage)
-    }
   },
   computed: {
     users() {
@@ -62,4 +64,7 @@ a {
    a:hover { 
     text-decoration: underline;
    }
+.v-data-table {
+    line-height: 4 !important;
+}
 </style>
