@@ -37,7 +37,7 @@
         class="hidden-md-and-up"
       ></v-app-bar-nav-icon>
 
-      <router-link :to="homeLink" tag="span" style="cursor: pointer">
+      <router-link :to="{path: '/'}" tag="span" style="cursor: pointer">
         <v-toolbar-title>Ministrants</v-toolbar-title>
       </router-link>
 
@@ -79,6 +79,10 @@ export default {
     menuItems() {
       return this.isUserAuthenticated
         ? [ 
+          {
+            title: "migration",
+            route: '/migration'
+          },
           {
               icon: "mdi-text-box-multiple-outline",
               title: "Admin",

@@ -29,6 +29,16 @@
                 :rules="surnameRules"
               ></v-text-field>
 
+              <v-text-field
+                label="Номер телефона"
+                name="phone"
+                prepend-icon="phone"
+                type="text"
+                required
+                v-model="phone"
+                :rules="phoneRules"
+              ></v-text-field>
+
               <v-overflow-btn
                 class="my-2"
                 label="Парафия"
@@ -114,11 +124,13 @@ export default {
       clas: null,
       name: null,
       surname: null,
+      phone: null,
       level: null,
       valid: null,
 
       nameRules: [(v) => !!v || "Пожалуйста введите ваше имя"],
       surnameRules: [(v) => !!v || "Пожалуйста введите вашу фамилию"],
+      phoneRules: [(v) => !!v || "Пожалуйста введите ваш номер телефона"],
       levelsRules: [(v) => !!v || "Пожалуйста выберите ваше звание"],
       classesRules: [(v) => !!v || "Пожалуйста выберите ваш класс"],
       dataRules: [(v) => !!v || "Пожалуйста введите дату рождения"],
@@ -144,7 +156,8 @@ export default {
         name: this.name, 
         surname: this.surname,
         parafia: this.parafia, 
-        userId: this.$store.getters.userId
+        userId: this.$store.getters.userId,
+        phone: this.phone
       });
       this.$router.push("/profile");
     },
@@ -160,6 +173,7 @@ export default {
         this.surname = this.userData.surname
         this.clas = this.userData.clas
         this.parafia = this.userData.parafia
+        this.phone = this.userData.phone
     });
     
     //this.LOAD_USER_DATA(this.userId);

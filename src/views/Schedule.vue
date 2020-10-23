@@ -115,7 +115,7 @@
               <v-toolbar-title>Изменить расписание</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-toolbar-items>
-                <v-btn dark text @click="update()"> Save </v-btn>
+                <v-btn dark text @click="update()"> Сохранить </v-btn>
               </v-toolbar-items>
             </v-toolbar>
 
