@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout column>
-      <v-card class="mx-auto" width="600" outlined>
+      <v-card class="mx-auto" width="600" outlined :loading="!userName">
         <v-card-text>
           <v-flex class="mb-4">
             <v-dialog v-model="dialogAva" persistent max-width="320">
@@ -90,8 +90,11 @@
           >
         </v-card-actions>
       </v-card>
-      <br>
-        <schedule-for-users :hide-headers="true" :target-id="userId"></schedule-for-users>
+      <br />
+      <schedule-for-users
+        :hide-headers="true"
+        :target-id="userId"
+      ></schedule-for-users>
       <br />
       <last-day></last-day>
     </v-layout>
@@ -126,7 +129,7 @@ export default {
       "getError",
       "userBirthday",
       "userParafia",
-      "phone"
+      "phone",
     ]),
     userImage() {
       let image = this.$store.getters.url;
@@ -134,7 +137,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(['SET_ERROR','SET_MESSAGE']),
+    ...mapMutations(["SET_ERROR", "SET_MESSAGE"]),
     onFileChanged(event) {
       const file = event.target.files[0];
       this.uploadValue = 0;
@@ -156,7 +159,7 @@ export default {
         },
         (error) => {
           console.log(error.message);
-          this.SET_ERROR(error)
+          this.SET_ERROR(error);
         },
         () => {
           this.uploadValue = 100;
@@ -169,9 +172,10 @@ export default {
         (this.dialogAva = false);
     },
   },
-  components:{
-lastDay, ScheduleForUsers
-  }
+  components: {
+    lastDay,
+    ScheduleForUsers,
+  },
 };
 </script>
 

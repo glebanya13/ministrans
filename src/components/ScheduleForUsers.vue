@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-simple-table dense loading="true">
+    <v-simple-table :dense="!targetId" :loading="loading">
       <template v-slot:default>
         <thead>
           <tr>

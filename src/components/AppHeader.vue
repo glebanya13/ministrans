@@ -37,8 +37,8 @@
         class="hidden-md-and-up"
       ></v-app-bar-nav-icon>
 
-      <router-link :to="{path: '/'}" tag="span" style="cursor: pointer">
-        <v-toolbar-title>Ministrants</v-toolbar-title>
+      <router-link :to="{path: homeLink}" tag="span" style="cursor: pointer">
+        <v-toolbar-title>Ministrants.site</v-toolbar-title>
       </router-link>
 
       <v-spacer></v-spacer>
@@ -134,14 +134,9 @@ export default {
           : //is Authenticated , is not Admin
             [
               {
-                icon: "mdi-account-multiple",
-                title: "Список министрантов",
-                route: "/ministrans",
-              },
-              {
-                icon: "mdi-account",
-                title: "Профиль",
-                route: "/profile",
+                icon: "mdi-check-decagram",
+                title: "Отметиться",
+                route: "/checkin",
               },
               {
                 icon: "mdi-text-box-multiple-outline",
@@ -149,14 +144,19 @@ export default {
                 route: "/schedule",
               },
               {
+                icon: "mdi-account",
+                title: "Профиль",
+                route: "/profile",
+              },
+              {
+                icon: "mdi-account-multiple",
+                title: "Список министрантов",
+                route: "/ministrans",
+              },
+              {
                 icon: "mdi-list-status",
                 title: "Посещение",
                 route: "/stats",
-              },
-              {
-                icon: "mdi-check-decagram",
-                title: "Отметиться",
-                route: "/checkin",
               },
             ]
         : [
