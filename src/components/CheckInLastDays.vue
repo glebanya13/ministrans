@@ -141,7 +141,7 @@ export default {
       return 0;
     },
     getPercent(all, part){
-      return `${100*part/all}%`
+      return `${Math.round(100*part/all)}%`
     }
   },
   created() {

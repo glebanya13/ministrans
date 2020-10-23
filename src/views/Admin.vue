@@ -44,7 +44,17 @@
               >
             </div>
           </v-tab-item>
-          <v-tab-item> Доработаем </v-tab-item>
+          <v-tab-item> 
+            <v-row>
+              <v-col>
+                <v-btn @click="setDefaultParish">Set default parish for all users</v-btn>
+              </v-col>
+              <v-col>
+                <v-btn @click="removeFieldSchedule">Remove SCHEDULE Field for all users</v-btn>
+              </v-col>
+            </v-row>
+            
+             </v-tab-item>
         </v-tabs-items>
       </v-flex>
     </v-layout>
@@ -148,9 +158,29 @@ export default {
         this.enableUpdate = false
       }
     },
+    // for migrations
+    setDefaultParish(){
+      let users = this.$store.getters.users
+      if(users && users.length > 0){
+        this.$store.dispatch('SET_DEFAULT_PARISH_FOR_USERS', users)
+      }
+    },
+    removeFieldSchedule(){
+      let users = this.$store.getters.users
+      if(users && users.length > 0){
+        this.$store.dispatch('REMOVE_FIELD_FOR_USERS', users)
+      }
+    }
   },
   created() {
     this.LOAD_USER_ROLES();
+    this.$bus.$on("users-are-loaded", () => {
+     // this.assignSchedule();
+    });
+  },
+  beforeDestroy() {
+    this.$bus.$off("users-are-loaded");
+    //this.$bus.$off("parish-is-loaded");
   },
 };
 </script>

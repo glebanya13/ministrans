@@ -91,7 +91,7 @@
 
 <script>
 import firebase from "firebase";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import lastDay from "../components/CheckInLastDays";
 import ScheduleForUsers from "@/components/ScheduleForUsers";
 
@@ -124,6 +124,7 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(['SET_ERROR','SET_MESSAGE']),
     onFileChanged(event) {
       const file = event.target.files[0];
       this.uploadValue = 0;
@@ -145,6 +146,7 @@ export default {
         },
         (error) => {
           console.log(error.message);
+          this.SET_ERROR(error)
         },
         () => {
           this.uploadValue = 100;

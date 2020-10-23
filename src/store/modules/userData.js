@@ -48,7 +48,7 @@ export default {
                     let userData = defaultUserData
                     if (data.exists) {
                         userData = data.data();
-                    }else{
+                    } else {
                         // in case of google auth
                         let dn = firebase.auth().currentUser.displayName
                         if (dn) {
@@ -58,7 +58,7 @@ export default {
                         }
                     }
 
-                    if(userData.parish && userData.parish.id){
+                    if (userData.parish && userData.parish.id) {
                         dispatch('LOAD_PARISH', userData.parish.id)
                     }
                     commit('SET_USER_DATA', userData)
@@ -107,7 +107,7 @@ export default {
                     throw e;
                 });
         },
-        ADD_USER_IMG({commit, getters}, payload){
+        ADD_USER_IMG({ commit, getters }, payload) {
             commit('SET_PROCESSING', true);
             console.log(payload)
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
@@ -115,58 +115,81 @@ export default {
                 url: payload.url
             }, { merge: true })
 
-            .then(() => {
-                commit('SET_PROCESSING', false);
-            })
-            .catch((e) => {
-                commit('SET_ERROR', e);
-                commit('SET_PROCESSING', false);
-                throw e;
-            });
+                .then(() => {
+                    commit('SET_PROCESSING', false);
+                    commit('SET_MESSAGE', 'Картинка загрузилась. Перезагрузите страницу') //todo убрать
+                })
+                .catch((e) => {
+                    commit('SET_ERROR', e);
+                    commit('SET_PROCESSING', false);
+                    throw e;
+                });
         },
         async BATCH({ getters, commit }, payload) {
             var batch = Vue.$db.batch();
 
             var refs = [];
             await Vue.$db.collection("massCheckins").where("user.uid", "==", getters.userId)
-            .get()
-            .then(querySnapshot => {
-                refs = querySnapshot.docs.map(doc =>
-                    doc.ref
-                )
-            })
-            
-            refs.forEach(function(r) {
-                batch.update(r, {'user.name': payload.name,
-                'user.surname': payload.surname
+                .get()
+                .then(querySnapshot => {
+                    refs = querySnapshot.docs.map(doc =>
+                        doc.ref
+                    )
+                })
+
+            refs.forEach(function (r) {
+                batch.update(r, {
+                    'user.name': payload.name,
+                    'user.surname': payload.surname
                 });
 
             })
             batch.commit().then(function () {
                 // ...
             })
-            .catch(error => {
-                commit('SET_ERROR', error)
-                throw error
-            });
-        },
-        async SET_DEFAULT_PARISH_FOR_USERS({ commit }, users) {
-            var batch = Vue.$db.batch();
-            
-            users.forEach(function(u) {
-                batch.update(Vue.$db.collection("userData").doc(u.uid), 
-                {'parish.name': "Святой Троицы, г. Глубокое",
-                'parish.id': "FE3rlsXPCXvXkiN5wJix"
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
                 });
+        },
+        async REMOVE_FIELD_FOR_USERS({ commit }, users) {
+            var batch = Vue.$db.batch();
+
+            users.forEach(function (u) {
+                batch.update(Vue.$db.collection("userData").doc(u.uid),
+                    {
+                        schedule: firebase.firestore.FieldValue.delete()
+                    });
 
             })
             batch.commit().then(function (r) {
+                commit('SET_MESSAGE', `For ${users.length} users SCHEDULE field was deleted`)
+                console.log('field schedule was deleted', r)
+            })
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
+                });
+        },
+        async SET_DEFAULT_PARISH_FOR_USERS({ commit }, users) {
+            var batch = Vue.$db.batch();
+
+            users.forEach(function (u) {
+                batch.update(Vue.$db.collection("userData").doc(u.uid),
+                    {
+                        'parish.name': "Святой Троицы, г. Глубокое",
+                        'parish.id': "FE3rlsXPCXvXkiN5wJix"
+                    });
+
+            })
+            batch.commit().then(function (r) {
+                commit('SET_MESSAGE', `${users.length} users are updated to default parish`)
                 console.log('set def parish result', r)
             })
-            .catch(error => {
-                commit('SET_ERROR', error)
-                throw error
-            });
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
+                });
         },
         LOAD_USERS({ commit }) {
             Vue.$db.collection('userData')
@@ -183,6 +206,7 @@ export default {
                             clas: data.clas,
                             level: data.level,
                             parafia: data.parafia,
+                            parish: data.parish,
                             myschedule: data.myschedule
                         }
                         users.push(user)
@@ -198,7 +222,7 @@ export default {
                     throw error
                 })
         },
-        UPDATE_SCHEDULE_FOR_USER({ commit,dispatch }, user) {
+        UPDATE_SCHEDULE_FOR_USER({ commit, dispatch }, user) {
 
             commit('SET_PROCESSING', true)
 
@@ -242,7 +266,7 @@ export default {
         userSurname: (state) => state.userData.surname,
         userBirthday: (state) => state.userData.birthday,
         userClas: (state) => state.userData.clas,
-        userParafia: (state) => state.userData.parafia,
+        userParafia: (state) => state.userData.parish ? state.userData.parish.name : '',
         usersForSchedule: (state) => state.usersForSchedule,
         needProfile: (state) => state.needProfile,
         url: (s) => s.userData.url
