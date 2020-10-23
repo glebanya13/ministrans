@@ -24,12 +24,12 @@
             <v-col>
               <v-chip class="ma-1 success">Всего: {{ allCheckinsCount }} / Вс: {{ sundayCheckinsCount }} / Будний: {{ weekdayCheckinsCount }}</v-chip>
               <v-chip class="ma-1 primary"
-                >В этом месяце: {{ thisMonthCheckinsCount }} посетил. Осталось
-                {{ thisMonthCheckinsSchedule() - thisMonthCheckinsCount }}</v-chip
+                > В месяце: {{ thisMonthCheckinsCount }} раз(а) из 
+                {{ thisMonthCheckinsSchedule()}} по графику </v-chip
               >
-              <v-chip class="ma-1 error">Вс: {{ mySundays }} / {{ thisMonthSundayCheckinsCount  }} / {{getPercent(mySundays, thisMonthSundayCheckinsCount)}}</v-chip>
-              <v-chip class="ma-1 warning">Будний: {{ myWeekdays }} / {{ thisMonthWeekdayCheckinsCount }} / {{getPercent(myWeekdays, thisMonthWeekdayCheckinsCount)}}</v-chip>
-            </v-col>
+<v-chip class="ma-1 error">Вс: {{ thisMonthSundayCheckinsCount  }} из {{ mySundays }} ({{getPercent(mySundays, thisMonthSundayCheckinsCount)}})</v-chip>
+              <v-chip class="ma-1 warning">Будний: {{ thisMonthWeekdayCheckinsCount }} из {{ myWeekdays }} ({{getPercent(myWeekdays, thisMonthWeekdayCheckinsCount)}})</v-chip>
+               </v-col>
           </v-row>
         </v-card-actions>
       </v-card>
@@ -76,10 +76,10 @@ export default {
       return this.userMassCheckins ? this.userMassCheckins.length : 0;
     },
      sundayCheckinsCount() {
-      return this.userMassCheckins ? this.userMassCheckins.filter(f => f.isSunday).length : 0;
+      return this.userMassCheckins ? this.userMassCheckins.filter(f => this.isSunday(f.date)).length : 0;
     },
     weekdayCheckinsCount() {
-      return this.userMassCheckins ? this.userMassCheckins.filter(f => !f.isSunday).length : 0;
+      return this.userMassCheckins ? this.userMassCheckins.filter(f => this.isSunday(f.date)).length : 0;
     },
     thisMonthCheckinsCount() {
       return this.userMassCheckins
@@ -93,7 +93,7 @@ export default {
       return this.userMassCheckins
         ? this.userMassCheckins.filter(
             (f) =>
-              moment(f.date, "yyyy-MM-DD").format("MM") == moment().format("MM") && f.isSunday
+              moment(f.date, "yyyy-MM-DD").format("MM") == moment().format("MM") && this.isSunday(f.date)
           ).length
         : 0;
     },
@@ -101,13 +101,16 @@ export default {
       return this.userMassCheckins
         ? this.userMassCheckins.filter(
             (f) =>
-              moment(f.date, "yyyy-MM-DD").format("MM") == moment().format("MM") && !f.isSunday
+              moment(f.date, "yyyy-MM-DD").format("MM") == moment().format("MM") && !this.isSunday(f.date)
           ).length
         : 0;
     },
    
   },
   methods: {
+    isSunday(date){
+      return moment(date, "yyyy-MM-DD").format('e') == 6
+    },
     deleteDate(checkin) {
       if(this.disableRemove) return
       Vue.$db.collection("massCheckins").doc(checkin).delete();
