@@ -59,7 +59,7 @@ export default {
   computed:{
     ...mapGetters(['users']),
     ministrantsCount(){
-      return this.users ? `(${this.users.filter(f => f.level != "Ксендз").length})` : ''
+      return (this.users && this.users.length > 0) ? `(${this.users.filter(f => f.level != "Ксендз").length})` : ''
       //return (this.users && this.users.length != 0)  ? ` (${this.users.filter(u => !u.isPriest).length})` : ''
     }
   },
