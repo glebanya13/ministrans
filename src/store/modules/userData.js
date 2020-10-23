@@ -142,7 +142,7 @@ export default {
                 throw e;
             });
         },
-        async BATCH({ getters }, payload) {
+        async BATCH({ getters, commit }, payload) {
             var batch = Vue.$db.batch();
 
             var refs = [];
@@ -162,6 +162,28 @@ export default {
             })
             batch.commit().then(function () {
                 // ...
+            })
+            .catch(error => {
+                commit('SET_ERROR', error)
+                throw error
+            });
+        },
+        async SET_DEFAULT_PARISH_FOR_USERS({ commit }, users) {
+            var batch = Vue.$db.batch();
+            
+            users.forEach(function(u) {
+                batch.update(Vue.$db.collection("userData").doc(u.uid), 
+                {'parish.name': "Святой Троицы, г. Глубокое",
+                'parish.id': "FE3rlsXPCXvXkiN5wJix"
+                });
+
+            })
+            batch.commit().then(function (r) {
+                console.log('set def parish result', r)
+            })
+            .catch(error => {
+                commit('SET_ERROR', error)
+                throw error
             });
         },
         LOAD_USERS({ commit }) {
@@ -179,64 +201,38 @@ export default {
                             clas: data.clas,
                             level: data.level,
                             parafia: data.parafia,
-                            schedule: data.schedule,
-                            url: data.url
+                            url: data.url,
+                            myschedule: data.myschedule
                         }
                         users.push(user)
                     })
                     commit('SET_USERS', users)
+                    EventBus.notify('users-are-loaded')
+                    // run only one time!
+                    //dispatch('SET_DEFAULT_PARISH_FOR_USERS', users)
+                    //
                 })
                 .catch(error => {
                     commit('SET_ERROR', error)
                     throw error
                 })
         },
-        LOAD_USERS_FOR_SCHEDULE({ commit }) {
-            commit('SET_PROCESSING', true)
-            Vue.$db.collection('userData')
-                .get()
-                .then(querySnapshot => {
-                    let users = []
-                    querySnapshot.forEach(s => {
-                        const data = s.data()
-                        let user = {
-                            uid: data.userId,
-                            name: data.name,
-                            surname: data.surname,
-                            schedule: data.schedule || {
-                                vs: "",
-                                pn: "",
-                                vt: "",
-                                sr: "",
-                                cht: "",
-                                pt: "",
-                                sb: "",
-                            },
-                        }
-                        users.push(user)
-                    })
-                    commit('SET_USERS_FOR_SCHEDULE', users)
-                    commit('SET_PROCESSING', false)
-                })
-                .catch(error => {
-                    commit('SET_ERROR', error)
-                    commit('SET_PROCESSING', false)
-                    throw error
-                })
-        },
-        UPDATE_SCHEDULE_FOR_USER({ commit }, user) {
+        UPDATE_SCHEDULE_FOR_USER({ commit,dispatch }, user) {
 
             commit('SET_PROCESSING', true)
 
             let userDataRef = Vue.$db.collection('userData').doc(user.uid)
             userDataRef.set({
-                schedule: user.schedule
+                myschedule: user.myschedule
             }, { merge: true })
                 .then(() => {
                     commit('SET_PROCESSING', false)
+                    dispatch('LOAD_USERS')
                 })
-                .catch(() => {
+                .catch((error) => {
                     commit('SET_PROCESSING', false)
+                    commit('SET_ERROR', error)
+                    throw error
                 })
         },
         CHECK_IF_NEED_PROFILE({ commit }) {

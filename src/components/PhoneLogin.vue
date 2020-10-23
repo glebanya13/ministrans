@@ -61,6 +61,7 @@ export default {
     },
   },
   methods: {
+    // TODO: MOVE TO VUEX STORE
     login() {
       let vm = this;
       let email = this.phNo + "@site.com";

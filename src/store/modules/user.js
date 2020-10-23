@@ -40,7 +40,6 @@ export default {
     },
     actions: {
         INIT_AUTH({ dispatch, commit, state }) {
-            console.log('init auth')
             return new Promise((resolve) => {
                 if (state.unsubscribeAuth)
                     state.unsubscribeAuth()
@@ -119,7 +118,6 @@ export default {
             commit('SET_MESSAGE', 'logout');
         },
         STATE_CHANGED({ commit, dispatch }, firebaseUser) {
-            console.log("state change")
             commit('CLEAR_ERROR')
 
             if (firebaseUser) {
@@ -197,5 +195,7 @@ export default {
         userEmail: (state) => state.user.email,
         isUserAuthenticated: (state) => state.user.isAuthenticated,
         isAdmin: s => s.user.isAdmin,
+        isPriest: s => s.user.isPriest,
+        isSenior: s => s.user.isSenior,
     }
 }
