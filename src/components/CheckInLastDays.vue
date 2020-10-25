@@ -3,6 +3,19 @@
     <v-layout column>
       <v-card class="mx-auto" width="600" :loading="!userMassCheckins">
         <v-card-title>Мои последние посещения</v-card-title>
+        <v-card-subtitle>
+           <v-row>
+            <v-col>
+              <v-chip class="ma-1 success">Всего: {{ allCheckinsCount }} / Вс: {{ sundayCheckinsCount }} / Будний: {{ weekdayCheckinsCount }}</v-chip>
+              <v-chip class="ma-1 primary"
+                > В месяце: {{ thisMonthCheckinsCount }} раз(а) из 
+                {{ thisMonthCheckinsSchedule()}} по графику </v-chip
+              >
+<v-chip class="ma-1 error">Вс: {{ thisMonthSundayCheckinsCount  }} из {{ mySundays }} ({{getPercent(mySundays, thisMonthSundayCheckinsCount)}})</v-chip>
+              <v-chip class="ma-1 warning">Будний: {{ thisMonthWeekdayCheckinsCount }} из {{ myWeekdays }} ({{getPercent(myWeekdays, thisMonthWeekdayCheckinsCount)}})</v-chip>
+               </v-col>
+          </v-row>
+        </v-card-subtitle>
         <v-data-table
           :headers="headers"
           :items="userMassCheckins ? userMassCheckins : []"
@@ -19,19 +32,6 @@
             >
           </template>
         </v-data-table>
-        <v-card-actions>
-          <v-row>
-            <v-col>
-              <v-chip class="ma-1 success">Всего: {{ allCheckinsCount }} / Вс: {{ sundayCheckinsCount }} / Будний: {{ weekdayCheckinsCount }}</v-chip>
-              <v-chip class="ma-1 primary"
-                > В месяце: {{ thisMonthCheckinsCount }} раз(а) из 
-                {{ thisMonthCheckinsSchedule()}} по графику </v-chip
-              >
-<v-chip class="ma-1 error">Вс: {{ thisMonthSundayCheckinsCount  }} из {{ mySundays }} ({{getPercent(mySundays, thisMonthSundayCheckinsCount)}})</v-chip>
-              <v-chip class="ma-1 warning">Будний: {{ thisMonthWeekdayCheckinsCount }} из {{ myWeekdays }} ({{getPercent(myWeekdays, thisMonthWeekdayCheckinsCount)}})</v-chip>
-               </v-col>
-          </v-row>
-        </v-card-actions>
       </v-card>
     </v-layout>
   </v-container>

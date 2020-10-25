@@ -38,7 +38,7 @@ export default {
                     birthday: obj.birthday,
                     clas: obj.clas,
                     level: obj.level,
-                    parafia: obj.parafia,
+                    parish: obj.parish,
                     schedule: obj.schedule
                 })
             })

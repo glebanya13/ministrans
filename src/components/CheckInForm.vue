@@ -2,11 +2,10 @@
   <v-container fluid>
     <v-layout column>
       <v-card class="mx-auto" width="600" outlined>
-        <v-card-text>
-          <h1 class="text-center black--text">Вы сегодня были на Имше?</h1>
-          <br />
-        </v-card-text>
-
+        <v-card-title >
+          <h2 class="text-wrap text-center">  Вы сегодня были на Имше?</h2>
+        </v-card-title>
+ <br />
         <v-card-actions>
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on }">
@@ -167,7 +166,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.v-card__text, .v-card__title {
+  word-break: normal; /* maybe !important  */
+}
 .center {
   width: 100%;
   text-align: center;

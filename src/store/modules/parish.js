@@ -3,7 +3,8 @@ import { EventBus } from '../../infrastructure/eventBus'
 
 export default {
     state: {
-        parish:{}
+        parish:{},
+        parishList: []
     },
     mutations:{
         SET_PARISH(state, parish){
@@ -11,6 +12,9 @@ export default {
         },
         UPDATE_SCHEDULE(state, schedule){
             state.parish.shedule = schedule
+        },
+        SET_PARISH_LIST(state, parishList){
+            state.parishList = parishList
         }
     },
     actions:{
@@ -22,6 +26,23 @@ export default {
                         commit('SET_PARISH', data.data())
                         EventBus.notify('parish-is-loaded')
                     }
+                })
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
+                })
+        },
+        LOAD_ALL_PARISHES({commit}){
+            Vue.$db.collection('parishes')
+                .get()
+                .then(querySnapshot => {
+                    let items = []
+                    querySnapshot.forEach(s => {
+                        const item = s.data()
+                        items.push({...item})
+                    })
+                    commit('SET_PARISH_LIST', items)
+                    EventBus.notify('parish-list-is-loaded')
                 })
                 .catch(error => {
                     commit('SET_ERROR', error)
@@ -43,6 +64,7 @@ export default {
         }
     },
     getters:{
-        parish:s => s.parish
+        parish:s => s.parish,
+        parishList:s => s.parishList
     }
 }

@@ -69,7 +69,7 @@ export default {
   computed: {
     ...mapGetters(["users", "parish", "dateCheckins"]),
     weekNumber() {
-      return (this.today.week() % 4) + 1; //TODO: assign first week in parish module
+      return ((this.today.week()+1) % 4) + 1; //TODO: assign first week in parish module
     },
   },
   methods: {
@@ -216,3 +216,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.v-card__text, .v-card__title {
+  word-break: normal; /* maybe !important  */
+}
+</style>

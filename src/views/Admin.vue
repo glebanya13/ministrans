@@ -52,6 +52,9 @@
               <v-col>
                 <v-btn @click="removeFieldSchedule">Remove SCHEDULE Field for all users</v-btn>
               </v-col>
+              <v-col>
+                <v-btn @click="removeParafiaFieldSchedule">Remove PARAFIA Field for all users</v-btn>
+              </v-col>
             </v-row>
             
              </v-tab-item>
@@ -139,7 +142,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["LOAD_USER_ROLES", "CHANGE_ROLES"]),
+    ...mapActions(["LOAD_USER_ROLES", "CHANGE_ROLES" ]),
     addUserToUpdate(user) {
       this.usersToUpdate[user.uid] = user;
       this.enableUpdate = true;
@@ -169,6 +172,12 @@ export default {
       let users = this.$store.getters.users
       if(users && users.length > 0){
         this.$store.dispatch('REMOVE_FIELD_FOR_USERS', users)
+      }
+    },
+    removeParafiaFieldSchedule(){
+let users = this.$store.getters.users
+      if(users && users.length > 0){
+        this.$store.dispatch('REMOVE_FIELD_PARAFIA_FOR_USERS', users)
       }
     }
   },

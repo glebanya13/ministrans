@@ -11,6 +11,7 @@ import Signup from '../views/Signup.vue'
 import EditProfile from '../views/EditProfile.vue'
 import Admin from '../views/Admin.vue'
 import Parish from '../views/Parish.vue'
+import Timetable from '../views/Timetable.vue'
 import Store from '../store'
 import phoneAuth from '../components/PhoneAuth.vue'
 import setPassword from '../components/phonePassword.vue'
@@ -38,6 +39,12 @@ component: PhoneLogin },
     path: '/migration',
     name: 'migration',
     component: migration
+  },
+  {
+    path: '/timetable',
+    name: 'timetable',
+    component: Timetable,
+    meta: { authRequired: true }
   },
   {
     path: '/',
