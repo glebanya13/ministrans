@@ -7,6 +7,7 @@ import checkinsModule from './modules/checkins'
 import loadDataModule from './modules/loadData'
 import adminModule from './modules/admin'
 import parishModule from './modules/parish'
+import newsModule from './modules/news'
 
 
 Vue.use(Vuex);
@@ -19,6 +20,7 @@ export default new Vuex.Store({
     checkinsModule,
     loadDataModule,
     adminModule,
-    parishModule
+    parishModule,
+    newsModule
   }
 })

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div> 
     <v-navigation-drawer
       absolute
       temporary
@@ -19,6 +19,32 @@
             <v-list-item-title v-text="item.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-group
+          v-if="isAdmin && isUserAuthenticated"
+          :value="false"
+          no-action
+          prepend-icon="mdi-account-circle"
+        >
+        <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>Admin</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+        <v-list-item
+            v-for="link in admins"
+            :key="link.title"
+            router :to="link.route"
+          >
+            <v-list-item-title>{{ link.title }}</v-list-item-title>
+
+            <v-list-item-icon>
+              <v-icon>{{ link.icon }}</v-icon>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list-group>  
+
         <v-list-item text style="cursor: pointer" v-if="isUserAuthenticated">
           <v-list-item-icon>
             <v-icon left>mdi-exit-run</v-icon>
@@ -85,93 +111,44 @@ export default {
     isSenior() {
       return this.$store.getters.isSenior;
     },
-    menuItems() {
-      return this.isUserAuthenticated
-        ? this.isAdmin
-          ? // is Admin
-            [
-              {
-                icon: "mdi-text-box-multiple-outline",
-                title: "Admin",
-                route: "/admin",
-              },
-              {
-                icon: "mdi-text-box-multiple-outline",
-                title: "Migration",
-                route: "/migration",
-              },
-              {
-                icon: "mdi-text-box-multiple-outline",
-                title: "Parish",
-                route: "/parish",
-              },
-              {
-                icon: "mdi-account-multiple",
-                title: "Список министрантов",
-                route: "/ministrans",
-              },
-              {
-                icon: "mdi-account",
-                title: "Профиль",
-                route: "/profile",
-              },
-              {
-                icon: "mdi-text-box-multiple-outline",
-                title: "Расписание",
-                route: "/schedule",
-              },
-              {
-                icon: "mdi-list-status",
-                title: "Посещение",
-                route: "/stats",
-              },
-              {
-                icon: "mdi-check-decagram",
-                title: "Отметиться",
-                route: "/checkin",
-              },
-            ]
-          : //is Authenticated , is not Admin
-            [
-              {
-                icon: "mdi-check-decagram",
-                title: "Отметиться",
-                route: "/checkin",
-              },
-              {
-                icon: "mdi-text-box-multiple-outline",
-                title: "Расписание",
-                route: "/schedule",
-              },
-              {
-                icon: "mdi-account",
-                title: "Профиль",
-                route: "/profile",
-              },
-              {
-                icon: "mdi-account-multiple",
-                title: "Список министрантов",
-                route: "/ministrans",
-              },
-              {
-                icon: "mdi-list-status",
-                title: "Посещение",
-                route: "/stats",
-              },
-            ]
-        : [
-            {
-              icon: "mdi-lock-open",
-              title: "Регистрация",
-              route: "/signup",
-            },
-            {
-              icon: "mdi-exit-to-app",
-              title: "Войти",
-              route: "/signin",
-            },
-          ];
+    menuItems(){
+      let menuItems = [
+      { icon: 'face', title: 'SignUp', route: '/signup'},  
+      { icon: 'mdi-lock-open', title: 'SignIn', route: '/signin'}
+    ]
+    if(this.isUserAuthenticated) {
+      menuItems = [
+        { icon: "mdi-account-multiple", title: "Список министрантов", route: "/ministrans" },
+        { icon: "mdi-account", title: "Профиль", route: "/profile" },
+        { icon: "mdi-text-box-multiple-outline", title: "Расписание", route: "/schedule" },
+        { icon: "mdi-list-status", title: "Посещение", route: "/stats" },
+        { icon: "mdi-check-decagram", title: "Отметиться", route: "/checkin" },
+      ]
+    }
+    if(this.isUserAuthenticated && this.isAdmin) {
+      menuItems = [
+        { icon: "mdi-account-multiple", title: "Список министрантов", route: "/ministrans" },
+        { icon: "mdi-account", title: "Профиль", route: "/profile" },
+        { icon: "mdi-text-box-multiple-outline", title: "Расписание", route: "/schedule" },
+        { icon: "mdi-list-status", title: "Посещение", route: "/stats" },
+        { icon: "mdi-check-decagram", title: "Отметиться", route: "/checkin" },
+        // { icon: "mdi-text-box-multiple-outline", title: 'AddNews', route: '/addnews' },
+        // { icon: "mdi-text-box-multiple-outline", title: "Admin", route: "/admin" },
+        // { icon: "mdi-text-box-multiple-outline", title: "Migration", route: "/migration" },
+        // { icon: "mdi-text-box-multiple-outline", title: "Parish", route: "/parish" },
+      ]
+    }
+    return menuItems
     },
+    admins(){
+      let links = [
+        { icon: "mdi-text-box-multiple-outline", title: 'AddNews', route: '/addnews' },
+        { icon: "mdi-text-box-multiple-outline", title: "Admin", route: "/admin" },
+        { icon: "mdi-text-box-multiple-outline", title: "Migration", route: "/migration" },
+        { icon: "mdi-text-box-multiple-outline", title: "Parish", route: "/parish" }
+      ]
+      return links
+    }
   },
   methods: {
     singout() {
@@ -187,5 +164,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+
 </style>
