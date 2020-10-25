@@ -118,6 +118,11 @@ export default {
               {
                 icon: "mdi-text-box-multiple-outline",
                 title: "Расписание",
+                route: "/timetable",
+              },
+              {
+                icon: "mdi-text-box-multiple-outline",
+                title: "Кто сегодня?",
                 route: "/schedule",
               },
               {
@@ -141,6 +146,11 @@ export default {
               {
                 icon: "mdi-text-box-multiple-outline",
                 title: "Расписание",
+                route: "/timetable",
+              },
+              {
+                icon: "mdi-text-box-multiple-outline",
+                title: "Кто сегодня?",
                 route: "/schedule",
               },
               {
