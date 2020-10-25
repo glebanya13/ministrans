@@ -5,7 +5,7 @@
       temporary
       v-model="drawer"
     >
-    <v-layout column align-center>
+    <v-layout column align-center v-if="isUserAuthenticated">
           <v-flex class="mt-5">
             <v-avatar size="100">
               <img  v-if="!userImage" src="../assets/user.png" alt="">
