@@ -134,7 +134,7 @@ export default {
                         // commit('SET_USER_PHOTO', firebaseUser.photoURL)
 
                         dispatch('LOAD_USER_DATA', firebaseUser.uid)
-                        dispatch('LOAD_MASS_CHECKINS_BY_USER')
+                        // dispatch('LOAD_MASS_CHECKINS_BY_USER')
                         dispatch('LOAD_MASS_CHECKINS')
                         dispatch('LOAD_USERS')
                     })

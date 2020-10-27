@@ -72,8 +72,22 @@ export default {
                     throw error
                 })
         },
-        ADD_USER_DATA({ commit, getters }, payload) {
+        ADD_USER_DATA({ commit, getters, state }, payload) {
             commit('SET_PROCESSING', true);
+            if (payload.image) {
+                let imageUrl
+                const filename = payload.image.name
+                let storageRef = firebase.storage().ref(`${getters.userId}/${filename}`).put(payload.image);
+                return storageRef
+                    .then(fileData => {
+                        fileData.ref.getDownloadURL().then(url => {
+                            imageUrl = url
+                            state.userData.url = url
+                            return Vue.$db.collection('userData').doc(getters.userId).update({ url: imageUrl })
+                        })
+                        commit('SET_PROCESSING', false);
+                    })
+            }
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
 
             var user = firebase.auth().currentUser;
@@ -101,24 +115,6 @@ export default {
 
                 .then(() => {
                     commit('SET_PROCESSING', false);
-                })
-                .catch((e) => {
-                    commit('SET_ERROR', e);
-                    commit('SET_PROCESSING', false);
-                    throw e;
-                });
-        },
-        ADD_USER_IMG({ commit, getters }, payload) {
-            commit('SET_PROCESSING', true);
-            console.log(payload)
-            let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
-            userDataRef.set({
-                url: payload.url
-            }, { merge: true })
-
-                .then(() => {
-                    commit('SET_PROCESSING', false);
-                    commit('SET_MESSAGE', 'Картинка загрузилась. Перезагрузите страницу') //todo убрать
                 })
                 .catch((e) => {
                     commit('SET_ERROR', e);

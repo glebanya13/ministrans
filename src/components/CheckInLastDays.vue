@@ -4,30 +4,53 @@
       <v-card class="mx-auto" width="600" :loading="!userMassCheckins">
         <v-card-title>Мои последние посещения</v-card-title>
         <v-card-subtitle>
-           <v-row>
+          <v-row v-if="tab == '0'">
             <v-col>
-              <v-chip class="ma-1 success">Всего: {{ allCheckinsCount }} / Вс: {{ sundayCheckinsCount }} / Будний: {{ weekdayCheckinsCount }}</v-chip>
-              <v-chip class="ma-1 primary"
-                > В месяце: {{ thisMonthCheckinsCount }} раз(а) из 
-                {{ thisMonthCheckinsSchedule()}} по графику </v-chip
+              <v-chip class="ma-1 success"
+                >Всего: {{ allCheckinsCount }} / Вс: {{ sundayCheckinsCount }} /
+                Будний: {{ weekdayCheckinsCount }}</v-chip
               >
-<v-chip class="ma-1 error">Вс: {{ thisMonthSundayCheckinsCount  }} из {{ mySundays }} ({{getPercent(mySundays, thisMonthSundayCheckinsCount)}})</v-chip>
-              <v-chip class="ma-1 warning">Будний: {{ thisMonthWeekdayCheckinsCount }} из {{ myWeekdays }} ({{getPercent(myWeekdays, thisMonthWeekdayCheckinsCount)}})</v-chip>
-               </v-col>
+              <v-chip class="ma-1 primary">
+                В месяце: {{ thisMonthCheckinsCount }} раз(а) из
+                {{ thisMonthCheckinsSchedule() }} по графику
+              </v-chip>
+              <v-chip class="ma-1 error"
+                >Вс: {{ thisMonthSundayCheckinsCount }} из {{ mySundays }} ({{
+                  getPercent(mySundays, thisMonthSundayCheckinsCount)
+                }})</v-chip
+              >
+              <v-chip class="ma-1 warning"
+                >Будний: {{ thisMonthWeekdayCheckinsCount }} из
+                {{ myWeekdays }} ({{
+                  getPercent(myWeekdays, thisMonthWeekdayCheckinsCount)
+                }})</v-chip
+              >
+            </v-col>
+          </v-row>
+          <v-row align="center" justify="center" v-else>
+            <v-col cols="12" sm="4">
+              <v-chip class="ma-1 success"
+                >Всего: {{ allCheckinsCount }} раз в месяц</v-chip
+              >
+            </v-col>
           </v-row>
         </v-card-subtitle>
         <v-data-table
           :headers="headers"
-          :items="userMassCheckins ? userMassCheckins : []"
+          :items="checkins ? checkins : []"
           class="elevation-1"
-          :loading="!userMassCheckins"
+          :loading="!checkins"
           :loading-text="loadingText"
         >
           <template v-slot:item.date="{ item }">
-            {{ item.date | moment("DD.MM.YY ddd") }}
+            {{ `${item.date}` | moment("DD.MM.YY ddd") }}, {{ item.time }}
           </template>
           <template v-slot:item.id="{ item }">
-            <v-icon style="cursor: pointer" @click="deleteDate(item.id)" :disabled="disableRemove">
+            <v-icon
+              style="cursor: pointer"
+              @click="deleteDate(item.id)"
+              :disabled="disableRemove"
+            >
               mdi-delete-off</v-icon
             >
           </template>
@@ -53,11 +76,6 @@ export default {
           value: "date",
         },
         {
-          text: "Время",
-          sortable: false,
-          value: "time",
-        },
-        {
           text: "",
           sortable: false,
           value: "id",
@@ -66,20 +84,46 @@ export default {
       loading: true,
       loadingText: "Загрузка данных",
       mySundays: 0,
-      myWeekdays: 0
+      myWeekdays: 0,
     };
   },
-  props:['targetId', 'disableRemove'],
+  props: ["targetId", "disableRemove", "tab"],
   computed: {
-    ...mapGetters(["userMassCheckins", "userId", "userData"]),
+    ...mapGetters([
+      "userMassCheckins",
+      "userMeetingCheckins",
+      "userId",
+      "userData",
+    ]),
     allCheckinsCount() {
-      return this.userMassCheckins ? this.userMassCheckins.length : 0;
+      let all;
+      if (this.tab == "0") {
+        all = this.userMassCheckins ? this.userMassCheckins.length : 0;
+      }
+      if (this.tab == "1") {
+        all = this.userMeetingCheckins ? this.userMeetingCheckins.length : 0;
+      }
+      return all;
     },
-     sundayCheckinsCount() {
-      return this.userMassCheckins ? this.userMassCheckins.filter(f => this.isSunday(f.date)).length : 0;
+    checkins() {
+      let array;
+      if (this.tab == "0") {
+        array = this.userMassCheckins;
+      }
+      if (this.tab == "1") {
+        array = this.userMeetingCheckins;
+      }
+      return array;
+    },
+    sundayCheckinsCount() {
+      return this.userMassCheckins
+        ? this.userMassCheckins.filter((f) => this.isSunday(f.date)).length
+        : 0;
     },
     weekdayCheckinsCount() {
-      return this.userMassCheckins ? this.userMassCheckins.filter(f => this.isSunday(f.date)).length : 0;
+      return this.userMassCheckins
+        ? this.userMassCheckins.filter((f) => this.isSunday(f.date)).length
+        : 0;
     },
     thisMonthCheckinsCount() {
       return this.userMassCheckins
@@ -93,7 +137,8 @@ export default {
       return this.userMassCheckins
         ? this.userMassCheckins.filter(
             (f) =>
-              moment(f.date, "yyyy-MM-DD").format("MM") == moment().format("MM") && this.isSunday(f.date)
+              moment(f.date, "yyyy-MM-DD").format("MM") ==
+                moment().format("MM") && this.isSunday(f.date)
           ).length
         : 0;
     },
@@ -101,22 +146,32 @@ export default {
       return this.userMassCheckins
         ? this.userMassCheckins.filter(
             (f) =>
-              moment(f.date, "yyyy-MM-DD").format("MM") == moment().format("MM") && !this.isSunday(f.date)
+              moment(f.date, "yyyy-MM-DD").format("MM") ==
+                moment().format("MM") && !this.isSunday(f.date)
           ).length
         : 0;
     },
-   
   },
   methods: {
-    isSunday(date){
-      return moment(date, "yyyy-MM-DD").format('e') == 6
+    isSunday(date) {
+      return moment(date, "yyyy-MM-DD").format("e") == 6;
     },
     deleteDate(checkin) {
-      if(this.disableRemove) return
-      Vue.$db.collection("massCheckins").doc(checkin).delete();
-      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", this.targetId || this.userId);
+      let ref;
+      if (this.tab == "0") {
+        ref = Vue.$db.collection("massCheckins").doc(checkin).delete();
+      }
+      if (this.tab == "1") {
+        ref = Vue.$db.collection("meetingCheckins").doc(checkin).delete();
+      }
+      if (this.disableRemove) return ref;
+
+      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
+        uid: this.targetId || this.userId,
+        tab: this.tab,
+      });
     },
-     thisMonthCheckinsSchedule() {
+    thisMonthCheckinsSchedule() {
       if (this.userData && this.userData.myschedule) {
         let myDays = this.userData.myschedule
           .filter((s) => !s.alt)
@@ -125,32 +180,34 @@ export default {
         let month = moment().format("MM");
         let year = moment().format("yyyy");
         let myDaysCount = 0;
-        let mySundays = 0
-        let myWeekdays = 0
+        let mySundays = 0;
+        let myWeekdays = 0;
         for (let i = 0; i < alldays; i++) {
-          let day = parseInt(moment(`${year}-${month}-${i + 1}`).format("e"))
-          if (myDays.indexOf(day) != -1)
-          {
+          let day = parseInt(moment(`${year}-${month}-${i + 1}`).format("e"));
+          if (myDays.indexOf(day) != -1) {
             myDaysCount++;
-            if(day == 6){
-              mySundays++
-            }else{
-              myWeekdays++
+            if (day == 6) {
+              mySundays++;
+            } else {
+              myWeekdays++;
             }
           }
         }
-        this.mySundays = mySundays
-        this.myWeekdays = myWeekdays
+        this.mySundays = mySundays;
+        this.myWeekdays = myWeekdays;
         return myDaysCount;
       }
       return 0;
     },
-    getPercent(all, part){
-      return `${Math.round(100*part/all)}%`
-    }
+    getPercent(all, part) {
+      return `${Math.round((100 * part) / all)}%`;
+    },
   },
   created() {
-    this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", this.targetId || this.userId);
+    this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
+      uid: this.targetId || this.userId,
+      tab: this.tab,
+    });
     // if(this.userMassCheckins && this.userMassCheckins.length > 0)
     // {
     //   this.massCheckins = this.userMassCheckins

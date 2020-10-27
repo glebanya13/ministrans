@@ -2,10 +2,15 @@
   <v-container fluid>
     <v-layout column>
       <v-card class="mx-auto" width="600" outlined>
-        <v-card-title >
-          <h2 class="text-wrap text-center">  Вы сегодня были на Имше?</h2>
+        <v-card-title>
+          <h2 class="text-wrap text-center" v-if="tab == '0'">
+            Вы сегодня были на Имше?
+          </h2>
+          <h2 class="text-wrap text-center" v-if="tab == '1'">
+            Вы сегодня были на встрече?
+          </h2>
         </v-card-title>
- <br />
+        <br />
         <v-card-actions>
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on }">
@@ -54,6 +59,7 @@
                   </v-dialog>
 
                   <v-select
+                    v-if="tab == '0'"
                     v-model="time"
                     :items="timesToChoose"
                     menu-props="auto"
@@ -88,15 +94,16 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 import { mapGetters } from "vuex";
-import helpers from "@/utils/helpers.js"; 
+import helpers from "@/utils/helpers.js";
 
 export default {
+  props: ["tab"],
   data() {
     return {
       dialog: false,
-      date: moment().format('yyyy-MM-DD'),//new Date().toISOString().substr(0, 10),
+      date: moment().format("yyyy-MM-DD"), //new Date().toISOString().substr(0, 10),
       modal: false,
       timesDefault: {},
       time: "",
@@ -107,12 +114,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['parish']),
-    dateToView(){
-       return this.date ? moment(this.date).format('LL (dddd)') : ''
+    ...mapGetters(["parish"]),
+    dateToView() {
+      return this.date ? moment(this.date).format("LL (dddd)") : "";
     },
-    maxDate(){
-      return moment().format('yyyy-MM-DD')
+    maxDate() {
+      return moment().format("yyyy-MM-DD");
     },
     massCheckins() {
       return this.$store.getters.massCheckins;
@@ -121,18 +128,17 @@ export default {
       return this.$store.getters.getError;
     },
     day() {
-      return moment(this.date, 'yyyy-MM-DD').format('e') // sunday == 6
+      return moment(this.date, "yyyy-MM-DD").format("e"); // sunday == 6
     },
     processing() {
       return this.$store.getters.getProcessing;
     },
-    timesToChoose(){
-      let times = this.timesDefault[this.day] 
-      ? this.timesDefault[this.day] 
-      : this.timesDefault[7] // for weekday
-      return times && times.map(td => td.time)
-       
-    }
+    timesToChoose() {
+      let times = this.timesDefault[this.day]
+        ? this.timesDefault[this.day]
+        : this.timesDefault[7]; // for weekday
+      return times && times.map((td) => td.time);
+    },
   },
   methods: {
     checkin() {
@@ -140,17 +146,22 @@ export default {
         date: this.date,
         time: this.time,
         isSunday: this.day == 6,
+        isMeeting: this.tab == 1,
+        tab: this.tab,
       });
-      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER");
+      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
+        tab: this.tab,
+        uid: this.$store.getters.userId,
+      });
       this.dialog = false;
       this.snackbar = true;
       this.snackbarText = "Поздравляем, вы отметились!";
     },
-    assignTimes(){
-      if(this.parish.schedule){
-        this.timesDefault = helpers.groupByKey(this.parish.schedule, 'day')
+    assignTimes() {
+      if (this.parish.schedule) {
+        this.timesDefault = helpers.groupByKey(this.parish.schedule, "day");
       }
-    }
+    },
   },
   created() {
     if (this.parish) {
@@ -167,7 +178,8 @@ export default {
 </script>
 
 <style scoped>
-.v-card__text, .v-card__title {
+.v-card__text,
+.v-card__title {
   word-break: normal; /* maybe !important  */
 }
 .center {

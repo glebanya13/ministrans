@@ -1,8 +1,11 @@
 import Vue from 'vue'
+import firebase from 'firebase'
+
 let defaultNewsData = {
     header: null,
     p1: null,
-    date: null
+    date: null,
+    url: null
 }
 export default {
     state:{
@@ -17,18 +20,30 @@ export default {
     actions:{
         ADD_NEWS({ commit }, payload) {
             commit('SET_PROCESSING', true);
-            console.log(payload)
-            let newsRef = Vue.$db.collection('news').doc(payload.date)
-            newsRef.set({
+
+            let imageUrl
+
+            Vue.$db.collection('news').doc(payload.date)
+            .set({
                 date: payload.date,
                 header: payload.header,
                 p1: payload.p1,
-                url: payload.url
             }, { merge: true })
 
+            .then(() => {
+                const filename = payload.image.name
+                let storageRef = firebase.storage().ref(`news/${filename}`).put(payload.image);
+                return storageRef
+            })
+            .then(fileData => {
+                fileData.ref.getDownloadURL().then(url => {
+                    imageUrl = url
+                    return Vue.$db.collection('news').doc(payload.date).update({ url: imageUrl })
+                })
+            })
                 .then(() => {
                     commit('SET_PROCESSING', false);
-                    commit('SET_MESSAGE', 'Картинка загрузилась. Перезагрузите страницу') //todo убрать
+                    // commit('SET_MESSAGE', 'Картинка загрузилась. Перезагрузите страницу') //todo убрать
                 })
                 .catch((e) => {
                     commit('SET_ERROR', e);
