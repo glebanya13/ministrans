@@ -4,36 +4,32 @@
       <v-card class="mx-auto" width="600" outlined :loading="!userName">
         <v-card-text>
           <v-flex class="mb-4">
-            <v-dialog v-model="dialogAva" persistent max-width="320">
-              <template v-slot:activator="{ on }">
-                <v-avatar size="100" class="mr-4">
-                  <v-img
-                    v-if="!userImage"
-                    src="../assets/user.png"
-                    v-on="on"
-                  ></v-img>
-                  <v-img v-else :src="userImage" v-on="on"></v-img>
-                </v-avatar>
-              </template>
-              <v-card>
-                <v-card-title>Вы точно хотите поменять аватар?</v-card-title>
-                <v-card-text>
-                  <input type="file" @change="onFileChanged" />
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="primary" @click="dialogAva = false"
-                    >Отмена</v-btn
-                  >
-                  <v-btn
-                    color="primary"
-                    @click.prevent="onUpload()"
-                    :disabled="getProcessing"
-                    >Подтвердить</v-btn
-                  >
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <image-uploader
+              :debug="1"
+              :maxWidth="512"
+              :quality="0.7"
+              :autoRotate="true"
+              outputFormat="file"
+              :preview="false"
+              :className="['fileinput', { 'fileinput--loaded': hasImage }]"
+              :capture="false"
+              accept="video/*,image/*"
+              doNotResize="gif"
+              @input="setImage"
+            >
+              <label for="fileInput" slot="upload-label">
+                <figure>
+                  <v-avatar size="100" class="mr-4">
+                    <v-img
+                      v-if="!userImage"
+                      src="../assets/user.png"
+                      v-on="on"
+                    ></v-img>
+                    <v-img v-else :src="userImage"></v-img>
+                  </v-avatar>
+                </figure>
+              </label>
+            </image-uploader>
           </v-flex>
           <h2 class="headline mb-0">
             <h4 v-if="!userName && !userSurname">
@@ -96,25 +92,33 @@
         :target-id="userId"
       ></schedule-for-users>
       <br />
-      <last-day></last-day>
+      <v-tabs v-model="tab" fixed-tabs>
+        <v-tab :key="'church'" ripple> Имша </v-tab>
+        <v-tab :key="'meet'"> Встреча </v-tab>
+        <v-tab-item :key="'church'">
+          <last-day :tab="tab"></last-day>
+        </v-tab-item>
+        <v-tab-item :key="'meet'">
+          <last-day :tab="tab"></last-day>
+        </v-tab-item>
+      </v-tabs>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import firebase from "firebase";
 import { mapGetters, mapMutations } from "vuex";
 import lastDay from "../components/CheckInLastDays";
 import ScheduleForUsers from "@/components/ScheduleForUsers";
+import ImageUploader from "vue-image-upload-resize";
 
 export default {
   data() {
     return {
-      dialogAva: false,
       valid: null,
-      imageData: null,
-      picture: null,
-      uploadValue: null,
+      tab: "church",
+      image: null,
+      hasImage: false,
     };
   },
   computed: {
@@ -138,48 +142,27 @@ export default {
   },
   methods: {
     ...mapMutations(["SET_ERROR", "SET_MESSAGE"]),
-    onFileChanged(event) {
-      const file = event.target.files[0];
-      this.uploadValue = 0;
-      this.picture = null;
-      this.imageData = file;
-      console.log(this.messagesRef);
-    },
-    onUpload() {
-      this.picture = null;
-      const storageRef = firebase
-        .storage()
-        .ref(`/${this.$store.getters.userId}/${this.imageData.name}`)
-        .put(this.imageData);
-      storageRef.on(
-        "state_changed",
-        (snapshot) => {
-          this.uploadValue =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        },
-        (error) => {
-          console.log(error.message);
-          this.SET_ERROR(error);
-        },
-        () => {
-          this.uploadValue = 100;
-          storageRef.snapshot.ref.getDownloadURL().then((url) => {
-            this.picture = url;
-            this.$store.dispatch("ADD_USER_IMG", { url: this.picture });
-          });
-        }
-      ),
-        (this.dialogAva = false);
+    setImage: function (output) {
+      this.hasImage = true;
+      let img = output;
+      this.image = img;
+      this.$store.dispatch("ADD_USER_DATA", {
+        image: this.image,
+      });
     },
   },
   components: {
     lastDay,
     ScheduleForUsers,
+    ImageUploader,
   },
 };
 </script>
 
-<style scoped>
+<style>
+#fileInput {
+  display: none;
+}
 img.preview {
   width: 20px;
 }

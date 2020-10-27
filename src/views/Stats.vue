@@ -27,11 +27,12 @@
 import { mapActions, mapGetters } from "vuex";
 export default {
   computed: {
-    ...mapGetters(["stats"]),
+    ...mapGetters(["stats", "meetingStats"]),
 
     chartsData() {
       let resWeekDay = {};
       let resSunday = {};
+      let resMeets = {};
       for (var k in this.stats) {
         resSunday[
           `${this.stats[k][0].name} ${this.stats[k][0].surname}`
@@ -39,6 +40,12 @@ export default {
         resWeekDay[
           `${this.stats[k][0].name} ${this.stats[k][0].surname}`
         ] = this.stats[k].filter((x) => !x.isSunday).length;
+        
+      }
+      for (var key in this.meetingStats) {
+      resMeets[
+          `${this.meetingStats[key][0].name} ${this.meetingStats[key][0].surname}`
+        ] = this.meetingStats[key].filter((x) => x.isMeeting).length;
       }
       return [
         {
@@ -48,6 +55,10 @@ export default {
         {
           name: "ВС",
           data: resSunday,
+        },
+        {
+          name: "Встречи",
+          data: resMeets,
         }
       ];
     },
