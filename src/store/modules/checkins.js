@@ -7,6 +7,7 @@ export default {
         userMassCheckins: [],
         userMeetingCheckins: [],
         massCheckins: {},
+        meetingCheckins: {},
         dateCheckins: null,
         stats: {},
         meetingStats: {}
@@ -20,6 +21,9 @@ export default {
         },
         SET_MASS_CHECKINS(state, payload) {
             state.massCheckins = payload
+        },
+        SET_MEETING_CHECKINS(state, payload) {
+            state.meetingCheckins = payload
         },
         SET_MASS_CHECKINS_BY_DATE(state, payload) {
             state.dateCheckins = payload
@@ -40,7 +44,7 @@ export default {
             if (userCheckinData.tab == '0') {
                 checkinRef = Vue.$db.collection('massCheckins').doc(`${userCheckinData.date}_${userCheckinData.time}_${getters.userId}`)
             } else {
-                checkinRef = Vue.$db.collection('meetingCheckins').doc(`${userCheckinData.date}_${userCheckinData.time}_${getters.userId}`)
+                checkinRef = Vue.$db.collection('meetingCheckins').doc(`${userCheckinData.date}_${getters.userId}`)
             }
 
             checkinRef.set({
@@ -129,6 +133,33 @@ export default {
                 }
                 )
         },
+        LOAD_MEETING_CHECKINS({ commit }) {
+            Vue.$db.collection('meetingCheckins')
+                .get()
+                .then(querySnapshot => {
+                    let checkins = []
+                    querySnapshot.forEach(s => {
+                        const data = s.data()
+                        const user = data.user || {}
+
+                        let checkin = {
+                            uid: user.uid,
+                            date: data.date,
+                            name: user.name,
+                            surname: user.surname,
+                            isMeeting: data.isMeeting,
+                            time: user.time
+                        }
+                        checkins.push(checkin)
+                    })
+                    commit('SET_MEETING_CHECKINS', checkins)
+                })
+                .catch(error => {
+                    commit('SET_ERROR', error)
+                    throw error
+                }
+                )
+        },
         LOAD_MASS_CHECKINS_BY_DATE({ commit }, date) {
             Vue.$db.collection('massCheckins')
                 .where('date', '==', date)
@@ -205,6 +236,7 @@ export default {
         userMassCheckins: (state) => state.userMassCheckins,
         userMeetingCheckins: (state) => state.userMeetingCheckins,
         massCheckins: (state) => state.massCheckins,
+        meetingCheckins: (state) => state.meetingCheckins,
         stats: (state) => state.stats,
         meetingStats: (state) => state.meetingStats,
         dateCheckins: s => s.dateCheckins

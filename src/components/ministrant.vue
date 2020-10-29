@@ -8,36 +8,53 @@
             <v-img v-else :src="userImage"></v-img>
           </v-avatar>
           <h2 class="headline mb-0">
-            <h4 v-if="userName && userSurname">
-              <v-icon>person</v-icon> {{ userName }} {{ userSurname }}
+            <h4 v-if="mName && mSurname">
+              <v-icon>person</v-icon> {{ mName }} {{ mSurname }}
             </h4>
           </h2>
           <h2 class="headline mb-0">
-            <h4 v-if="phone"><v-icon>phone</v-icon> {{ phone }}</h4>
+            <h4 v-if="mPhone"><v-icon>phone</v-icon> {{ mPhone }}</h4>
           </h2>
           <h2 class="headline mb-0">
-            <h4 v-if="userBirthday">
+            <h4 v-if="mBirthday">
               <v-icon>mdi-calendar-today</v-icon>
-              {{ userBirthday | moment("DD MMMM YYYY") }}
+              {{ mBirthday | moment("DD MMMM YYYY") }}
             </h4>
           </h2>
           <h2 class="headline mb-0">
-            <h4 v-if="userClas">
-              <v-icon>mdi-book-outline</v-icon> {{ userClas }}
+            <h4 v-if="mClas">
+              <v-icon>mdi-book-outline</v-icon> {{ mClas }}
             </h4>
           </h2>
           <h2 class="headline mb-0">
-            <h4 v-if="userLevel"><v-icon>mdi-star</v-icon> {{ userLevel }}</h4>
+            <h4 v-if="mLevel"><v-icon>mdi-star</v-icon> {{ mLevel }}</h4>
           </h2>
           <h2 class="headline mb-0">
-            <h4 v-if="userParafia">
-              <v-icon>mdi-church</v-icon> {{ userParafia }}
+            <h4 v-if="mParafia">
+              <v-icon>mdi-church</v-icon> {{ mParafia }}
             </h4>
           </h2>
         </v-card-text>
       </v-card>
       <br />
-      <last-day :target-id="currentId" :disable-remove="true"></last-day>
+      <v-tabs v-model="tab" fixed-tabs>
+        <v-tab :key="'church'" ripple> Имша </v-tab>
+        <v-tab :key="'meet'"> Встреча </v-tab>
+        <v-tab-item :key="'church'">
+          <last-day
+            :target-id="currentId"
+            :tab="tab"
+            :disable-remove="true"
+          ></last-day>
+        </v-tab-item>
+        <v-tab-item :key="'meet'">
+          <last-day
+            :target-id="currentId"
+            :tab="tab"
+            :disable-remove="true"
+          ></last-day>
+        </v-tab-item>
+      </v-tabs>
     </v-layout>
   </v-container>
 </template>
@@ -47,33 +64,32 @@ import { mapGetters } from "vuex";
 import lastDay from "../components/CheckInLastDays";
 export default {
   data() {
-    return {};
+    return {
+      tab: "church",
+    };
   },
   computed: {
     ...mapGetters([
-      "userData",
-      "userName",
-      "userClas",
-      "userLevel",
-      "userSurname",
-      "userEmail",
-      "getProcessing",
-      "getError",
-      "userBirthday",
-      "userParafia",
-      "phone",
+        "mName",
+        "mLevel",
+        "mSurname",
+        "mBirthday",
+        "mClas",
+        "mParafia",
+        "mUrl",
+        "mPhone"
     ]),
     userImage() {
-      let image = this.$store.getters.url;
+      let image = this.$store.getters.mUrl;
       return image;
     },
-    currentId(){
-      return this.$route.params.uid
-    }
+    currentId() {
+      return this.$route.params.uid;
+    },
   },
   methods: {},
   created() {
-    this.$store.dispatch("LOAD_USER_DATA", this.$route.params.uid);
+    this.$store.dispatch("LOAD_USER_DATA_BY_USER", this.$route.params.uid);
   },
   components: {
     lastDay,

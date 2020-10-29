@@ -20,12 +20,33 @@
               <label for="fileInput" slot="upload-label">
                 <figure>
                   <v-avatar size="100" class="mr-4">
-                    <v-img
-                      v-if="!userImage"
-                      src="../assets/user.png"
-                      v-on="on"
+                    <v-img v-if="!userImage" src="../assets/user.png">
+                      <v-row
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                        v-if="loading"
+                      >
+                        <v-progress-circular
+                          class="text-center"
+                          indeterminate
+                          color="primary"
+                        ></v-progress-circular> </v-row
                     ></v-img>
-                    <v-img v-else :src="userImage"></v-img>
+                    <v-img v-else :src="userImage">
+                      <v-row
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                        v-if="loading"
+                      >
+                        <v-progress-circular
+                          class="text-center"
+                          indeterminate
+                          color="primary"
+                        ></v-progress-circular>
+                      </v-row>
+                    </v-img>
                   </v-avatar>
                 </figure>
               </label>
@@ -129,7 +150,6 @@ export default {
       "userLevel",
       "userSurname",
       "userEmail",
-      "getProcessing",
       "getError",
       "userBirthday",
       "userParafia",
@@ -139,6 +159,9 @@ export default {
       let image = this.$store.getters.url;
       return image;
     },
+    loading() {
+      return this.$store.getters.loading;
+    },
   },
   methods: {
     ...mapMutations(["SET_ERROR", "SET_MESSAGE"]),
@@ -146,8 +169,8 @@ export default {
       this.hasImage = true;
       let img = output;
       this.image = img;
-      this.$store.dispatch("ADD_USER_DATA", {
-        image: this.image,
+      this.$store.dispatch("ADD_USER_IMAGE", {
+        url: this.image,
       });
     },
   },

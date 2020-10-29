@@ -2,9 +2,13 @@ export default {
     state: {
         processing: false,
         error: null,
-        message: null
+        message: null,
+        loading: false
     },
     mutations: {
+        setLoading(state, payload) {
+            state.loading = payload
+        },
         SET_PROCESSING(state, payload) {
             state.proccesing = payload
         },
@@ -22,6 +26,7 @@ export default {
         }
     },
     getters: {
+        loading: (state) => state.loading,
         getProcessing: (state) => state.processing,
         getError: (state) => state.error,
         getMessage: (s) => s.message

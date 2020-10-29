@@ -12,6 +12,7 @@ let defaultUserData = {
     url: null,
     phone: null
 };
+
 export default {
     state: {
         userData: defaultUserData,
@@ -72,22 +73,9 @@ export default {
                     throw error
                 })
         },
-        ADD_USER_DATA({ commit, getters, state }, payload) {
+        ADD_USER_DATA({ commit, getters }, payload) {
             commit('SET_PROCESSING', true);
-            if (payload.image) {
-                let imageUrl
-                const filename = payload.image.name
-                let storageRef = firebase.storage().ref(`${getters.userId}/${filename}`).put(payload.image);
-                return storageRef
-                    .then(fileData => {
-                        fileData.ref.getDownloadURL().then(url => {
-                            imageUrl = url
-                            state.userData.url = url
-                            return Vue.$db.collection('userData').doc(getters.userId).update({ url: imageUrl })
-                        })
-                        commit('SET_PROCESSING', false);
-                    })
-            }
+            
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
 
             var user = firebase.auth().currentUser;
@@ -119,6 +107,35 @@ export default {
                 .catch((e) => {
                     commit('SET_ERROR', e);
                     commit('SET_PROCESSING', false);
+                    throw e;
+                });
+        },
+        ADD_USER_IMAGE({ commit, getters, state }, payload) {
+            commit('setLoading', true);
+            let imageUrl
+            const filename = payload.url.name
+            let storageRef = firebase.storage().ref(`${getters.userId}/${filename}`).put(payload.url);
+            return storageRef
+                .then(fileData => {
+                    fileData.ref.getDownloadURL().then(url => {
+                        imageUrl = url
+                        state.userData.url = url
+                        return Vue.$db.collection('userData').doc(getters.userId).update({ url: imageUrl })
+                    })
+                })
+
+                .then(() => {
+                    setTimeout(() => {
+                    commit('setLoading', false)
+
+                    }, 1000)
+                })
+                .catch((e) => {
+                    commit('SET_ERROR', e);
+                    setTimeout(() => {
+                        commit('setLoading', false)
+    
+                        }, 1000)
                     throw e;
                 });
         },
@@ -254,6 +271,7 @@ export default {
                     throw error
                 })
         },
+        
         UPDATE_SCHEDULE_FOR_USER({ commit, dispatch }, user) {
 
             commit('SET_PROCESSING', true)
