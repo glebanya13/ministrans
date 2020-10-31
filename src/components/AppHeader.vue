@@ -1,7 +1,7 @@
 <template>
   <div> 
     <v-navigation-drawer
-      absolute
+      fixed
       temporary
       v-model="drawer"
     >
