@@ -43,25 +43,27 @@
           :loading-text="loadingText"
         >
           <template v-slot:item.date="{ item }">
-            {{ `${item.date}` | moment("DD.MM.YY ddd") }}, {{ item.time }}
+            {{ `${item.date}` | moment("DD.MM.YY ddd") }} {{ item.time }}
           </template>
           <template v-slot:item.id="{ item }">
             <v-icon
               style="cursor: pointer"
-              @click="deleteDate(item.id)"
-              :disabled="disableRemove"
+              @click="deleteDate(item)"
+              :disabled="disableRemove || getProcessing"
+
             >
               mdi-delete-off</v-icon
             >
           </template>
         </v-data-table>
+        <v-btn @click="cs()">dAD</v-btn>
       </v-card>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import Vue from "vue";
+// import Vue from "vue";
 import { mapGetters } from "vuex";
 import moment from "moment";
 
@@ -90,6 +92,7 @@ export default {
   props: ["targetId", "disableRemove", "tab"],
   computed: {
     ...mapGetters([
+      "getProcessing",
       "userMassCheckins",
       "userMeetingCheckins",
       "userId",
@@ -153,23 +156,18 @@ export default {
     },
   },
   methods: {
+    cs(){
+      console.log(this.$store.getters.userMassCheckins);
+    },
     isSunday(date) {
       return moment(date, "yyyy-MM-DD").format("e") == 6;
     },
     deleteDate(checkin) {
+    this.$store.dispatch('DELETE_CHECKIN', {checkin: checkin, id: checkin.id, tab: this.tab})
+      
       let ref;
-      if (this.tab == "0") {
-        ref = Vue.$db.collection("massCheckins").doc(checkin).delete();
-      }
-      if (this.tab == "1") {
-        ref = Vue.$db.collection("meetingCheckins").doc(checkin).delete();
-      }
+      
       if (this.disableRemove) return ref;
-
-      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
-        uid: this.targetId || this.userId,
-        tab: this.tab,
-      });
     },
     thisMonthCheckinsSchedule() {
       if (this.userData && this.userData.myschedule) {
@@ -208,16 +206,17 @@ export default {
       uid: this.targetId || this.userId,
       tab: this.tab,
     });
-    // if(this.userMassCheckins && this.userMassCheckins.length > 0)
-    // {
-    //   this.massCheckins = this.userMassCheckins
-    //   this.loading = false;
-    // }
-    // this.$bus.$on("mass-checkins-for-user-are-loaded", () => {
-    //   this.massCheckins = this.userMassCheckins
-    //   this.loading = false;
-    // });
   },
+  //   if(this.userMassCheckins && this.userMassCheckins.length > 0)
+  //   {
+  //     this.massCheckins = this.userMassCheckins
+  //     this.loading = false;
+  //   }
+  //   this.$bus.$on("mass-checkins-for-user-are-loaded", () => {
+  //     this.massCheckins = this.userMassCheckins
+  //     this.loading = false;
+  //   });
+  // },
   // beforeDestroy() {
   //   this.$bus.$off("mass-checkins-for-user-are-loaded");
   // },

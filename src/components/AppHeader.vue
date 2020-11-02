@@ -1,16 +1,20 @@
 <template>
-  <div>
-    <v-navigation-drawer fixed temporary v-model="drawer">
-      <v-layout column align-center v-if="isUserAuthenticated">
-        <v-flex class="mt-5">
-          <v-avatar size="100">
-            <img v-if="!userImage" src="../assets/user.png" alt="" />
-            <v-img v-else :src="userImage"></v-img>
-          </v-avatar>
-          <p class="subheading mt-1 text-center">
-            {{ userName }}
-          </p>
-        </v-flex>
+  <div> 
+    <v-navigation-drawer
+      fixed
+      temporary
+      v-model="drawer"
+    >
+    <v-layout column align-center v-if="isUserAuthenticated">
+          <v-flex class="mt-5">
+            <v-avatar size="100">
+              <img  v-if="!userImage" src="../assets/user.png" alt="">
+              <v-img v-else :src="userImage"></v-img>
+            </v-avatar>
+            <p class="subheading mt-1 text-center">
+              {{userName}}
+            </p>
+          </v-flex>
       </v-layout>
       <v-list>
         <v-list-group
