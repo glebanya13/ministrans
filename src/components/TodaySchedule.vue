@@ -69,7 +69,7 @@ export default {
   computed: {
     ...mapGetters(["users", "parish", "dateCheckins"]),
     weekNumber() {
-      return ((this.today.week()+1) % 4) + 1; //TODO: assign first week in parish module
+      return ((this.today.week()- 3) % 4); //TODO: assign first week in parish module
     },
   },
   methods: {
@@ -100,6 +100,7 @@ export default {
     },
     assignSchedule() {
       if (this.parish && this.parish.schedule) {
+        this.loading = false
         let todayNumber = this.today.format("e");
         
         let todayTimes = this.parish.schedule
@@ -189,26 +190,29 @@ export default {
       }
     },
   },
+  watch:{
+    dateCheckins(){
+      this.assignSchedule()
+    }
+  },
   created() {
       this.today = moment(this.targetDate)
     this.LOAD_MASS_CHECKINS_BY_DATE(this.today.format("yyyy-MM-DD"));
-    if (this.users) {
+    if (this.users && this.users.length > 0) {
       this.usersList = this.users;
-      
     }
     this.$bus.$on("users-are-loaded", () => {
       this.usersList = this.users;
-      if(this.parish)
         this.assignSchedule();
     });
-    if (this.parish) {
-      this.assignSchedule();
-      this.loading = false;
-    }
+    // if (this.parish) {
+    //   this.assignSchedule();
+    //   this.loading = false;
+    // }
     this.$bus.$on("parish-is-loaded", () => {
       this.assignSchedule();
-      this.loading = false;
     });
+    this.assignSchedule();
   },
   beforeDestroy() {
     this.$bus.$off("users-are-loaded");
