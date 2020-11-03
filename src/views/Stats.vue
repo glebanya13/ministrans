@@ -4,51 +4,51 @@
       <v-flex xs12>
         <h1 class="text-center">График министрантов</h1>
       </v-flex>
-      <v-flex xs12 md4>
-        <v-card width="600" outlined class="elevation-0 transparent ml-2">
+      <v-flex xs12 md6 xl4>
+        <v-card width="490" outlined class="elevation-0 transparent">
           <bar-chart
             xtitle="Посещения Имш"
             ytitle="Министранты"
             :data="churchData"
-            width="600px"
+            width="490px"
             height="650px"
             :stacked="true"
           ></bar-chart>
         </v-card>
       </v-flex>
-      <v-flex xs12 md4>
-        <v-card width="600" outlined class="elevation-0 transparent">
+      <v-flex xs12 md6 xl4>
+        <v-card width="490" outlined class="elevation-0 transparent">
           <bar-chart
             :data="meetingData"
-            width="600px"
+            width="490px"
             height="650px"
             xtitle="Посещения Встреч"
           ></bar-chart>
         </v-card>
       </v-flex>
     </v-layout>
-    <v-layout row wrap align-center justify-center class="hidden-md-and-up">
-      <v-flex xs8>
-        <h1 class="text-center">График министрантов</h1>
+    <v-layout row wrap  align-center justify-center class="hidden-md-and-up">
+      <v-flex>
+        <h1 class="text-center ml-4">График министрантов</h1>
       </v-flex>
-      <v-flex xs12 md4>
-        <v-card width="400" outlined class="elevation-0 transparent ml-2">
+      <v-flex>
+        <v-card width="372" outlined class="elevation-0 transparent ml-2">
           <bar-chart
             xtitle="Посещения Имш"
             ytitle="Министранты"
             :data="churchData"
-            width="400px"
-            height="450px"
+            width="372px"
+            height="812px"
             :stacked="true"
           ></bar-chart>
         </v-card>
       </v-flex>
-      <v-flex xs12 md4>
-        <v-card width="400" outlined class="elevation-0 transparent">
+      <v-flex>
+        <v-card width="372" outlined class="elevation-0 transparent">
           <bar-chart
             :data="meetingData"
-            width="400px"
-            height="450px"
+            width="372px"
+            height="812px"
             xtitle="Посещения Встреч"
             ytitle="Министранты"
           ></bar-chart>
@@ -113,13 +113,4 @@ export default {
 </script>
 
 <style>
-.chart {
-  font-family: Verdana, sans-serif;
-  border-collapse: collapse;
-  border: 2px solid #ebebeb;
-  margin: 10px auto;
-  text-align: center;
-  width: 100%;
-  max-width: 100px;
-}
 </style>

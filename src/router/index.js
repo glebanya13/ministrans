@@ -14,7 +14,6 @@ import Parish from '../views/Parish.vue'
 import Timetable from '../views/Timetable.vue'
 import Store from '../store'
 import phoneAuth from '../components/PhoneAuth.vue'
-import setPassword from '../components/phonePassword.vue'
 import PhoneLogin from '../components/PhoneLogin.vue'
 import ministrant from '../components/ministrant.vue'
 import migration from '../components/Migration.vue'
@@ -24,12 +23,10 @@ import AddNews from '../views/AddNews.vue'
 Vue.use(VueRouter)
 
 const routes = [
-  { path: '/loginPhone',
-component: PhoneLogin },
   {
-  path: '/setPassword',
-  name: 'Set Password',
-  component: setPassword},
+    path: '/loginPhone',
+    component: PhoneLogin
+  },
   {
     path: '/addnews',
     name: 'addnews',

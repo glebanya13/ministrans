@@ -34,12 +34,12 @@ export default {
         SET_MEETING_STATS(state, payload) {
             state.meetingStats = payload
         },
-        DELETE_CHECKIN_STATE(state, payload){
+        DELETE_CHECKIN_STATE(state, payload) {
             let index
-            if(payload.tab == '0'){
+            if (payload.tab == '0') {
                 index = state.userMassCheckins.findIndex(checkin => checkin.id == payload.id)
                 state.userMassCheckins.splice(index, 1)
-            }else{
+            } else {
                 index = state.userMeetingCheckins.findIndex(checkin => checkin.id == payload.id)
                 state.userMeetingCheckins.splice(index, 1)
             }
@@ -83,10 +83,10 @@ export default {
         DELETE_CHECKIN({ commit }, payload) {
             if (payload.tab == '0')
                 Vue.$db.collection('massCheckins').doc(payload.checkin.id).delete()
-                .then(() => commit('DELETE_CHECKIN_STATE', payload))
+                    .then(() => commit('DELETE_CHECKIN_STATE', payload))
             else {
                 Vue.$db.collection('meetingCheckins').doc(payload.checkin.id).delete()
-                .then(() => commit('DELETE_CHECKIN_STATE', payload))
+                    .then(() => commit('DELETE_CHECKIN_STATE', payload))
             }
         },
         LOAD_MASS_CHECKINS_BY_USER({ commit, getters }, uid, limit = 1000) {

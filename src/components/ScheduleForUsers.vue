@@ -38,7 +38,7 @@
     >
       <v-card class="pa-3">
         <v-toolbar fixed dark color="primary">
-          <v-btn icon dark @click="dialog = false">
+          <v-btn icon dark @click="close()">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>Изменить расписание</v-toolbar-title>
@@ -123,7 +123,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["UPDATE_SCHEDULE_FOR_USER"]),
+    ...mapActions(["UPDATE_SCHEDULE_FOR_USER", "LOAD_USERS"]),
+    close(){
+      this.dialog = false
+      this.LOAD_USERS()
+    },
     disableTimeIfChosen(itemIndex, currentDayIndex) {
       if (this.timesToChoose[currentDayIndex].number != 6) return;
       let chosen = [];

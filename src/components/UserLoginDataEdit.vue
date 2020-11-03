@@ -8,7 +8,9 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <v-alert v-if="error" :value="error" type="error">{{ error }}</v-alert>
+            <v-alert v-if="error" :value="error" type="error">{{
+              error
+            }}</v-alert>
             <v-form v-model="valid">
               <v-text-field
                 label="Е-мейл"
@@ -59,9 +61,7 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" :to="{name: 'profile'}"
-              >Отмена</v-btn
-            >
+            <v-btn color="primary" :to="{ name: 'profile' }">Отмена</v-btn>
             <v-btn
               color="primary"
               @click.prevent="changeUserData()"
@@ -77,7 +77,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import messages from '@/utils/messages.js'
+import messages from "@/utils/messages.js";
 export default {
   data() {
     return {
@@ -104,18 +104,17 @@ export default {
           (v && v.length >= 6) ||
           "Пароль слишком короткий - минимум 6 символов",
       ],
-      // photoURLRules: [(v) => !!v || "Пожалуйста введите адресную строку вашей фотографии"]
     };
   },
   computed: {
-    ...mapGetters(['getProcessing']),
-    error(){
-      let e = this.$store.getters.getError
-      return  e && (messages[e.code] || messages['default-error']);
-    }
+    ...mapGetters(["getProcessing"]),
+    error() {
+      let e = this.$store.getters.getError;
+      return e && (messages[e.code] || messages["default-error"]);
     },
+  },
   methods: {
-      ...mapActions(['CHANGE_USER_LOGIN_DATA']),
+    ...mapActions(["CHANGE_USER_LOGIN_DATA"]),
     changeUserData() {
       this.CHANGE_USER_LOGIN_DATA({
         email: this.email,
@@ -125,12 +124,9 @@ export default {
         changeType: this.changeType,
       });
     },
-    // changeImage() {
-    //   this.$store.dispatch("CHANGE_USER_IMAGE", {
-    //     newPhotoUrl: this.newPhotoUrl,
-    //   });
-    //   this.dialogAva = false;
-    // },
+    sda() {
+      console.log(this.credential);
+    },
   },
   created() {
     this.$bus.$on("user-profile-data-changed", () => {
