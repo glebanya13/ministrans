@@ -75,7 +75,7 @@ export default {
         },
         ADD_USER_DATA({ commit, getters }, payload) {
             commit('SET_PROCESSING', true);
-            
+
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
 
             var user = firebase.auth().currentUser;
@@ -126,7 +126,7 @@ export default {
 
                 .then(() => {
                     setTimeout(() => {
-                    commit('setLoading', false)
+                        commit('setLoading', false)
 
                     }, 1000)
                 })
@@ -134,26 +134,26 @@ export default {
                     commit('SET_ERROR', e);
                     setTimeout(() => {
                         commit('setLoading', false)
-    
-                        }, 1000)
+
+                    }, 1000)
                     throw e;
                 });
         },
-        ADD_USER_PHONE({commit, getters}, payload){
+        ADD_USER_PHONE({ commit, getters }, payload) {
             commit('SET_PROCESSING', true);
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
             userDataRef.set({
                 phone: payload.phone
             }, { merge: true })
 
-            .then(() => {
-                commit('SET_PROCESSING', false);
-            })
-            .catch((e) => {
-                commit('SET_ERROR', e);
-                commit('SET_PROCESSING', false);
-                throw e;
-            });
+                .then(() => {
+                    commit('SET_PROCESSING', false);
+                })
+                .catch((e) => {
+                    commit('SET_ERROR', e);
+                    commit('SET_PROCESSING', false);
+                    throw e;
+                });
         },
         async BATCH({ getters, commit }, payload) {
             var batch = Vue.$db.batch();
@@ -271,7 +271,7 @@ export default {
                     throw error
                 })
         },
-        
+
         UPDATE_SCHEDULE_FOR_USER({ commit, dispatch }, user) {
 
             commit('SET_PROCESSING', true)

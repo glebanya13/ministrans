@@ -149,7 +149,7 @@ export default {
         CHANGE_USER_LOGIN_DATA({ commit }, payload) {
             let user = firebase.auth().currentUser
             let credential = firebase.auth.EmailAuthProvider.credential(
-                payload.email,
+                payload.updateData,
                 payload.password
             )
 
@@ -159,31 +159,16 @@ export default {
             user.reauthenticateAndRetrieveDataWithCredential(credential).then(function () {
                 let currentUser = firebase.auth().currentUser
 
-                if (payload.changeType == 'email') {
-                    currentUser.updateEmail(payload.newEmail)
-                        .then(() => {
-                            commit('SET_USER_EMAIL', payload.newEmail)
-                            commit('SET_PROCESSING', false)
-                            EventBus.notify('user-profile-data-changed')
-                        })
-                        .catch(error => {
-                            commit('SET_PROCESSING', false)
-                            commit('SET_ERROR', error)
-                            throw error
-                        })
-                }
-                if (payload.changeType == 'password') {
-                    currentUser.updatePassword(payload.newPassword)
-                        .then(() => {
-                            commit('SET_PROCESSING', false)
-                            EventBus.notify('user-profile-data-changed')
-                        })
-                        .catch(error => {
-                            commit('SET_PROCESSING', false)
-                            commit('SET_ERROR', error)
-                            throw error
-                        })
-                }
+                currentUser.updatePassword(payload.newPassword)
+                    .then(() => {
+                        commit('SET_PROCESSING', false)
+                        EventBus.notify('user-profile-data-changed')
+                    })
+                    .catch(error => {
+                        commit('SET_PROCESSING', false)
+                        commit('SET_ERROR', error)
+                        throw error
+                    })
             }).catch(function (error) {
                 commit('SET_PROCESSING', false)
                 commit('SET_ERROR', error)

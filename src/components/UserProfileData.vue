@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-layout column>
+    <v-layout column v-if="!targetId">
       <v-card class="mx-auto" width="600" outlined :loading="!userName">
         <v-card-text>
           <v-flex class="mb-4">
@@ -60,16 +60,13 @@
               <v-icon>person</v-icon> {{ userName }} {{ userSurname }}
             </h4>
           </h2>
-          <h2 class="headline mb-0">
-            <h4><v-icon>email</v-icon> {{ userEmail }}</h4>
-          </h2>
 
           <h2 class="headline mb-0">
             <h4 v-if="!phone"><v-icon>phone</v-icon>Нет данных</h4>
           </h2>
 
           <h2 class="headline mb-0">
-            <h4 v-if="phone"><v-icon>phone</v-icon> {{ phone }}</h4>
+            <h4 v-if="phone"><v-icon>phone</v-icon> <a :href="`tel:${this.phone}`" class="grey--text">{{phone}}</a></h4>
           </h2>
 
           <h2 class="headline mb-0">
@@ -107,6 +104,9 @@
           >
         </v-card-actions>
       </v-card>
+      <!-- <v-card>
+        <sunday-schedule></sunday-schedule>
+      </v-card> -->
       <br />
       <schedule-for-users
         :hide-headers="true"
@@ -124,6 +124,83 @@
         </v-tab-item>
       </v-tabs>
     </v-layout>
+    <v-layout column v-else>
+      <v-card class="mx-auto" width="600" outlined :loading="!mName">
+        <v-card-text>
+          <v-flex class="mb-4">
+            <v-avatar size="100" class="mr-4">
+              <v-img v-if="!mUrl" src="../assets/user.png"> ></v-img>
+              <v-img v-else :src="mUrl"></v-img>
+            </v-avatar>
+          </v-flex>
+          <h2 class="headline mb-0">
+            <h4 v-if="!mName && !mSurname">
+              <v-icon>person</v-icon> Нет данных
+            </h4>
+            <h4 v-if="mName && mSurname">
+              <v-icon>person</v-icon> {{ mName }} {{ mSurname }}
+            </h4>
+          </h2>
+
+          <h2 class="headline mb-0">
+            <h4 v-if="!mPhone"><v-icon>phone</v-icon>Нет данных</h4>
+          </h2>
+
+          <h2 class="headline mb-0">
+            <h4 v-if="mPhone"><v-icon>phone</v-icon> <a :href="`tel:${this.mPhone}`" class="grey--text">{{mPhone}}</a></h4>
+          </h2>
+
+          <h2 class="headline mb-0">
+            <h4 v-if="!mBirthday">
+              <v-icon>mdi-calendar-today</v-icon> Нет данных
+            </h4>
+            <h4 v-if="mBirthday">
+              <v-icon>mdi-calendar-today</v-icon>
+              {{ mBirthday | moment("DD MMMM YYYY") }}
+            </h4>
+          </h2>
+          <h2 class="headline mb-0">
+            <h4 v-if="!mClas"><v-icon>mdi-book-outline</v-icon> Нет данных</h4>
+            <h4 v-if="mClas"><v-icon>mdi-book-outline</v-icon> {{ mClas }}</h4>
+          </h2>
+          <h2 class="headline mb-0">
+            <h4 v-if="!mLevel"><v-icon>mdi-star</v-icon> Нет данных</h4>
+            <h4 v-if="mLevel"><v-icon>mdi-star</v-icon> {{ mLevel }}</h4>
+          </h2>
+          <h2 class="headline mb-0">
+            <h4 v-if="!mParafia"><v-icon>mdi-church</v-icon> Нет данных</h4>
+            <h4 v-if="mParafia"><v-icon>mdi-church</v-icon> {{ mParafia }}</h4>
+          </h2>
+        </v-card-text>
+      </v-card>
+      <!-- <v-card>
+        <sunday-schedule></sunday-schedule>
+      </v-card> -->
+      <br />
+      <schedule-for-users
+        :hide-headers="true"
+        :target-id="targetId"
+      ></schedule-for-users>
+      <br />
+      <v-tabs v-model="tab" fixed-tabs>
+        <v-tab :key="'church'" ripple> Имша </v-tab>
+        <v-tab :key="'meet'"> Встреча </v-tab>
+        <v-tab-item :key="'church'">
+          <last-day
+            :tab="tab"
+            :target-id="targetId"
+            :disable-remove="true"
+          ></last-day>
+        </v-tab-item>
+        <v-tab-item :key="'meet'">
+          <last-day
+            :tab="tab"
+            :target-id="targetId"
+            :disable-remove="true"
+          ></last-day>
+        </v-tab-item>
+      </v-tabs>
+    </v-layout>
   </v-container>
 </template>
 
@@ -131,9 +208,11 @@
 import { mapGetters, mapMutations } from "vuex";
 import lastDay from "../components/CheckInLastDays";
 import ScheduleForUsers from "@/components/ScheduleForUsers";
+// import SundaySC from "@/components/TodaySchedule";
 import ImageUploader from "vue-image-upload-resize";
 
 export default {
+  props: ["targetId"],
   data() {
     return {
       valid: null,
@@ -149,14 +228,24 @@ export default {
       "userClas",
       "userLevel",
       "userSurname",
-      "userEmail",
       "getError",
       "userBirthday",
       "userParafia",
       "phone",
+      "mName",
+      "mLevel",
+      "mSurname",
+      "mBirthday",
+      "mClas",
+      "mParafia",
+      "mPhone",
     ]),
     userImage() {
       let image = this.$store.getters.url;
+      return image;
+    },
+    mUrl() {
+      let image = this.$store.getters.mUrl;
       return image;
     },
     loading() {
@@ -178,6 +267,12 @@ export default {
     lastDay,
     ScheduleForUsers,
     ImageUploader,
+    // TodaySchedule
+  },
+  created() {
+    if (this.targetId) {
+      this.$store.dispatch("LOAD_USER_DATA_BY_USER", this.targetId);
+    }
   },
 };
 </script>
