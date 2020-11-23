@@ -56,7 +56,6 @@
             >
           </template>
         </v-data-table>
-        <v-btn @click="cs()">dAD</v-btn>
       </v-card>
     </v-layout>
   </v-container>
@@ -156,9 +155,6 @@ export default {
     },
   },
   methods: {
-    cs(){
-      console.log(this.$store.getters.userMassCheckins);
-    },
     isSunday(date) {
       return moment(date, "yyyy-MM-DD").format("e") == 6;
     },

@@ -14,6 +14,7 @@
             height="650px"
             :stacked="true"
           ></bar-chart>
+          <v-slider v-model="slider1" :label="`Посещения за ${slider1} неделю`" max="8" min="1"></v-slider>
         </v-card>
       </v-flex>
       <v-flex xs12 md6 xl4>
@@ -41,6 +42,7 @@
             height="812px"
             :stacked="true"
           ></bar-chart>
+          <v-slider v-model="slider1" :label="`Посещения за ${slider1} неделю`" max="8" min="1"></v-slider>
         </v-card>
       </v-flex>
       <v-flex>
@@ -61,19 +63,23 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 export default {
+  data(){
+    return {
+      slider1: 1,
+    }
+  },
   computed: {
     ...mapGetters(["stats", "meetingStats"]),
-
     churchData() {
       let resWeekDay = {};
       let resSunday = {};
       for (var k in this.stats) {
         resSunday[
           `${this.stats[k][0].name} ${this.stats[k][0].surname}`
-        ] = this.stats[k].filter((x) => x.isSunday).length;
+        ] = this.stats[k].filter((x) => x.isSunday && x.week == this.slider1).length;
         resWeekDay[
           `${this.stats[k][0].name} ${this.stats[k][0].surname}`
-        ] = this.stats[k].filter((x) => !x.isSunday).length;
+        ] = this.stats[k].filter((x) => !x.isSunday && x.week == this.slider1).length;
       }
 
       return [

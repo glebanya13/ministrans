@@ -66,7 +66,6 @@
               :disabled="getProcessing || !valid"
               >Изменить</v-btn
             >
-            <v-btn @click="sda()">dsa</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>

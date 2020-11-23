@@ -224,7 +224,8 @@ export default {
                             date: data.date,
                             name: data.user.name,
                             surname: data.user.surname,
-                            isSunday: data.isSunday
+                            isSunday: data.isSunday,
+                            week: data.week
                         }
                         checkins.push(checkin)
                     })
@@ -242,7 +243,8 @@ export default {
                             date: data.date,
                             name: data.user.name,
                             surname: data.user.surname,
-                            isMeeting: data.isMeeting
+                            isMeeting: data.isMeeting,
+                            week: data.week
                         }
                         checkins.push(checkin)
                     })
