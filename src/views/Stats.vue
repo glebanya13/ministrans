@@ -5,24 +5,24 @@
         <h1 class="text-center">График министрантов</h1>
       </v-flex>
       <v-flex xs12 md6 xl4>
-        <v-card width="490" outlined class="elevation-0 transparent">
+        <v-card width="400" outlined class="elevation-0 transparent mx-auto" >
           <bar-chart
             xtitle="Посещения Имш"
             ytitle="Министранты"
             :data="churchData"
-            width="490px"
-            height="650px"
+            width="400px"
+            height="600px"
             :stacked="true"
           ></bar-chart>
-          <v-slider v-model="slider1" :label="`Посещения за ${slider1} неделю`" max="8" min="1"></v-slider>
+          <v-slider v-model="slider1" :label="`Посещения за ${sliderLabel}`" max="5" min="1"></v-slider>
         </v-card>
       </v-flex>
       <v-flex xs12 md6 xl4>
-        <v-card width="490" outlined class="elevation-0 transparent">
+        <v-card width="400" outlined class="elevation-0 transparent">
           <bar-chart
             :data="meetingData"
-            width="490px"
-            height="650px"
+            width="400px"
+            height="600px"
             xtitle="Посещения Встреч"
           ></bar-chart>
         </v-card>
@@ -33,24 +33,24 @@
         <h1 class="text-center ml-4">График министрантов</h1>
       </v-flex>
       <v-flex>
-        <v-card width="372" outlined class="elevation-0 transparent ml-2">
+        <v-card width="300" outlined class="elevation-0 transparent ml-2">
           <bar-chart
             xtitle="Посещения Имш"
             ytitle="Министранты"
             :data="churchData"
-            width="372px"
-            height="812px"
+            width="300px"
+            height="600px"
             :stacked="true"
           ></bar-chart>
-          <v-slider v-model="slider1" :label="`Посещения за ${slider1} неделю`" max="8" min="1"></v-slider>
+          <v-slider v-model="slider1" :label="`Посещения за ${sliderLabel}`" max="5" min="1"></v-slider>
         </v-card>
       </v-flex>
       <v-flex>
-        <v-card width="372" outlined class="elevation-0 transparent">
+        <v-card width="300" outlined class="elevation-0 transparent">
           <bar-chart
             :data="meetingData"
-            width="372px"
-            height="812px"
+            width="300px"
+            height="600px"
             xtitle="Посещения Встреч"
             ytitle="Министранты"
           ></bar-chart>
@@ -62,26 +62,66 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import moment from 'moment'
+
 export default {
   data(){
     return {
-      slider1: 1,
+      slider1: 1
     }
   },
   computed: {
     ...mapGetters(["stats", "meetingStats"]),
+    sliderLabel(){
+      let label
+      if(this.slider1 == 1){
+        label = "1 неделю"
+      }
+      if(this.slider1 == 2){
+        label = "1 месяц"
+      }
+      if(this.slider1 == 3){
+        label = "3 месяца"
+      }
+      if(this.slider1 == 4){
+        label = "1 год"
+      }
+      if(this.slider1 == 5){
+        label = "все время"
+      }
+      return label
+    },
+    weekComputed(){
+      var a
+      if(this.slider1 == 1){
+        a = 0
+      }
+      if(this.slider1 == 2){
+        a = 4
+      }
+      if(this.slider1 == 3){
+        a = 12
+      }
+      if(this.slider1 == 4){
+        a = 52
+      }
+      if(this.slider1 == 5){
+        a = 52
+      }
+      return a
+    },
     churchData() {
       let resWeekDay = {};
       let resSunday = {};
       for (var k in this.stats) {
         resSunday[
           `${this.stats[k][0].name} ${this.stats[k][0].surname}`
-        ] = this.stats[k].filter((x) => x.isSunday && x.week == this.slider1).length;
+        ] = this.stats[k].filter((x) => x.isSunday && this.weekComputed >= moment().diff(x.date, 'weeks')).length;
+        
         resWeekDay[
           `${this.stats[k][0].name} ${this.stats[k][0].surname}`
-        ] = this.stats[k].filter((x) => !x.isSunday && x.week == this.slider1).length;
+        ] = this.stats[k].filter((x) => !x.isSunday && this.weekComputed >= moment().diff(x.date, 'weeks')).length;
       }
-
       return [
         {
           name: "Будние",
