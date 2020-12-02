@@ -234,7 +234,7 @@ export default {
     },
     matchEditableUserSchedule() {
       if (this.editableUser.myschedule) {
-        let uSchedule = this.editableUser.myschedule;
+        let uSchedule = this.editableUser.myschedule ? [...this.editableUser.myschedule] : [];
         this.timesToChoose.forEach((t) => {
           let found = uSchedule.findIndex((f) => f.day == t.number);
           if (found >= 0) {
