@@ -59,7 +59,6 @@ export default {
 
             checkinRef.set({
                 date: userCheckinData.date,
-                isSunday: userCheckinData.isSunday,
                 isMeeting: userCheckinData.isMeeting,
                 parafia: {
                     parafiaName: getters.userParafia,
@@ -145,7 +144,6 @@ export default {
                             date: data.date,
                             name: user.name,
                             surname: user.surname,
-                            isSunday: data.isSunday,
                             time: data.time
                         }
                         checkins.push(checkin)
@@ -199,7 +197,6 @@ export default {
                             date: data.date,
                             name: user.name,
                             surname: user.surname,
-                            isSunday: data.isSunday,
                             time: data.time
                         }
                         checkins.push(checkin)
@@ -224,7 +221,6 @@ export default {
                             date: data.date,
                             name: data.user.name,
                             surname: data.user.surname,
-                            isSunday: data.isSunday,
                             week: data.week
                         }
                         checkins.push(checkin)
@@ -270,5 +266,3 @@ export default {
     }
 
 }
-
-

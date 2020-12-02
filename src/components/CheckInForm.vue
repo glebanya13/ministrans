@@ -127,9 +127,9 @@ export default {
     error() {
       return this.$store.getters.getError;
     },
-    day() {
-      return moment(this.date, "yyyy-MM-DD").format("e"); // sunday == 6
-    },
+    // day() {
+    //   return moment(this.date, "yyyy-MM-DD").format("e"); // sunday == 6
+    // },
     processing() {
       return this.$store.getters.getProcessing;
     },
@@ -145,7 +145,6 @@ export default {
       this.$store.dispatch("CHECK_IN", {
         date: this.date,
         time: this.time,
-        isSunday: this.day == 6,
         isMeeting: this.tab == 1,
         tab: this.tab,
       });

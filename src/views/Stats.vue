@@ -5,7 +5,7 @@
         <h1 class="text-center">График министрантов</h1>
       </v-flex>
       <v-flex xs12 md6 xl4>
-        <v-card width="400" outlined class="elevation-0 transparent mx-auto" >
+        <v-card width="400" outlined class="elevation-0 transparent mx-auto">
           <bar-chart
             xtitle="Посещения Имш"
             ytitle="Министранты"
@@ -14,7 +14,12 @@
             height="600px"
             :stacked="true"
           ></bar-chart>
-          <v-slider v-model="slider1" :label="`Посещения за ${sliderLabel}`" max="5" min="1"></v-slider>
+          <v-slider
+            v-model="statsFilterSlider"
+            :label="`Посещения за ${statsFilterName}`"
+            max="5"
+            min="1"
+          ></v-slider>
         </v-card>
       </v-flex>
       <v-flex xs12 md6 xl4>
@@ -28,7 +33,7 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <v-layout row wrap  align-center justify-center class="hidden-md-and-up">
+    <v-layout row wrap align-center justify-center class="hidden-md-and-up">
       <v-flex>
         <h1 class="text-center ml-4">График министрантов</h1>
       </v-flex>
@@ -42,7 +47,12 @@
             height="600px"
             :stacked="true"
           ></bar-chart>
-          <v-slider v-model="slider1" :label="`Посещения за ${sliderLabel}`" max="5" min="1"></v-slider>
+          <v-slider
+            v-model="statsFilterSlider"
+            :label="`Посещения за ${statsFilterName}`"
+            max="5"
+            min="1"
+          ></v-slider>
         </v-card>
       </v-flex>
       <v-flex>
@@ -62,53 +72,49 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import moment from 'moment'
+import moment from "moment";
 
 export default {
-  data(){
+  data() {
     return {
-      slider1: 1
-    }
+      statsFilterSlider: 1,
+    };
   },
   computed: {
     ...mapGetters(["stats", "meetingStats"]),
-    sliderLabel(){
-      let label
-      if(this.slider1 == 1){
-        label = "1 неделю"
+    statsFilterName() {
+      let name;
+      let statsFilter = this.statsFilterSlider;
+      switch (statsFilter) {
+        case 1:
+          return "1 неделю";
+        case 2:
+          return "1 месяц";
+        case 3:
+          return "3 месяца";
+        case 4:
+          return "1 год";
+        case 5:
+          return "все время";
       }
-      if(this.slider1 == 2){
-        label = "1 месяц"
-      }
-      if(this.slider1 == 3){
-        label = "3 месяца"
-      }
-      if(this.slider1 == 4){
-        label = "1 год"
-      }
-      if(this.slider1 == 5){
-        label = "все время"
-      }
-      return label
+      return name;
     },
-    weekComputed(){
-      var a
-      if(this.slider1 == 1){
-        a = 0
+    statsFilterСomputed() {
+      let computed;
+      let statsFilter = this.statsFilterSlider;
+      switch (statsFilter) {
+        case 1:
+          return 0;
+        case 2:
+          return 4;
+        case 3:
+          return 12;
+        case 4:
+          return 52;
+        case 5:
+          return 52;
       }
-      if(this.slider1 == 2){
-        a = 4
-      }
-      if(this.slider1 == 3){
-        a = 12
-      }
-      if(this.slider1 == 4){
-        a = 52
-      }
-      if(this.slider1 == 5){
-        a = 52
-      }
-      return a
+      return computed;
     },
     churchData() {
       let resWeekDay = {};
@@ -116,11 +122,19 @@ export default {
       for (var k in this.stats) {
         resSunday[
           `${this.stats[k][0].name} ${this.stats[k][0].surname}`
-        ] = this.stats[k].filter((x) => x.isSunday && this.weekComputed >= moment().diff(x.date, 'weeks')).length;
-        
+        ] = this.stats[k].filter(
+          (x) =>
+            moment(x.date).format("d") == 0 &&
+            this.statsFilterСomputed >= moment().diff(x.date, "weeks")
+        ).length;
+
         resWeekDay[
           `${this.stats[k][0].name} ${this.stats[k][0].surname}`
-        ] = this.stats[k].filter((x) => !x.isSunday && this.weekComputed >= moment().diff(x.date, 'weeks')).length;
+        ] = this.stats[k].filter(
+          (x) =>
+            moment(x.date).format("d") != 0 &&
+            this.statsFilterСomputed >= moment().diff(x.date, "weeks")
+        ).length;
       }
       return [
         {

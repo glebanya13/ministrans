@@ -25,9 +25,24 @@
                     ></v-avatar>
                   </td>
                   <td>{{ user.name }} {{ user.surname }}</td>
-                    <td v-for="mark in test" :key="mark.date">{{mark.sunday}}</td>
-                    <td v-for="mark in test" :key="mark.date">{{mark.weekDay}}</td>
-                  
+                  <td>
+                    {{
+                      stats[user.uid]
+                        ? stats[user.uid].filter(
+                            (x) => new Date(x.date).getDay() == 0
+                          ).length
+                        : ""
+                    }}
+                  </td>
+                  <td>
+                    {{
+                      stats[user.uid]
+                        ? stats[user.uid].filter(
+                            (x) => new Date(x.date).getDay() != 0
+                          ).length
+                        : ""
+                    }}
+                  </td>
                   <td>
                     <button class="blue--text" @click="currentUser(user.uid)">
                       Перейти
@@ -39,7 +54,6 @@
           </v-simple-table>
         </v-card>
       </v-col>
-      <v-btn @click="cs()"></v-btn>
     </v-row>
   </v-container>
 </template>
@@ -55,45 +69,18 @@ export default {
     currentUser(uid) {
       this.$router.push({ name: "ministrant", params: { uid } });
     },
-    cs(item){
-      console.log(item)
-      console.dir(this.test)
-    }
   },
   computed: {
-    ...mapGetters(["stats", "userId"]),
+    ...mapGetters(["stats"]),
     users() {
       return this.$store.getters.users && this.$store.getters.users.length > 0
         ? this.$store.getters.users.filter((u) => u.level != "Ксендз")
         : [];
     },
-    test(){
-      let sunday = this.stats[this.userId].filter(x => x.isSunday).length;
-      let weekDay = this.stats[this.userId].filter(x => !x.isSunday).length;
-      let currentUser = this.users.filter(x => x.uid == this.userId)
-      let array = currentUser.concat({sunday: sunday,
-      weekDay: weekDay})
-      console.log(array)
-      return array
-    }
-    // resSunday(){
-    //   let resSunday = {};
-    //   for (var k in this.stats) {
-    //     resSunday = {
-    //       name: `${this.stats[k][0].name} ${this.stats[k][0].surname}`
-    //      }
-    //   }
-    //   return resSunday
-    // },
-    // userData(){
-    //   this.users.forEach(element => {
-        
-    //   });
-    // }
   },
-  created(){
+  created() {
     this.$store.dispatch("LOAD_STATS");
-  }
+  },
 };
 </script>
 
