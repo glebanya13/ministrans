@@ -69,7 +69,7 @@ export default {
   computed: {
     ...mapGetters(["users", "parish", "dateCheckins"]),
     weekNumber() {
-      return ((this.today.week()- 3) % 4); //TODO: assign first week in parish module
+      return this.today.week() % 4 + 1; //TODO: assign first week in parish module
     },
   },
   methods: {
