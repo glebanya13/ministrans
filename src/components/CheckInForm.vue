@@ -23,7 +23,7 @@
                 <h2 class="black--text">Выберите дату посещения</h2>
               </v-card-title>
               <v-card-text>
-                <v-form v-model="valid">
+                <v-form ref="form" v-model="valid">
                   <v-alert type="warning" v-if="error">{{ error }}</v-alert>
 
                   <v-dialog
@@ -70,6 +70,14 @@
                     :rules="timeRules"
                     required
                   ></v-select>
+                  <v-time-picker
+                    v-if="time == 'Другое'"
+                    v-model="customTime"
+                    :allowed-minutes="allowedCustomTimeStep"
+                    class="mt-4"
+                    format="24hr"
+                    :rules="timeRules"
+                  ></v-time-picker>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -78,7 +86,7 @@
                 <v-btn
                   color="primary"
                   @click.prevent="checkin()"
-                  :disabled="processing || !valid"
+                  :disabled="processing || !valid || (time == customTimeText && customTime == '')"
                   >Подтвердить</v-btn
                 >
               </v-card-actions>
@@ -110,6 +118,8 @@ export default {
       snackbar: false,
       snackbarText: null,
       valid: null,
+      customTime: "",
+      customTimeText: "Другое",
       timeRules: [(v) => !!v || "Пожалуйста выберите время"],
     };
   },
@@ -137,24 +147,33 @@ export default {
       let times = this.timesDefault[this.day]
         ? this.timesDefault[this.day]
         : this.timesDefault[7]; // for weekday
+      if (!times) {
+        times = [];
+      }
+      times.push({ time: this.customTimeText });
       return times && times.map((td) => td.time);
     },
   },
   methods: {
+    allowedCustomTimeStep: (m) => m % 15 === 0,
     checkin() {
-      this.$store.dispatch("CHECK_IN", {
-        date: this.date,
-        time: this.time,
-        isMeeting: this.tab == 1,
-        tab: this.tab,
-      });
-      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
-        tab: this.tab,
-        uid: this.$store.getters.userId,
-      });
-      this.dialog = false;
-      this.snackbar = true;
-      this.snackbarText = "Поздравляем, вы отметились!";
+      this.$refs.form.validate()
+      if (this.valid) {
+        this.$store.dispatch("CHECK_IN", {
+          date: this.date,
+          time: this.time != this.customTimeText ? this.time : this.customTime,
+          isSunday: this.day == 6,
+          isMeeting: this.tab == 1,
+          tab: this.tab,
+        });
+        this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
+          tab: this.tab,
+          uid: this.$store.getters.userId,
+        });
+        this.dialog = false;
+        this.snackbar = true;
+        this.snackbarText = "Поздравляем, вы отметились!";
+      }
     },
     assignTimes() {
       if (this.parish.schedule) {
