@@ -26,22 +26,26 @@
                   </td>
                   <td>{{ user.name }} {{ user.surname }}</td>
                   <td>
-                    {{
-                      stats[user.uid]
-                        ? stats[user.uid].filter(
-                            (x) => new Date(x.date).getDay() == 0
-                          ).length
-                        : ""
-                    }}
+                    <v-chip
+                      v-if="stats[user.uid]"
+                      :color="chipColorSunday(user.uid)"
+                    >
+                      {{ mySundays(user.uid) }}/{{ allSundays }}/{{
+                        mySundays(user.uid / allSundays) * 100 + "%"
+                      }}
+                    </v-chip>
+                    <v-chip v-else color="red">0</v-chip>
                   </td>
                   <td>
-                    {{
-                      stats[user.uid]
-                        ? stats[user.uid].filter(
-                            (x) => new Date(x.date).getDay() != 0
-                          ).length
-                        : ""
-                    }}
+                    <v-chip
+                      v-if="stats[user.uid]"
+                      :color="chipColorWeekday(user.uid)"
+                    >
+                      {{ myWeekdays(user.uid) }}/{{ allWeekdays }}/{{
+                        parseInt(myWeekdays(user.uid) / allWeekdays) * 100 + "%"
+                      }}
+                    </v-chip>
+                    <v-chip v-else color="red">0</v-chip>
                   </td>
                   <td>
                     <button class="blue--text" @click="currentUser(user.uid)">
@@ -60,6 +64,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import moment from "moment";
 
 export default {
   data() {
@@ -69,6 +74,40 @@ export default {
     currentUser(uid) {
       this.$router.push({ name: "ministrant", params: { uid } });
     },
+    mySundays(id) {
+      return this.stats[id]
+        ? this.stats[id].filter((x) => new Date(x.date).getDay() == 0).length
+        : "";
+    },
+    myWeekdays(id) {
+      return this.stats[id]
+        ? this.stats[id].filter((x) => new Date(x.date).getDay() != 0).length
+        : "";
+    },
+    chipColorSunday(id) {
+      let color;
+      if (
+        this.allSundays >
+        this.stats[id].filter((x) => new Date(x.date).getDay() == 0).length
+      )
+        color = "red";
+      else {
+        color = "green";
+      }
+      return color;
+    },
+    chipColorWeekday(id) {
+      let color;
+      if (
+        this.allWeekdays >
+        this.stats[id].filter((x) => new Date(x.date).getDay() != 0).length
+      )
+        color = "red";
+      else {
+        color = "green";
+      }
+      return color;
+    },
   },
   computed: {
     ...mapGetters(["stats"]),
@@ -76,6 +115,24 @@ export default {
       return this.$store.getters.users && this.$store.getters.users.length > 0
         ? this.$store.getters.users.filter((u) => u.level != "Ксендз")
         : [];
+    },
+    allSundays() {
+      var start = moment("2020-10-25"), // start
+        end = moment(), // now
+        day = 0; // Sunday
+
+      var result = [];
+      var current = start.clone();
+
+      while (current.day(7 + day).isBefore(end)) {
+        result.push(current.clone());
+      }
+
+      return result.length;
+    },
+    allWeekdays() {
+      let weekday = Math.floor(moment().diff("2020 10 25", "weeks") / 2);
+      return weekday;
     },
   },
   created() {
