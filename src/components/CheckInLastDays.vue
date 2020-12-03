@@ -8,10 +8,21 @@
             <v-col>
               <v-chip class="ma-1 success"
                 >Всего: {{ allCheckinsCount }} / Вс: {{ sundayCheckinsCount }} /
-                Будний: {{ weekdayCheckinsCount }}</v-chip
+                Будний: {{ weekdayCheckinsCount }}
+              </v-chip>
+              <v-chip class="ma-1 yellow"
+                >Всего в Вс: {{ sundayCheckinsCount }} из {{ allSundays }} ({{
+                  Math.round(sundayCheckinsCount / allSundays * 100) + "%"
+                }})
+              </v-chip>
+              <v-chip class="ma-1 accent"
+                >Всего в Будний: {{ weekdayCheckinsCount }} из
+                {{ allWeekdays }} ({{
+                  Math.round(weekdayCheckinsCount / allWeekdays * 100) + "%"
+                }})</v-chip
               >
               <v-chip class="ma-1 primary">
-                В месяце: {{ thisMonthCheckinsCount }} раз(а) из
+                Месяц: {{ thisMonthCheckinsCount }} раз(а) из
                 {{ thisMonthCheckinsSchedule() }} по графику
               </v-chip>
               <v-chip class="ma-1 error"
@@ -50,7 +61,6 @@
               style="cursor: pointer"
               @click="deleteDate(item)"
               :disabled="disableRemove || getProcessing"
-
             >
               mdi-delete-off</v-icon
             >
@@ -124,7 +134,7 @@ export default {
     },
     weekdayCheckinsCount() {
       return this.userMassCheckins
-        ? this.userMassCheckins.filter((f) => this.isSunday(f.date)).length
+        ? this.userMassCheckins.filter((f) => !this.isSunday(f.date)).length
         : 0;
     },
     thisMonthCheckinsCount() {
@@ -153,16 +163,37 @@ export default {
           ).length
         : 0;
     },
+    allSundays() {
+      var start = moment("2020-10-25"), // start
+        end = moment(), // now
+        day = 0; // Sunday
+
+      var result = [];
+      var current = start.clone();
+
+      while (current.day(7 + day).isBefore(end)) {
+        result.push(current.clone());
+      }
+
+      return result.length;
+    },
+    allWeekdays() {
+      return moment().diff("2020-10-25", "weeks");
+    },
   },
   methods: {
     isSunday(date) {
       return moment(date, "yyyy-MM-DD").format("e") == 6;
     },
     deleteDate(checkin) {
-    this.$store.dispatch('DELETE_CHECKIN', {checkin: checkin, id: checkin.id, tab: this.tab})
-      
+      this.$store.dispatch("DELETE_CHECKIN", {
+        checkin: checkin,
+        id: checkin.id,
+        tab: this.tab,
+      });
+
       let ref;
-      
+
       if (this.disableRemove) return ref;
     },
     thisMonthCheckinsSchedule() {

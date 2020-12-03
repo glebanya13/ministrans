@@ -3,6 +3,50 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="6">
         <v-card>
+          <!-- <v-data-table
+            :headers="headers"
+            :items="users ? users : []"
+            class="elevation-1"
+            :loading="!users"
+            :loading-text="loadingText"
+          >
+            <template v-slot:item.url="{ item }">
+              <v-avatar v-if="item.url"
+                ><v-img :src="item.url" class="ma-2"></v-img
+              ></v-avatar>
+              <v-avatar v-else
+                ><v-img src="../assets/user.png" class="ma-2"></v-img
+              ></v-avatar>
+            </template>
+            <template v-slot:item.surname="{ item }">
+              {{ item.name }} {{ item.surname }}
+            </template>
+            <template v-slot:item.clas="{ item }">
+              <v-chip v-if="stats[item.uid]" :color="chipColorSunday(item.uid)">
+                {{ mySundays(item.uid) }}/{{ allSundays }}/{{
+                  (mySundays(item.uid) / allSundays) * 100 + "%"
+                }}
+              </v-chip>
+              <v-chip v-else color="red">0</v-chip>
+            </template>
+            <template v-slot:item.level="{ item }">
+              <v-chip
+                v-if="stats[item.uid]"
+                :color="chipColorWeekday(item.uid)"
+              >
+                {{ myWeekdays(item.uid) }}/{{ allWeekdays }}/{{
+                  parseInt(myWeekdays(item.uid) / allWeekdays) * 100 + "%"
+                }}
+              </v-chip>
+              <v-chip v-else color="red">0</v-chip>
+            </template>
+            <template v-slot:item.name="{ item }">
+              <v-btn class="blue--text" @click="currentUser(item.uid)">
+                Перейти
+              </v-btn>
+            </template>
+          </v-data-table> -->
+
           <v-simple-table>
             <template v-slot:default>
               <thead>
@@ -31,7 +75,7 @@
                       :color="chipColorSunday(user.uid)"
                     >
                       {{ mySundays(user.uid) }}/{{ allSundays }}/{{
-                        mySundays(user.uid / allSundays) * 100 + "%"
+                        Math.round(mySundays(user.uid) / allSundays * 100) + "%"
                       }}
                     </v-chip>
                     <v-chip v-else color="red">0</v-chip>
@@ -42,15 +86,15 @@
                       :color="chipColorWeekday(user.uid)"
                     >
                       {{ myWeekdays(user.uid) }}/{{ allWeekdays }}/{{
-                        parseInt(myWeekdays(user.uid) / allWeekdays) * 100 + "%"
+                        Math.round(myWeekdays(user.uid) / allWeekdays * 100) + "%"
                       }}
                     </v-chip>
                     <v-chip v-else color="red">0</v-chip>
                   </td>
                   <td>
-                    <button class="blue--text" @click="currentUser(user.uid)">
+                    <v-btn class="blue--text" text @click="currentUser(user.uid)">
                       Перейти
-                    </button>
+                    </v-btn>
                   </td>
                 </tr>
               </tbody>
@@ -68,7 +112,37 @@ import moment from "moment";
 
 export default {
   data() {
-    return {};
+    return {
+      // headers: [
+      //   {
+      //     text: "",
+      //     align: "start",
+      //     value: "url",
+      //   },
+      //   {
+      //     text: "Имя Фамилия",
+      //     align: "start",
+      //     value: "surname",
+      //   },
+      //   {
+      //     text: "Вс",
+      //     align: "start",
+      //     value: "clas",
+      //   },
+      //   {
+      //     text: "Будний",
+      //     align: "start",
+      //     value: "level",
+      //   },
+      //   {
+      //     text: "Профиль",
+      //     align: "start",
+      //     value: "name",
+      //   },
+      // ],
+      // loading: true,
+      // loadingText: "Загрузка данных",
+    };
   },
   methods: {
     currentUser(uid) {
@@ -85,28 +159,18 @@ export default {
         : "";
     },
     chipColorSunday(id) {
-      let color;
-      if (
-        this.allSundays >
-        this.stats[id].filter((x) => new Date(x.date).getDay() == 0).length
-      )
-        color = "red";
-      else {
-        color = "green";
-      }
-      return color;
+      let countOfCheckins = this.stats[id].filter(
+        (x) => new Date(x.date).getDay() == 0
+      ).length;
+      return Math.round(this.allSundays * 0.9) > countOfCheckins ? "red" : "green";
     },
     chipColorWeekday(id) {
-      let color;
-      if (
-        this.allWeekdays >
-        this.stats[id].filter((x) => new Date(x.date).getDay() != 0).length
-      )
-        color = "red";
-      else {
-        color = "green";
-      }
-      return color;
+      let countOfCheckins = this.stats[id].filter(
+        (x) => new Date(x.date).getDay() != 0
+      ).length;
+      return Math.round(this.allWeekdays / 2) > countOfCheckins
+        ? "red"
+        : "green";
     },
   },
   computed: {
@@ -131,8 +195,7 @@ export default {
       return result.length;
     },
     allWeekdays() {
-      let weekday = Math.floor(moment().diff("2020 10 25", "weeks") / 2);
-      return weekday;
+      return moment().diff("2020 10 25", "weeks");
     },
   },
   created() {
