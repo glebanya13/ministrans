@@ -149,13 +149,19 @@ export default {
       this.$router.push({ name: "ministrant", params: { uid } });
     },
     mySundays(id) {
+      let startDate = moment("2020-10-24")
       return this.stats[id]
-        ? this.stats[id].filter((x) => new Date(x.date).getDay() == 0).length
+        ? this.stats[id].filter((x) => 
+        startDate.isBefore(moment(x.date)) && // todo: refactoring
+        new Date(x.date).getDay() == 0).length
         : "";
     },
     myWeekdays(id) {
+      let startDate = moment("2020-10-24")
       return this.stats[id]
-        ? this.stats[id].filter((x) => new Date(x.date).getDay() != 0).length
+        ? this.stats[id].filter((x) => 
+        startDate.isBefore(moment(x.date)) && // todo: refactoring
+        new Date(x.date).getDay() != 0).length
         : "";
     },
     chipColorSunday(id) {

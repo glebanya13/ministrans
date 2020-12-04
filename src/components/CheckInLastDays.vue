@@ -11,18 +11,18 @@
                 Будний: {{ weekdayCheckinsCount }}
               </v-chip>
               <v-chip class="ma-1 yellow"
-                >Всего в Вс: {{ sundayCheckinsCount }} из {{ allSundays }} ({{
-                  Math.round(sundayCheckinsCount / allSundays * 100) + "%"
+                >Всего в Вс: {{ sundayCheckinsCount }} из {{ allSundays() }} ({{
+                  Math.round(sundayCheckinsCount / allSundays() * 100) + "%"
                 }})
               </v-chip>
               <v-chip class="ma-1 accent"
                 >Всего в Будний: {{ weekdayCheckinsCount }} из
-                {{ allWeekdays }} ({{
-                  Math.round(weekdayCheckinsCount / allWeekdays * 100) + "%"
+                {{ allWeekdays() }} ({{
+                  Math.round(weekdayCheckinsCount / allWeekdays() * 100) + "%"
                 }})</v-chip
               >
               <v-chip class="ma-1 primary">
-                Месяц: {{ thisMonthCheckinsCount }} раз(а) из
+               Этот Месяц: {{ thisMonthCheckinsCount }} раз(а) из
                 {{ thisMonthCheckinsSchedule() }} по графику
               </v-chip>
               <v-chip class="ma-1 error"
@@ -106,6 +106,7 @@ export default {
       "userMeetingCheckins",
       "userId",
       "userData",
+      "mUserData"
     ]),
     allCheckinsCount() {
       let all;
@@ -162,13 +163,19 @@ export default {
                 moment().format("MM") && !this.isSunday(f.date)
           ).length
         : 0;
-    },
-    allSundays() {
-      var start = moment("2020-10-25"), // start
+    }
+  },
+  methods: {
+     allSundays() {
+      var start = this.startOfCheckins().clone(), //moment("2020-09-25"), // start
         end = moment(), // now
         day = 0; // Sunday
 
-      var result = [];
+       var result = [];
+      let dayOfstart = start.format("e") 
+      if(dayOfstart!= 6){
+        start = start.add(6-dayOfstart, "days")
+      }
       var current = start.clone();
 
       while (current.day(7 + day).isBefore(end)) {
@@ -178,10 +185,17 @@ export default {
       return result.length;
     },
     allWeekdays() {
-      return moment().diff("2020-10-25", "weeks");
+      return moment().diff(this.startOfCheckins(), "weeks"); //moment().diff("2020-09-25", "weeks");
     },
-  },
-  methods: {
+    startOfCheckins(){
+      let start = moment("2020-10-25")
+      if(this.userMassCheckins && this.userMassCheckins.length > 0){
+        let sorted = [...this.userMassCheckins].sort((a,b) => moment(a.date, "yyyy-MM-DD").isBefore(moment(b.date, "yyyy-MM-DD")))
+        let first = moment(sorted[0].date, "yyyy-MM-DD")
+        start = first.isBefore(start) ? first : start
+      }
+      return start
+    },
     isSunday(date) {
       return moment(date, "yyyy-MM-DD").format("e") == 6;
     },
@@ -197,8 +211,9 @@ export default {
       if (this.disableRemove) return ref;
     },
     thisMonthCheckinsSchedule() {
-      if (this.userData && this.userData.myschedule) {
-        let myDays = this.userData.myschedule
+      let ud = this.targetId ? this.mUserData : this.userData
+      if (ud && ud.myschedule) {
+        let myDays = ud.myschedule
           .filter((s) => !s.alt)
           .map((s) => s.day);
         let alldays = moment().daysInMonth();

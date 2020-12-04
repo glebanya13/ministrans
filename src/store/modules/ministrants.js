@@ -53,6 +53,7 @@ export default {
         mClas: (state) => state.userDataById.clas,
         mParafia: (state) => state.userDataById.parish ? state.userDataById.parish.name : '',
         mUrl: (s) => s.userDataById.url,
-        mPhone: (s) => s.userDataById.phone
+        mPhone: (s) => s.userDataById.phone,
+        mUserData: (s) => s.userDataById
     }
 }
