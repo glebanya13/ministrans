@@ -8,9 +8,23 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <v-alert v-if="error" :value="error" type="error">{{ error }}</v-alert>
+            <v-alert v-if="error" :value="error" type="error">{{
+              error
+            }}</v-alert>
             <v-form v-model="valid">
               <v-text-field
+                v-if="credential == 'phone,password'"
+                label="Номер телефона"
+                name="phone"
+                prepend-icon="email"
+                type="text"
+                required
+                v-model="phone"
+                :rules="phoneRules"
+              ></v-text-field>
+
+              <v-text-field
+                v-if="credential == 'password'"
                 label="Е-мейл"
                 name="login"
                 prepend-icon="email"
@@ -30,38 +44,22 @@
                 v-model="password"
                 :rules="passwordRules"
               ></v-text-field>
-              <h3>Я хочу изменить</h3>
-              <v-radio-group v-model="changeType">
-                <v-radio label="Е-мейл" value="email"></v-radio>
-                <v-text-field
-                  label="Новый е-мейл"
-                  v-if="changeType == 'email'"
-                  name="newLogin"
-                  prepend-icon="email"
-                  type="email"
-                  required
-                  v-model="newEmail"
-                  :rules="emailRules"
-                ></v-text-field>
-                <v-radio label="Пароль" value="password"></v-radio>
-                <v-text-field
-                  label="Новый пароль"
-                  v-if="changeType == 'password'"
-                  id="password"
-                  name="newPassword"
-                  prepend-icon="mdi-lock"
-                  type="password"
-                  required
-                  v-model="newPassword"
-                  :rules="passwordRules"
-                ></v-text-field>
-              </v-radio-group>
+
+              <h3>Изменение пароля</h3>
+              <v-text-field
+                label="Новый пароль"
+                id="password"
+                name="newPassword"
+                prepend-icon="mdi-lock"
+                type="password"
+                required
+                v-model="newPassword"
+                :rules="passwordRules"
+              ></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" :to="{name: 'profile'}"
-              >Отмена</v-btn
-            >
+            <v-btn color="primary" :to="{ name: 'profile' }">Отмена</v-btn>
             <v-btn
               color="primary"
               @click.prevent="changeUserData()"
@@ -77,7 +75,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import messages from '@/utils/messages.js'
+import messages from "@/utils/messages.js";
+import firebase from "firebase";
 export default {
   data() {
     return {
@@ -87,6 +86,7 @@ export default {
       newPhotoUrl: null,
 
       email: null,
+      phone: null,
       password: null,
 
       newEmail: null,
@@ -98,39 +98,49 @@ export default {
         (v) => !!v || "Пожалуйста введите е-мейл",
         (v) => /.+@.+\..+/.test(v) || "Неправильный е-мейл",
       ],
+      phoneRules: [
+        (v) => !!v || "Пожалуйста введите ваш телефон",
+        (v) => (v && v.length >= 12) || "Неверный формат телефона",
+      ],
       passwordRules: [
         (v) => !!v || "Пожалуйста введите пароль",
         (v) =>
           (v && v.length >= 6) ||
           "Пароль слишком короткий - минимум 6 символов",
       ],
-      // photoURLRules: [(v) => !!v || "Пожалуйста введите адресную строку вашей фотографии"]
     };
   },
   computed: {
-    ...mapGetters(['getProcessing']),
-    error(){
-      let e = this.$store.getters.getError
-      return  e && (messages[e.code] || messages['default-error']);
-    }
+    ...mapGetters(["getProcessing"]),
+    error() {
+      let e = this.$store.getters.getError;
+      return e && (messages[e.code] || messages["default-error"]);
     },
+    credential() {
+      let user = firebase.auth().currentUser;
+      let id = user.providerData.map((d) => d.providerId).toString();
+      return id;
+    },
+    updateData() {
+      let update;
+      if (this.phone) {
+        update = this.phone + "@site.com";
+      }
+      if (this.email) {
+        update = this.email;
+      }
+      return update;
+    },
+  },
   methods: {
-      ...mapActions(['CHANGE_USER_LOGIN_DATA']),
+    ...mapActions(["CHANGE_USER_LOGIN_DATA"]),
     changeUserData() {
       this.CHANGE_USER_LOGIN_DATA({
-        email: this.email,
+        updateData: this.updateData,
         password: this.password,
-        newEmail: this.newEmail,
         newPassword: this.newPassword,
-        changeType: this.changeType,
       });
     },
-    // changeImage() {
-    //   this.$store.dispatch("CHANGE_USER_IMAGE", {
-    //     newPhotoUrl: this.newPhotoUrl,
-    //   });
-    //   this.dialogAva = false;
-    // },
   },
   created() {
     this.$bus.$on("user-profile-data-changed", () => {

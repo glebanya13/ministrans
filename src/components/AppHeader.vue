@@ -208,7 +208,6 @@ export default {
         if (res) {
           this.$store.dispatch("SIGNOUT");
           this.$router.push({ name: "home" });
-          //this.$router.push("/");
         }
       });
     },

@@ -12,6 +12,7 @@ let defaultUserData = {
     url: null,
     phone: null
 };
+
 export default {
     state: {
         userData: defaultUserData,
@@ -74,6 +75,7 @@ export default {
         },
         ADD_USER_DATA({ commit, getters }, payload) {
             commit('SET_PROCESSING', true);
+
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
 
             var user = firebase.auth().currentUser;
@@ -108,39 +110,50 @@ export default {
                     throw e;
                 });
         },
-        ADD_USER_IMG({ commit, getters }, payload) {
-            commit('SET_PROCESSING', true);
-            console.log(payload)
-            let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
-            userDataRef.set({
-                url: payload.url
-            }, { merge: true })
+        ADD_USER_IMAGE({ commit, getters, state }, payload) {
+            commit('setLoading', true);
+            let imageUrl
+            const filename = payload.url.name
+            let storageRef = firebase.storage().ref(`${getters.userId}/${filename}`).put(payload.url);
+            return storageRef
+                .then(fileData => {
+                    fileData.ref.getDownloadURL().then(url => {
+                        imageUrl = url
+                        state.userData.url = url
+                        return Vue.$db.collection('userData').doc(getters.userId).update({ url: imageUrl })
+                    })
+                })
 
                 .then(() => {
-                    commit('SET_PROCESSING', false);
-                    commit('SET_MESSAGE', 'Картинка загрузилась. Перезагрузите страницу') //todo убрать
+                    setTimeout(() => {
+                        commit('setLoading', false)
+
+                    }, 1000)
                 })
                 .catch((e) => {
                     commit('SET_ERROR', e);
-                    commit('SET_PROCESSING', false);
+                    setTimeout(() => {
+                        commit('setLoading', false)
+
+                    }, 1000)
                     throw e;
                 });
         },
-        ADD_USER_PHONE({commit, getters}, payload){
+        ADD_USER_PHONE({ commit, getters }, payload) {
             commit('SET_PROCESSING', true);
             let userDataRef = Vue.$db.collection('userData').doc(getters.userId || payload.userId);
             userDataRef.set({
                 phone: payload.phone
             }, { merge: true })
 
-            .then(() => {
-                commit('SET_PROCESSING', false);
-            })
-            .catch((e) => {
-                commit('SET_ERROR', e);
-                commit('SET_PROCESSING', false);
-                throw e;
-            });
+                .then(() => {
+                    commit('SET_PROCESSING', false);
+                })
+                .catch((e) => {
+                    commit('SET_ERROR', e);
+                    commit('SET_PROCESSING', false);
+                    throw e;
+                });
         },
         async BATCH({ getters, commit }, payload) {
             var batch = Vue.$db.batch();
@@ -258,6 +271,7 @@ export default {
                     throw error
                 })
         },
+
         UPDATE_SCHEDULE_FOR_USER({ commit, dispatch }, user) {
 
             commit('SET_PROCESSING', true)

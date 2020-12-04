@@ -2,10 +2,15 @@
   <v-container fluid>
     <v-layout column>
       <v-card class="mx-auto" width="600" outlined>
-        <v-card-title >
-          <h2 class="text-wrap text-center">  Вы сегодня были на Имше?</h2>
+        <v-card-title>
+          <h2 class="text-wrap text-center" v-if="tab == '0'">
+            Вы сегодня были на Имше?
+          </h2>
+          <h2 class="text-wrap text-center" v-if="tab == '1'">
+            Вы сегодня были на встрече?
+          </h2>
         </v-card-title>
- <br />
+        <br />
         <v-card-actions>
           <v-dialog v-model="dialog" persistent max-width="450">
             <template v-slot:activator="{ on }">
@@ -18,7 +23,7 @@
                 <h2 class="black--text">Выберите дату посещения</h2>
               </v-card-title>
               <v-card-text>
-                <v-form v-model="valid">
+                <v-form ref="form" v-model="valid">
                   <v-alert type="warning" v-if="error">{{ error }}</v-alert>
 
                   <v-dialog
@@ -54,6 +59,7 @@
                   </v-dialog>
 
                   <v-select
+                    v-if="tab == '0'"
                     v-model="time"
                     :items="timesToChoose"
                     menu-props="auto"
@@ -64,6 +70,14 @@
                     :rules="timeRules"
                     required
                   ></v-select>
+                  <v-time-picker
+                    v-if="time == 'Другое'"
+                    v-model="customTime"
+                    :allowed-minutes="allowedCustomTimeStep"
+                    class="mt-4"
+                    format="24hr"
+                    :rules="timeRules"
+                  ></v-time-picker>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -72,7 +86,7 @@
                 <v-btn
                   color="primary"
                   @click.prevent="checkin()"
-                  :disabled="processing || !valid"
+                  :disabled="processing || !valid || (time == customTimeText && customTime == '')"
                   >Подтвердить</v-btn
                 >
               </v-card-actions>
@@ -88,31 +102,34 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 import { mapGetters } from "vuex";
-import helpers from "@/utils/helpers.js"; 
+import helpers from "@/utils/helpers.js";
 
 export default {
+  props: ["tab"],
   data() {
     return {
       dialog: false,
-      date: moment().format('yyyy-MM-DD'),//new Date().toISOString().substr(0, 10),
+      date: moment().format("yyyy-MM-DD"), //new Date().toISOString().substr(0, 10),
       modal: false,
       timesDefault: {},
       time: "",
       snackbar: false,
       snackbarText: null,
       valid: null,
+      customTime: "",
+      customTimeText: "Другое",
       timeRules: [(v) => !!v || "Пожалуйста выберите время"],
     };
   },
   computed: {
-    ...mapGetters(['parish']),
-    dateToView(){
-       return this.date ? moment(this.date).format('LL (dddd)') : ''
+    ...mapGetters(["parish"]),
+    dateToView() {
+      return this.date ? moment(this.date).format("LL (dddd)") : "";
     },
-    maxDate(){
-      return moment().format('yyyy-MM-DD')
+    maxDate() {
+      return moment().format("yyyy-MM-DD");
     },
     massCheckins() {
       return this.$store.getters.massCheckins;
@@ -120,37 +137,49 @@ export default {
     error() {
       return this.$store.getters.getError;
     },
-    day() {
-      return moment(this.date, 'yyyy-MM-DD').format('e') // sunday == 6
-    },
+    // day() {
+    //   return moment(this.date, "yyyy-MM-DD").format("e"); // sunday == 6
+    // },
     processing() {
       return this.$store.getters.getProcessing;
     },
-    timesToChoose(){
-      let times = this.timesDefault[this.day] 
-      ? this.timesDefault[this.day] 
-      : this.timesDefault[7] // for weekday
-      return times && times.map(td => td.time)
-       
-    }
+    timesToChoose() {
+      let times = this.timesDefault[this.day]
+        ? this.timesDefault[this.day]
+        : this.timesDefault[7]; // for weekday
+      if (!times) {
+        times = [];
+      }
+      times.push({ time: this.customTimeText });
+      return times && times.map((td) => td.time);
+    },
   },
   methods: {
+    allowedCustomTimeStep: (m) => m % 15 === 0,
     checkin() {
-      this.$store.dispatch("CHECK_IN", {
-        date: this.date,
-        time: this.time,
-        isSunday: this.day == 6,
-      });
-      this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER");
-      this.dialog = false;
-      this.snackbar = true;
-      this.snackbarText = "Поздравляем, вы отметились!";
-    },
-    assignTimes(){
-      if(this.parish.schedule){
-        this.timesDefault = helpers.groupByKey(this.parish.schedule, 'day')
+      this.$refs.form.validate()
+      if (this.valid) {
+        this.$store.dispatch("CHECK_IN", {
+          date: this.date,
+          time: this.time != this.customTimeText ? this.time : this.customTime,
+          isSunday: this.day == 6,
+          isMeeting: this.tab == 1,
+          tab: this.tab,
+        });
+        this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
+          tab: this.tab,
+          uid: this.$store.getters.userId,
+        });
+        this.dialog = false;
+        this.snackbar = true;
+        this.snackbarText = "Поздравляем, вы отметились!";
       }
-    }
+    },
+    assignTimes() {
+      if (this.parish.schedule) {
+        this.timesDefault = helpers.groupByKey(this.parish.schedule, "day");
+      }
+    },
   },
   created() {
     if (this.parish) {
@@ -167,7 +196,8 @@ export default {
 </script>
 
 <style scoped>
-.v-card__text, .v-card__title {
+.v-card__text,
+.v-card__title {
   word-break: normal; /* maybe !important  */
 }
 .center {

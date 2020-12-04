@@ -10,6 +10,8 @@ import VuetifyConfirm from 'vuetify-confirm'
 import { setupBus } from './infrastructure/eventBus'
 import Chartkick from 'vue-chartkick'
 import Chart from 'chart.js'
+import ImageUploader from 'vue-image-upload-resize'
+Vue.use(ImageUploader);
 
 const moment = require('moment')
 require('moment/locale/ru')
