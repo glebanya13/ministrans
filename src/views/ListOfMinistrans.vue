@@ -65,7 +65,7 @@
                       ><v-img :src="user.url" class="ma-2"></v-img
                     ></v-avatar>
                     <v-avatar v-else
-                      ><v-img src="../assets/user.png" class="ma-2"></v-img
+                      ><v-img src="../assets/5.png" class="ma-2"></v-img
                     ></v-avatar>
                   </td>
                   <td>{{ user.name }} {{ user.surname }}</td>

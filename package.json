@@ -16,6 +16,7 @@
     "date-fns": "^2.16.1",
     "firebase": "^7.19.0",
     "highcharts": "^8.2.2",
+    "lru-cache": "^6.0.0",
     "moment": "^2.27.0",
     "options": "0.0.6",
     "vue": "^2.6.12",

@@ -18,6 +18,7 @@ import PhoneLogin from '../components/PhoneLogin.vue'
 import ministrant from '../components/ministrant.vue'
 import migration from '../components/Migration.vue'
 import AddNews from '../views/AddNews.vue'
+import Settings from '../views/Settings.vue'
 
 
 Vue.use(VueRouter)
@@ -26,6 +27,10 @@ const routes = [
   {
     path: '/loginPhone',
     component: PhoneLogin
+  },
+  {
+    path: '/settings',
+    component: Settings
   },
   {
     path: '/addnews',

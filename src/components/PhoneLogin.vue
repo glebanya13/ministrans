@@ -5,7 +5,7 @@
         <div>
           <a @click="home()">
             <center>
-              <v-img src="../assets/bird.png" width="50px" class="bird"></v-img>
+              <v-img src="../assets/2.png" width="50px" class="bird"></v-img>
             </center>
           </a>
         </div>

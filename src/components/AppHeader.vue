@@ -4,7 +4,7 @@
       <v-layout column align-center v-if="isUserAuthenticated">
         <v-flex class="mt-5">
           <v-avatar size="100">
-            <img v-if="!userImage" src="../assets/user.png" alt="" />
+            <img v-if="!userImage" src="../assets/5.png" alt="" />
             <v-img v-else :src="userImage"></v-img>
           </v-avatar>
           <p class="subheading mt-1 text-center">
@@ -100,12 +100,12 @@
 
       <v-spacer></v-spacer>
 
-      <v-toolbar-items>
+      <!-- <v-toolbar-items>
         <v-btn text @click.prevent="singout()" v-if="isUserAuthenticated">
           <v-icon left>mdi-exit-run</v-icon>
           Выйти
         </v-btn>
-      </v-toolbar-items>
+      </v-toolbar-items> -->
     </v-app-bar>
   </div>
 </template>
@@ -146,6 +146,7 @@ export default {
             title: "Список министрантов",
             route: "/ministrans",
           },
+          { icon: "settings", title: "Settings", route: "/settings" },
         ];
       return links;
     },

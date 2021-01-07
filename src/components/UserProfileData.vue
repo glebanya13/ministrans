@@ -20,7 +20,7 @@
               <label for="fileInput" slot="upload-label">
                 <figure>
                   <v-avatar size="100" class="mr-4">
-                    <v-img v-if="!userImage" src="../assets/user.png">
+                    <v-img v-if="!userImage" src="../assets/5.png">
                       <v-row
                         class="fill-height ma-0"
                         align="center"
@@ -129,7 +129,7 @@
         <v-card-text>
           <v-flex class="mb-4">
             <v-avatar size="100" class="mr-4">
-              <v-img v-if="!mUrl" src="../assets/user.png"> ></v-img>
+              <v-img v-if="!mUrl" src="../assets/5.png"> ></v-img>
               <v-img v-else :src="mUrl"></v-img>
             </v-avatar>
           </v-flex>

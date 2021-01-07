@@ -5,7 +5,7 @@
 
         <div>
         <a @click="home()">
-          <center><v-img src="../assets/bird.png" width="50px" class="bird"></v-img></center>
+          <center><v-img src="../assets/2.png" width="50px" class="bird"></v-img></center>
         </a>
         </div>
 
@@ -57,10 +57,10 @@
           <br /><br />
           Или войти с помощью:  <br />
           <button class="social-button" @click="socialSignIn()">
-            <img src="../assets/google-logo.png" alt="" />
+            <img src="../assets/3.png" alt="" />
           </button>
           <button class="social-button" @click="phone()">
-            <img src="../assets/phone.png" alt="" />
+            <img src="../assets/4.png" alt="" />
           </button>
         </div>
       </v-col>

@@ -271,7 +271,7 @@ export default {
                     throw error
                 })
         },
-
+        
         UPDATE_SCHEDULE_FOR_USER({ commit, dispatch }, user) {
 
             commit('SET_PROCESSING', true)
