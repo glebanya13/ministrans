@@ -36,14 +36,15 @@
                   министрантов, график, расписание и много другое. Приятного
                   использования!
                 </p>
-                <v-img
-                  src="https://lh3.googleusercontent.com/proxy/pDdRe8KWnhsOBaHJIpihDEYjONW1fjJRV7Fp_BM8hEFRdH8jGDS28Zax65R8fh76ukIR7xYNDzusOilJt4HV8A2fZb80ynsgEzCf8PCT-RLVsv57s6Jwi7qW7i06-i4BUbQ"
+                <v-img 
+                  src="https://cyril-methodius.de/images/minstr.jpg"
                   height="350"
                   width="450"
                   class="ml-16 hidden-sm-and-down"
-                ></v-img>
+                ></v-img> 
+                <!-- optimize for dark theme -->
                 <v-img
-                  src="https://lh3.googleusercontent.com/proxy/pDdRe8KWnhsOBaHJIpihDEYjONW1fjJRV7Fp_BM8hEFRdH8jGDS28Zax65R8fh76ukIR7xYNDzusOilJt4HV8A2fZb80ynsgEzCf8PCT-RLVsv57s6Jwi7qW7i06-i4BUbQ"
+                  src="https://cyril-methodius.de/images/minstr.jpg"
                   height="250"
                   width="350"
                   class="hidden-md-and-up"
@@ -118,7 +119,7 @@ export default {
   data() {
     return {
       fab: false,
-      images: [
+      images: [ // send to firebase storage
         {
           id: 1,
           url:

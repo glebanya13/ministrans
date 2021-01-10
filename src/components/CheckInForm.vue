@@ -12,16 +12,45 @@
         </v-card-title>
         <br />
         <v-card-actions>
-          <v-dialog v-model="dialog" persistent max-width="450">
+          <v-dialog v-model="excuseDialog" persistent max-width="450">
             <template v-slot:activator="{ on }">
               <div class="center">
-                <v-btn class="primary" v-on="on">Отметиться</v-btn>
+                <v-btn class="primary float-right mr-1" v-on="on"
+                  >Извиниться</v-btn
+                >
               </div>
             </template>
             <v-card>
-              <v-card-title>
-                <h2 class="black--text">Выберите дату посещения</h2>
-              </v-card-title>
+              <v-card-title>Опишите причину</v-card-title>
+              <v-card-text>
+                <v-textarea
+                  name="input-7-1"
+                  label="Причина"
+                  required
+                  v-model="problem"
+                  :rules="rules"
+                ></v-textarea>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="excuseDialog = false"
+                  >Отмена</v-btn
+                >
+                <v-btn color="primary" @click="send()">Отправить</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <v-dialog v-model="checkinDialog" persistent max-width="450">
+            <template v-slot:activator="{ on }">
+              <div class="center">
+                <v-btn class="primary float-left ml-1" v-on="on"
+                  >Отметиться</v-btn
+                >
+              </div>
+            </template>
+            <v-card>
+              <v-card-title>Выберите дату посещения</v-card-title>
               <v-card-text>
                 <v-form ref="form" v-model="valid">
                   <v-alert type="warning" v-if="error">{{ error }}</v-alert>
@@ -82,16 +111,23 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="dialog = false">Отмена</v-btn>
+                <v-btn color="primary" @click="checkinDialog = false"
+                  >Отмена</v-btn
+                >
                 <v-btn
                   color="primary"
                   @click.prevent="checkin()"
-                  :disabled="processing || !valid || (time == customTimeText && customTime == '')"
+                  :disabled="
+                    processing ||
+                    !valid ||
+                    (time == customTimeText && customTime == '')
+                  "
                   >Подтвердить</v-btn
                 >
               </v-card-actions>
             </v-card>
           </v-dialog>
+
           <v-snackbar v-model="snackbar" bottom light color="green lighten-1">
             <v-icon>check</v-icon> {{ snackbarText }}
           </v-snackbar>
@@ -110,7 +146,10 @@ export default {
   props: ["tab"],
   data() {
     return {
-      dialog: false,
+      checkinDialog: false,
+      excuseDialog: false,
+      rules: [(v) => !!v || "Пожалуйста заполните поле"],
+      problem: "Извиняюсь, не пришел по тому что:",
       date: moment().format("yyyy-MM-DD"), //new Date().toISOString().substr(0, 10),
       modal: false,
       timesDefault: {},
@@ -124,7 +163,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["parish"]),
+    ...mapGetters(["parish", "userData"]),
     dateToView() {
       return this.date ? moment(this.date).format("LL (dddd)") : "";
     },
@@ -155,9 +194,16 @@ export default {
     },
   },
   methods: {
+    send() {
+      console.log(
+        this.userData.myschedule
+          .filter((x) => x.day != 6)
+          .map((x) => x.day + " " + x.time)
+      );
+    },
     allowedCustomTimeStep: (m) => m % 15 === 0,
     checkin() {
-      this.$refs.form.validate()
+      this.$refs.form.validate();
       if (this.valid) {
         this.$store.dispatch("CHECK_IN", {
           date: this.date,

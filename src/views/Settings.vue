@@ -1,44 +1,65 @@
 <template>
-  <div>
-    <h2>Настройки</h2>
+  <v-container>
+    <v-flex>
+      <v-card class="mx-auto mt-16 elevation-12" width="800px">
+        <v-card-title>
+          <h3 class="mt-2"><v-icon>settings</v-icon> System Settings</h3>
+        </v-card-title>
+        <v-card-text>
+          <hr class="primary mt-2" />
 
-    <p class="mt-4">Выберите тему:</p>
-    <v-list>
-      <v-list-item>
-        <v-switch
-        v-model="theme"
-        inset
-        label="Vuetify Theme Dark"
-        persistent-hint
-      ></v-switch>
-      </v-list-item>
-      <v-list-item>
+          <v-list class="mt-2">
+            <v-list-item>
+              <v-col>
+                <h1>Тема</h1>
+              </v-col>
+              <v-col>
+                <v-switch
+                  class="float-right"
+                  v-model="theme"
+                  inset
+                  persistent-hint
+                ></v-switch>
+              </v-col>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
 
-      </v-list-item>
-    </v-list>
-
-    <v-btn @click="addSettingsToStorage()" class="mt-5">Готово</v-btn>
-  </div>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="switchTheme()" class="mt-5">Сохранить</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-flex>
+  </v-container>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      theme: false
+      theme: false,
     };
   },
   methods: {
-    addSettingsToStorage() {
-      this.$vuetify.theme.dark = this.theme
-      localStorage.setItem("vuetify@user", `${JSON.stringify({"theme":{"dark":this.theme}})}`)
+    switchTheme() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+
+      localStorage.setItem(
+        "theme",
+        this.$vuetify.theme.dark ? "dark" : "light"
+      );
     },
   },
-  // mounted() {
-  //   if (localStorage.themeCache) {
-  //     this.themeCache = localStorage.themeCache;
-  //   }
-  // },
+  mounted() {
+    if (localStorage.theme) {
+      if (localStorage.theme === "dark") {
+        this.theme = true;
+      } else {
+        this.theme = false;
+      }
+    }
+  },
 };
 </script>
 

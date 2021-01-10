@@ -34,7 +34,7 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap align-center justify-center class="hidden-md-and-up">
-      <v-flex>
+      <v-flex xs12>
         <h1 class="text-center ml-4">График министрантов</h1>
       </v-flex>
       <v-flex>
@@ -56,7 +56,7 @@
         </v-card>
       </v-flex>
       <v-flex>
-        <v-card width="300" outlined class="elevation-0 transparent">
+        <v-card width="300" outlined class="elevation-0 transparent mb-12">
           <bar-chart
             :data="meetingData"
             width="300px"

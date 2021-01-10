@@ -17,7 +17,7 @@ const moment = require('moment')
 require('moment/locale/ru')
 
 Vue.use(require('vue-moment'), {
-    moment
+  moment
 })
 
 Vue.use(Chartkick.use(Chart))
@@ -35,7 +35,7 @@ Vue.use(VuetifyConfirm, {
 Vue.config.productionTip = false
 
 
-const firebaseApp =  firebase.initializeApp(firebaseConfig)
+const firebaseApp = firebase.initializeApp(firebaseConfig)
 const db = firebaseApp.firestore()
 
 Vue.$db = db
@@ -47,6 +47,6 @@ new Vue({
   store,
   vuetify,
   render: h => h(App),
-  created(){
+  created() {
   },
 }).$mount('#app')

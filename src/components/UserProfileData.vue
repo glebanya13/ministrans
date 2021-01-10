@@ -109,11 +109,12 @@
       </v-card> -->
       <br />
       <schedule-for-users
+        v-if="userLevel != 'Ксендз'"
         :hide-headers="true"
         :target-id="userId"
       ></schedule-for-users>
       <br />
-      <v-tabs v-model="tab" fixed-tabs>
+      <v-tabs v-model="tab" fixed-tabs v-if="userLevel != 'Ксендз'">
         <v-tab :key="'church'" ripple> Имша </v-tab>
         <v-tab :key="'meet'"> Встреча </v-tab>
         <v-tab-item :key="'church'">
@@ -182,7 +183,7 @@
         :target-id="targetId"
       ></schedule-for-users>
       <br />
-      <v-tabs v-model="tab" fixed-tabs>
+      <v-tabs v-model="tab" fixed-tabs >
         <v-tab :key="'church'" ripple> Имша </v-tab>
         <v-tab :key="'meet'"> Встреча </v-tab>
         <v-tab-item :key="'church'">
@@ -208,7 +209,6 @@
 import { mapGetters, mapMutations } from "vuex";
 import lastDay from "../components/CheckInLastDays";
 import ScheduleForUsers from "@/components/ScheduleForUsers";
-// import SundaySC from "@/components/TodaySchedule";
 import ImageUploader from "vue-image-upload-resize";
 
 export default {

@@ -9,14 +9,6 @@ export default new Vuetify({
     iconfont: "mdi"
   },
   theme: {
-    dark: false,
-    options: {
-      themeCache: {
-        get: key => {
-          console.log(key)
-          localStorage.getItem(key)},
-        set: (key, value) => {localStorage.setItem(key, value)},
-      },
-    }
+    dark: localStorage.getItem('theme') === 'dark',
   },
 });

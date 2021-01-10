@@ -17,7 +17,6 @@ import phoneAuth from '../components/PhoneAuth.vue'
 import PhoneLogin from '../components/PhoneLogin.vue'
 import ministrant from '../components/ministrant.vue'
 import migration from '../components/Migration.vue'
-import AddNews from '../views/AddNews.vue'
 import Settings from '../views/Settings.vue'
 
 
@@ -31,11 +30,6 @@ const routes = [
   {
     path: '/settings',
     component: Settings
-  },
-  {
-    path: '/addnews',
-    name: 'addnews',
-    component: AddNews
   },
   {
     path: '/migration',

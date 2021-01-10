@@ -10,7 +10,7 @@ let defaultUserData = {
     surname: null,
     parish: {},
     url: null,
-    phone: null
+    phone: null,
 };
 
 export default {
@@ -271,7 +271,7 @@ export default {
                     throw error
                 })
         },
-        
+
         UPDATE_SCHEDULE_FOR_USER({ commit, dispatch }, user) {
 
             commit('SET_PROCESSING', true)
@@ -309,16 +309,16 @@ export default {
     },
 
     getters: {
-        users: (state) => state.users,
-        userData: (state) => state.userData,
-        userName: (state) => state.userData.name,
-        userLevel: (state) => state.userData.level,
-        userSurname: (state) => state.userData.surname,
-        userBirthday: (state) => state.userData.birthday,
-        userClas: (state) => state.userData.clas,
-        userParafia: (state) => state.userData.parish ? state.userData.parish.name : '',
-        usersForSchedule: (state) => state.usersForSchedule,
-        needProfile: (state) => state.needProfile,
+        users: (s) => s.users,
+        userData: (s) => s.userData,
+        userName: (s) => s.userData.name,
+        userLevel: (s) => s.userData.level,
+        userSurname: (s) => s.userData.surname,
+        userBirthday: (s) => s.userData.birthday,
+        userClas: (s) => s.userData.clas,
+        userParafia: (s) => s.userData.parish ? s.userData.parish.name : '',
+        usersForSchedule: (s) => s.usersForSchedule,
+        needProfile: (s) => s.needProfile,
         url: (s) => s.userData.url,
         phone: (s) => s.userData.phone
     }

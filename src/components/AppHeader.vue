@@ -154,11 +154,6 @@ export default {
       let links = [
         {
           icon: "mdi-text-box-multiple-outline",
-          title: "AddNews",
-          route: "/addnews",
-        },
-        {
-          icon: "mdi-text-box-multiple-outline",
           title: "Admin",
           route: "/admin",
         },
