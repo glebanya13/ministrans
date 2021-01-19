@@ -23,20 +23,75 @@
             <v-card>
               <v-card-title>Опишите причину</v-card-title>
               <v-card-text>
-                <v-textarea
-                  name="input-7-1"
-                  label="Причина"
-                  required
-                  v-model="problem"
-                  :rules="rules"
-                ></v-textarea>
+                <v-form ref="form" v-model="valid">
+                  <v-alert type="warning" v-if="error">{{ error }}</v-alert>
+                  <v-textarea
+                    name="input-7-1"
+                    label="Причина"
+                    required
+                    v-model="problem"
+                    :rules="rules"
+                  ></v-textarea>
+                  <v-dialog
+                    ref="dialog1"
+                    v-model="modal"
+                    :return-value.sync="date"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        :value="dateToView"
+                        label="Выберите дату"
+                        prepend-icon="event"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+
+                    <v-date-picker v-model="date" :max="maxDate" scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="modal = false"
+                        >Отмена</v-btn
+                      >
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.dialog1.save(date)"
+                        >OK</v-btn
+                      >
+                    </v-date-picker>
+                  </v-dialog>
+
+                  <v-select
+                    v-if="tab == '0'"
+                    v-model="time"
+                    :items="timesToChoose"
+                    menu-props="auto"
+                    label="Выберите время"
+                    hide-details
+                    prepend-icon="event"
+                    single-line
+                    :rules="timeRules"
+                    required
+                  ></v-select>
+                  <v-time-picker
+                    v-if="time == 'Другое'"
+                    v-model="customTime"
+                    :allowed-minutes="allowedCustomTimeStep"
+                    class="mt-4"
+                    format="24hr"
+                    :rules="timeRules"
+                  ></v-time-picker>
+                </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="excuseDialog = false"
                   >Отмена</v-btn
                 >
-                <v-btn color="primary" @click="send()">Отправить</v-btn>
+                <v-btn color="primary" @click="send('apologized')" :disabled="!valid">Отправить</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -116,7 +171,7 @@
                 >
                 <v-btn
                   color="primary"
-                  @click.prevent="checkin()"
+                  @click.prevent="send()"
                   :disabled="
                     processing ||
                     !valid ||
@@ -194,15 +249,9 @@ export default {
     },
   },
   methods: {
-    send() {
-      console.log(
-        this.userData.myschedule
-          .filter((x) => x.day != 6)
-          .map((x) => x.day + " " + x.time)
-      );
-    },
     allowedCustomTimeStep: (m) => m % 15 === 0,
-    checkin() {
+    send(apologized) {
+      console.log(apologized)
       this.$refs.form.validate();
       if (this.valid) {
         this.$store.dispatch("CHECK_IN", {
@@ -211,6 +260,7 @@ export default {
           isSunday: this.day == 6,
           isMeeting: this.tab == 1,
           tab: this.tab,
+          apologized
         });
         this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
           tab: this.tab,

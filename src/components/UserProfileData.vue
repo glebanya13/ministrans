@@ -1,7 +1,11 @@
 <template>
   <v-container fluid>
     <v-layout column v-if="!targetId">
-      <v-card class="mx-auto" width="600" outlined :loading="!userName">
+      <v-row no-gutters>
+      <v-col cols="12"
+        sm="6"
+        md="6">
+      <v-card width="600" outlined :loading="!userName">
         <v-card-text>
           <v-flex class="mb-4">
             <image-uploader
@@ -66,7 +70,10 @@
           </h2>
 
           <h2 class="headline mb-0">
-            <h4 v-if="phone"><v-icon>phone</v-icon> <a :href="`tel:${this.phone}`" class="grey--text">{{phone}}</a></h4>
+            <h4 v-if="phone">
+              <v-icon>phone</v-icon>
+              <a :href="`tel:${this.phone}`" class="grey--text">{{ phone }}</a>
+            </h4>
           </h2>
 
           <h2 class="headline mb-0">
@@ -104,6 +111,22 @@
           >
         </v-card-actions>
       </v-card>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="6"
+        md="5"
+      >
+      <v-card width="600">
+        <v-card-title>Когда приходить?</v-card-title>
+        <v-card-text>
+          <h3>{{today}}</h3>
+          <h3>{{nextday}}</h3>
+          <v-btn @click="da()">Click</v-btn>
+        </v-card-text>
+      </v-card>
+      </v-col>
+      </v-row>
       <!-- <v-card>
         <sunday-schedule></sunday-schedule>
       </v-card> -->
@@ -148,7 +171,12 @@
           </h2>
 
           <h2 class="headline mb-0">
-            <h4 v-if="mPhone"><v-icon>phone</v-icon> <a :href="`tel:${this.mPhone}`" class="grey--text">{{mPhone}}</a></h4>
+            <h4 v-if="mPhone">
+              <v-icon>phone</v-icon>
+              <a :href="`tel:${this.mPhone}`" class="grey--text">{{
+                mPhone
+              }}</a>
+            </h4>
           </h2>
 
           <h2 class="headline mb-0">
@@ -183,7 +211,7 @@
         :target-id="targetId"
       ></schedule-for-users>
       <br />
-      <v-tabs v-model="tab" fixed-tabs >
+      <v-tabs v-model="tab" fixed-tabs>
         <v-tab :key="'church'" ripple> Имша </v-tab>
         <v-tab :key="'meet'"> Встреча </v-tab>
         <v-tab-item :key="'church'">
@@ -210,6 +238,7 @@ import { mapGetters, mapMutations } from "vuex";
 import lastDay from "../components/CheckInLastDays";
 import ScheduleForUsers from "@/components/ScheduleForUsers";
 import ImageUploader from "vue-image-upload-resize";
+import moment from 'moment'
 
 export default {
   props: ["targetId"],
@@ -219,6 +248,7 @@ export default {
       tab: "church",
       image: null,
       hasImage: false,
+      text: ''
     };
   },
   computed: {
@@ -251,6 +281,22 @@ export default {
     loading() {
       return this.$store.getters.loading;
     },
+    today() {
+      let today = JSON.parse(localStorage.userdata).myschedule.filter(x => x.day == moment().format('d') - 1)
+      let todayText
+      if(!today.toString()) {
+        todayText = "Можно придти в любое время"
+      } else {
+        todayText = `Вам сегодня нужно придти в ${today.map(x => x.time + " часов").toString()}. Вы еще не отметились, отметьтесь пожалуйста)`
+      }
+      return todayText
+    },
+    nextday() {
+      let nextday = JSON.parse(localStorage.userdata).myschedule.filter(x => x.day != 6 && x.day != moment().format('d') - 1).map(x=> x.day + " " + x.time).toString() // porblem with weekName
+      // let nextdayText
+      return "В следующий раз мне нужно в " + nextday
+    }
+
   },
   methods: {
     ...mapMutations(["SET_ERROR", "SET_MESSAGE"]),
@@ -262,6 +308,11 @@ export default {
         url: this.image,
       });
     },
+    da(){
+      let x =JSON.parse(localStorage.userdata).myschedule.filter(x => x.day == moment().format('d') - 1).map(x => x.time + " часов").toString()
+      console.log(JSON.parse(localStorage.userdata).myschedule.filter(x => x.day == moment().format('d') - 1))
+      this.text = x
+    }
   },
   components: {
     lastDay,

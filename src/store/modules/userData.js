@@ -11,6 +11,7 @@ let defaultUserData = {
     parish: {},
     url: null,
     phone: null,
+    myschedule: []
 };
 
 export default {

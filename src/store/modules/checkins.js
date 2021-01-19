@@ -50,6 +50,7 @@ export default {
             commit('SET_PROCESSING', true)
 
             let checkinRef
+            let apologized
 
             if (userCheckinData.tab == '0') {
                 checkinRef = Vue.$db.collection('massCheckins').doc(`${userCheckinData.date}_${userCheckinData.time}_${getters.userId}`)
@@ -57,9 +58,16 @@ export default {
                 checkinRef = Vue.$db.collection('meetingCheckins').doc(`${userCheckinData.date}_${getters.userId}`)
             }
 
+            if(userCheckinData.apologized == "apologized"){
+                apologized = true
+            } else {
+                apologized = false
+            }
+
             checkinRef.set({
                 date: userCheckinData.date,
                 isMeeting: userCheckinData.isMeeting,
+                apologized: apologized,
                 parafia: {
                     parafiaName: getters.userParafia,
                 },
