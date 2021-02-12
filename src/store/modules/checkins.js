@@ -51,6 +51,7 @@ export default {
 
             let checkinRef
             let apologized
+            let comment
 
             if (userCheckinData.tab == '0') {
                 checkinRef = Vue.$db.collection('massCheckins').doc(`${userCheckinData.date}_${userCheckinData.time}_${getters.userId}`)
@@ -58,8 +59,9 @@ export default {
                 checkinRef = Vue.$db.collection('meetingCheckins').doc(`${userCheckinData.date}_${getters.userId}`)
             }
 
-            if(userCheckinData.apologized == "apologized"){
+            if (userCheckinData.apologized == "apologized") {
                 apologized = true
+                comment = userCheckinData.comment
             } else {
                 apologized = false
             }
@@ -77,8 +79,14 @@ export default {
                     surname: getters.userSurname,
                     uid: getters.userId
                 }
+
             }, { merge: true })
                 .then(() => {
+                    if (comment != undefined && comment != null) {
+                        checkinRef.update({
+                            comment: comment
+                        })
+                    }
                     commit('SET_PROCESSING', false)
                 })
                 .catch((error) => {

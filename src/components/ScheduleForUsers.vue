@@ -108,7 +108,7 @@ export default {
       timesToChoose: [],
     };
   },
-  props:['targetId', 'hideHeaders'],
+  props: ["targetId", "hideHeaders"],
   computed: {
     ...mapGetters([
       "parish",
@@ -118,15 +118,15 @@ export default {
       "isPriest",
       "isSenior",
     ]),
-    showHeaders(){
-      return !this.hideHeaders ? '' : 'd-none'
+    showHeaders() {
+      return !this.hideHeaders ? "" : "d-none";
     },
   },
   methods: {
     ...mapActions(["UPDATE_SCHEDULE_FOR_USER", "LOAD_USERS"]),
-    close(){
-      this.dialog = false
-      this.LOAD_USERS()
+    close() {
+      this.dialog = false;
+      this.LOAD_USERS();
     },
     disableTimeIfChosen(itemIndex, currentDayIndex) {
       if (this.timesToChoose[currentDayIndex].number != 6) return;
@@ -234,7 +234,9 @@ export default {
     },
     matchEditableUserSchedule() {
       if (this.editableUser.myschedule) {
-        let uSchedule = this.editableUser.myschedule ? [...this.editableUser.myschedule] : [];
+        let uSchedule = this.editableUser.myschedule
+          ? [...this.editableUser.myschedule]
+          : [];
         this.timesToChoose.forEach((t) => {
           let found = uSchedule.findIndex((f) => f.day == t.number);
           if (found >= 0) {
@@ -268,13 +270,17 @@ export default {
   },
   created() {
     if (this.users && this.users.length >= 0) {
-      this.usersList = this.users.filter(u => this.targetId ? u.uid == this.targetId : true);
-      this.usersList = this.usersList.filter(u => u.level != "Ксендз" );
+      this.usersList = this.users.filter((u) =>
+        this.targetId ? u.uid == this.targetId : true
+      );
+      this.usersList = this.usersList.filter((u) => u.level != "Ксендз");
       this.loading = false;
     }
     this.$bus.$on("users-are-loaded", () => {
-      this.usersList = this.users.filter(u =>  this.targetId ? u.uid == this.targetId : true);
-      this.usersList = this.usersList.filter(u => u.level != "Ксендз" );
+      this.usersList = this.users.filter((u) =>
+        this.targetId ? u.uid == this.targetId : true
+      );
+      this.usersList = this.usersList.filter((u) => u.level != "Ксендз");
       this.loading = false;
     });
     if (this.parish) {

@@ -3,9 +3,13 @@
     <v-layout column>
       <v-card class="mx-auto" width="600" outlined>
         <v-card-title>
-          <h2 class="text-wrap text-center" v-if="tab == '0'">
+          <h2
+            class="text-wrap text-center"
+            v-if="tab == '0' && buttons != true"
+          >
             Вы сегодня были на Имше?
           </h2>
+          <h4 v-if="tab == '0' && buttons == true">Вы ещё не отметились</h4>
           <h2 class="text-wrap text-center" v-if="tab == '1'">
             Вы сегодня были на встрече?
           </h2>
@@ -15,21 +19,28 @@
           <v-dialog v-model="excuseDialog" persistent max-width="450">
             <template v-slot:activator="{ on }">
               <div class="center">
-                <v-btn class="primary float-right mr-1" v-on="on"
+                <v-btn
+                  class="primary float-right mr-1"
+                  v-on="on"
+                  v-if="buttons == true"
+                  small
+                  >Извиниться</v-btn
+                >
+                <v-btn class="primary float-right mr-1" v-on="on" v-else
                   >Извиниться</v-btn
                 >
               </div>
             </template>
             <v-card>
-              <v-card-title>Опишите причину</v-card-title>
+              <v-card-title></v-card-title>
               <v-card-text>
                 <v-form ref="form" v-model="valid">
                   <v-alert type="warning" v-if="error">{{ error }}</v-alert>
                   <v-textarea
                     name="input-7-1"
-                    label="Причина"
+                    label="Комментарий"
                     required
-                    v-model="problem"
+                    v-model="comment"
                     :rules="rules"
                   ></v-textarea>
                   <v-dialog
@@ -91,7 +102,12 @@
                 <v-btn color="primary" @click="excuseDialog = false"
                   >Отмена</v-btn
                 >
-                <v-btn color="primary" @click="send('apologized')" :disabled="!valid">Отправить</v-btn>
+                <v-btn
+                  color="primary"
+                  @click="send('apologized')"
+                  :disabled="!valid"
+                  >Подтвердить</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -99,7 +115,14 @@
           <v-dialog v-model="checkinDialog" persistent max-width="450">
             <template v-slot:activator="{ on }">
               <div class="center">
-                <v-btn class="primary float-left ml-1" v-on="on"
+                <v-btn
+                  class="primary float-left ml-1"
+                  v-on="on"
+                  v-if="buttons == true"
+                  small
+                  >Отметиться</v-btn
+                >
+                <v-btn class="primary float-left ml-1" v-on="on" v-else
                   >Отметиться</v-btn
                 >
               </div>
@@ -198,13 +221,13 @@ import { mapGetters } from "vuex";
 import helpers from "@/utils/helpers.js";
 
 export default {
-  props: ["tab"],
+  props: ["tab", "buttons"],
   data() {
     return {
       checkinDialog: false,
       excuseDialog: false,
       rules: [(v) => !!v || "Пожалуйста заполните поле"],
-      problem: "Извиняюсь, не пришел по тому что:",
+      comment: "Извиняюсь, не пришел по тому что:",
       date: moment().format("yyyy-MM-DD"), //new Date().toISOString().substr(0, 10),
       modal: false,
       timesDefault: {},
@@ -251,7 +274,6 @@ export default {
   methods: {
     allowedCustomTimeStep: (m) => m % 15 === 0,
     send(apologized) {
-      console.log(apologized)
       this.$refs.form.validate();
       if (this.valid) {
         this.$store.dispatch("CHECK_IN", {
@@ -260,13 +282,15 @@ export default {
           isSunday: this.day == 6,
           isMeeting: this.tab == 1,
           tab: this.tab,
-          apologized
+          apologized,
+          comment: this.comment,
         });
         this.$store.dispatch("LOAD_MASS_CHECKINS_BY_USER", {
           tab: this.tab,
           uid: this.$store.getters.userId,
         });
-        this.dialog = false;
+        this.excuseDialog = false;
+        this.checkinDialog = false;
         this.snackbar = true;
         this.snackbarText = "Поздравляем, вы отметились!";
       }

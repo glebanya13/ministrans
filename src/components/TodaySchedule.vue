@@ -69,7 +69,8 @@ export default {
   computed: {
     ...mapGetters(["users", "parish", "dateCheckins"]),
     weekNumber() {
-      return this.today.week() % 4 + 1; //TODO: assign first week in parish module
+      this.$store.dispatch('PROCESS_WEEK', JSON.parse(localStorage.userdata).parish.id)
+      return this.parish.week; //TODO: assign first week in parish module
     },
   },
   methods: {

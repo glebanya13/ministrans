@@ -135,6 +135,7 @@ export default {
 
                         dispatch('LOAD_USER_DATA', firebaseUser.uid)
                         // dispatch('LOAD_MASS_CHECKINS_BY_USER')
+                        dispatch('PROCESS_WEEK', JSON.parse(localStorage.userdata).parish.id || "FE3rlsXPCXvXkiN5wJix")
                         dispatch('LOAD_MASS_CHECKINS')
                         dispatch('LOAD_MEETING_CHECKINS')
                         dispatch('LOAD_USERS')

@@ -65,6 +65,7 @@ export default {
                         dispatch('LOAD_PARISH', userData.parish.id)
                     }
                     commit('SET_USER_DATA', userData)
+                    localStorage.setItem("userdata", JSON.stringify(userData));
                     commit('SET_PROCESSING', false)
                     EventBus.notify('user-data-loaded')
                 })

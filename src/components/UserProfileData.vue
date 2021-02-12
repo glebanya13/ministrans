@@ -2,134 +2,136 @@
   <v-container fluid>
     <v-layout column v-if="!targetId">
       <v-row no-gutters>
-      <v-col cols="12"
-        sm="6"
-        md="6">
-      <v-card width="600" outlined :loading="!userName">
-        <v-card-text>
-          <v-flex class="mb-4">
-            <image-uploader
-              :debug="1"
-              :maxWidth="512"
-              :quality="0.7"
-              :autoRotate="true"
-              outputFormat="file"
-              :preview="false"
-              :className="['fileinput', { 'fileinput--loaded': hasImage }]"
-              :capture="false"
-              accept="video/*,image/*"
-              doNotResize="gif"
-              @input="setImage"
-            >
-              <label for="fileInput" slot="upload-label">
-                <figure>
-                  <v-avatar size="100" class="mr-4">
-                    <v-img v-if="!userImage" src="../assets/5.png">
-                      <v-row
-                        class="fill-height ma-0"
-                        align="center"
-                        justify="center"
-                        v-if="loading"
-                      >
-                        <v-progress-circular
-                          class="text-center"
-                          indeterminate
-                          color="primary"
-                        ></v-progress-circular> </v-row
-                    ></v-img>
-                    <v-img v-else :src="userImage">
-                      <v-row
-                        class="fill-height ma-0"
-                        align="center"
-                        justify="center"
-                        v-if="loading"
-                      >
-                        <v-progress-circular
-                          class="text-center"
-                          indeterminate
-                          color="primary"
-                        ></v-progress-circular>
-                      </v-row>
-                    </v-img>
-                  </v-avatar>
-                </figure>
-              </label>
-            </image-uploader>
-          </v-flex>
-          <h2 class="headline mb-0">
-            <h4 v-if="!userName && !userSurname">
-              <v-icon>person</v-icon> Нет данных
-            </h4>
-            <h4 v-if="userName && userSurname">
-              <v-icon>person</v-icon> {{ userName }} {{ userSurname }}
-            </h4>
-          </h2>
+        <v-col cols="12" sm="6" md="6">
+          <v-card width="600" outlined :loading="!userName">
+            <v-card-text>
+              <v-flex class="mb-4">
+                <image-uploader
+                  :debug="1"
+                  :maxWidth="512"
+                  :quality="0.7"
+                  :autoRotate="true"
+                  outputFormat="file"
+                  :preview="false"
+                  :className="['fileinput', { 'fileinput--loaded': hasImage }]"
+                  :capture="false"
+                  accept="video/*,image/*"
+                  doNotResize="gif"
+                  @input="setImage"
+                >
+                  <label for="fileInput" slot="upload-label">
+                    <figure>
+                      <v-avatar size="100" class="mr-4">
+                        <v-img v-if="!userImage" src="../assets/5.png">
+                          <v-row
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                            v-if="loading"
+                          >
+                            <v-progress-circular
+                              class="text-center"
+                              indeterminate
+                              color="primary"
+                            ></v-progress-circular> </v-row
+                        ></v-img>
+                        <v-img v-else :src="userImage">
+                          <v-row
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                            v-if="loading"
+                          >
+                            <v-progress-circular
+                              class="text-center"
+                              indeterminate
+                              color="primary"
+                            ></v-progress-circular>
+                          </v-row>
+                        </v-img>
+                      </v-avatar>
+                    </figure>
+                  </label>
+                </image-uploader>
+              </v-flex>
+              <h2 class="headline mb-0">
+                <h4 v-if="!userName && !userSurname">
+                  <v-icon>person</v-icon> Нет данных
+                </h4>
+                <h4 v-if="userName && userSurname">
+                  <v-icon>person</v-icon> {{ userName }} {{ userSurname }}
+                </h4>
+              </h2>
 
-          <h2 class="headline mb-0">
-            <h4 v-if="!phone"><v-icon>phone</v-icon>Нет данных</h4>
-          </h2>
+              <h2 class="headline mb-0">
+                <h4 v-if="!phone"><v-icon>phone</v-icon>Нет данных</h4>
+              </h2>
 
-          <h2 class="headline mb-0">
-            <h4 v-if="phone">
-              <v-icon>phone</v-icon>
-              <a :href="`tel:${this.phone}`" class="grey--text">{{ phone }}</a>
-            </h4>
-          </h2>
+              <h2 class="headline mb-0">
+                <h4 v-if="phone">
+                  <v-icon>phone</v-icon>
+                  <a :href="`tel:${this.phone}`" class="grey--text">{{
+                    phone
+                  }}</a>
+                </h4>
+              </h2>
 
-          <h2 class="headline mb-0">
-            <h4 v-if="!userBirthday">
-              <v-icon>mdi-calendar-today</v-icon> Нет данных
-            </h4>
-            <h4 v-if="userBirthday">
-              <v-icon>mdi-calendar-today</v-icon>
-              {{ userBirthday | moment("DD MMMM YYYY") }}
-            </h4>
-          </h2>
-          <h2 class="headline mb-0">
-            <h4 v-if="!userClas">
-              <v-icon>mdi-book-outline</v-icon> Нет данных
-            </h4>
-            <h4 v-if="userClas">
-              <v-icon>mdi-book-outline</v-icon> {{ userClas }}
-            </h4>
-          </h2>
-          <h2 class="headline mb-0">
-            <h4 v-if="!userLevel"><v-icon>mdi-star</v-icon> Нет данных</h4>
-            <h4 v-if="userLevel"><v-icon>mdi-star</v-icon> {{ userLevel }}</h4>
-          </h2>
-          <h2 class="headline mb-0">
-            <h4 v-if="!userParafia"><v-icon>mdi-church</v-icon> Нет данных</h4>
-            <h4 v-if="userParafia">
-              <v-icon>mdi-church</v-icon> {{ userParafia }}
-            </h4>
-          </h2>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn :to="{ name: 'edit-profile', params: { tab: 1 } }"
-            >Управление данными</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="6"
-        md="5"
-      >
-      <v-card width="600">
-        <v-card-title>Когда приходить?</v-card-title>
-        <v-card-text>
-          <h3>{{today}}</h3>
-          <h3>{{nextday}}</h3>
-          <v-btn @click="da()">Click</v-btn>
-        </v-card-text>
-      </v-card>
-      </v-col>
+              <h2 class="headline mb-0">
+                <h4 v-if="!userBirthday">
+                  <v-icon>mdi-calendar-today</v-icon> Нет данных
+                </h4>
+                <h4 v-if="userBirthday">
+                  <v-icon>mdi-calendar-today</v-icon>
+                  {{ userBirthday | moment("DD MMMM YYYY") }}
+                </h4>
+              </h2>
+              <h2 class="headline mb-0">
+                <h4 v-if="!userClas">
+                  <v-icon>mdi-book-outline</v-icon> Нет данных
+                </h4>
+                <h4 v-if="userClas">
+                  <v-icon>mdi-book-outline</v-icon> {{ userClas }}
+                </h4>
+              </h2>
+              <h2 class="headline mb-0">
+                <h4 v-if="!userLevel"><v-icon>mdi-star</v-icon> Нет данных</h4>
+                <h4 v-if="userLevel">
+                  <v-icon>mdi-star</v-icon> {{ userLevel }}
+                </h4>
+              </h2>
+              <h2 class="headline mb-0">
+                <h4 v-if="!userParafia">
+                  <v-icon>mdi-church</v-icon> Нет данных
+                </h4>
+                <h4 v-if="userParafia">
+                  <v-icon>mdi-church</v-icon> {{ userParafia }}
+                </h4>
+              </h2>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn :to="{ name: 'edit-profile', params: { tab: 1 } }"
+                >Управление данными</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" md="6">
+          <v-card width="600" outlined>
+            <v-card-title>Когда приходить?</v-card-title>
+            <v-card-text>
+              <h3>{{ today }}</h3>
+              <h3>{{ nextday }}</h3>
+              <h3 v-if="new Date().getDay() != 0">{{ sunday }}</h3>
+              <check-in-form
+                :tab="'0'"
+                :buttons="true"
+                v-if="checkinProperty"
+              ></check-in-form>
+            </v-card-text>
+          </v-card>
+        </v-col>
       </v-row>
-      <!-- <v-card>
-        <sunday-schedule></sunday-schedule>
-      </v-card> -->
       <br />
       <schedule-for-users
         v-if="userLevel != 'Ксендз'"
@@ -238,7 +240,8 @@ import { mapGetters, mapMutations } from "vuex";
 import lastDay from "../components/CheckInLastDays";
 import ScheduleForUsers from "@/components/ScheduleForUsers";
 import ImageUploader from "vue-image-upload-resize";
-import moment from 'moment'
+import moment from "moment";
+import CheckInForm from "./CheckInForm.vue";
 
 export default {
   props: ["targetId"],
@@ -248,7 +251,7 @@ export default {
       tab: "church",
       image: null,
       hasImage: false,
-      text: ''
+      text: "",
     };
   },
   computed: {
@@ -269,6 +272,8 @@ export default {
       "mClas",
       "mParafia",
       "mPhone",
+      "parish",
+      "userMassCheckins",
     ]),
     userImage() {
       let image = this.$store.getters.url;
@@ -282,21 +287,78 @@ export default {
       return this.$store.getters.loading;
     },
     today() {
-      let today = JSON.parse(localStorage.userdata).myschedule.filter(x => x.day == moment().format('d') - 1)
-      let todayText
-      if(!today.toString()) {
-        todayText = "Можно придти в любое время"
+      let today;
+      if (moment().format("d") != 0) {
+        today = JSON.parse(localStorage.userdata).myschedule.filter(
+          (x) => x.day == moment().format("d") - 1
+        );
       } else {
-        todayText = `Вам сегодня нужно придти в ${today.map(x => x.time + " часов").toString()}. Вы еще не отметились, отметьтесь пожалуйста)`
+        //sunday
+        today = JSON.parse(localStorage.userdata).myschedule.filter(
+          (x) => x.day == 6 && x.alt == this.parish.week
+        );
       }
-      return todayText
+      let todayText;
+      if (!today.toString()) {
+        todayText = "Сегодня — в любое время (09:00 или 18:00)";
+      } else {
+        todayText = `Сегодня — ${today.map((x) => x.time).toString()}`;
+      }
+      return todayText;
     },
     nextday() {
-      let nextday = JSON.parse(localStorage.userdata).myschedule.filter(x => x.day != 6 && x.day != moment().format('d') - 1).map(x=> x.day + " " + x.time).toString() // porblem with weekName
-      // let nextdayText
-      return "В следующий раз мне нужно в " + nextday
-    }
-
+      let name = (x) => {
+        let y;
+        switch (x) {
+          case 0:
+            y = "Понедельник";
+            break;
+          case 1:
+            y = "Вторник";
+            break;
+          case 2:
+            y = "Среда";
+            break;
+          case 3:
+            y = "Четверг";
+            break;
+          case 4:
+            y = "Пятница";
+            break;
+          case 5:
+            y = "Суббота";
+            break;
+        }
+        return y;
+      };
+      let nextday = JSON.parse(localStorage.userdata)
+        .myschedule.filter(
+          (x) => x.day != 6 && x.day != moment().format("d") - 1
+        )
+        .map((x) => name(x.day) + " " + x.time)[0]
+        .toString();
+      return "В следующий раз — " + nextday;
+    },
+    sunday() {
+      let sunday = JSON.parse(localStorage.userdata)
+        .myschedule.filter((x) => x.day == 6 && x.alt == this.parish.week)
+        .map((x) => x.time)
+        .toString();
+      return "В Воскресение — " + sunday;
+    },
+    checkinProperty() {
+      let boolean;
+      if (
+        this.userMassCheckins.find(
+          (x) => x.date == moment().format("Y-MM-D")
+        ) != undefined
+      ) {
+        boolean = false;
+      } else {
+        boolean = true;
+      }
+      return boolean;
+    },
   },
   methods: {
     ...mapMutations(["SET_ERROR", "SET_MESSAGE"]),
@@ -308,17 +370,12 @@ export default {
         url: this.image,
       });
     },
-    da(){
-      let x =JSON.parse(localStorage.userdata).myschedule.filter(x => x.day == moment().format('d') - 1).map(x => x.time + " часов").toString()
-      console.log(JSON.parse(localStorage.userdata).myschedule.filter(x => x.day == moment().format('d') - 1))
-      this.text = x
-    }
   },
   components: {
     lastDay,
     ScheduleForUsers,
     ImageUploader,
-    // TodaySchedule
+    CheckInForm,
   },
   created() {
     if (this.targetId) {
