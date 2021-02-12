@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-footer :fixed="true" app>
-      <span> <v-icon>mdi-heart</v-icon> Ministrants &copy;2020 (v 1.1)</span>
+      <span> <v-icon>mdi-heart</v-icon> Ministrants &copy;2020 (v 1.3)</span>
      <message-wall></message-wall>
     </v-footer>
   </div>
