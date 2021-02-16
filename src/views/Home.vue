@@ -36,12 +36,12 @@
                   министрантов, график, расписание и много другое. Приятного
                   использования!
                 </p>
-                <v-img 
+                <v-img
                   src="https://cyril-methodius.de/images/minstr.jpg"
                   height="350"
                   width="450"
                   class="ml-16 hidden-sm-and-down"
-                ></v-img> 
+                ></v-img>
                 <!-- optimize for dark theme -->
                 <v-img
                   src="https://cyril-methodius.de/images/minstr.jpg"
@@ -97,19 +97,6 @@
         </v-layout>
       </v-container>
     </section>
-    <v-btn
-      v-scroll="onScroll"
-      v-show="fab"
-      fab
-      dark
-      fixed
-      bottom
-      right
-      color="primary"
-      @click="toTop"
-    >
-      <v-icon>keyboard_arrow_up</v-icon>
-    </v-btn>
   </div>
 </template>
 
@@ -118,45 +105,35 @@ export default {
   name: "home",
   data() {
     return {
-      fab: false,
-      images: [ // send to firebase storage
+      images: [
+        // send to production firebase storage
         {
           id: 1,
           url:
-            "https://sun9-10.userapi.com/impf/c850724/v850724949/1d6f10/Gz2S5vaw-Y4.jpg?size=2560x1707&quality=96&proxy=1&sign=d98c07bd7a72bc81e7a4abec954c235c&type=album",
+            "https://firebasestorage.googleapis.com/v0/b/ministrans-60ff9.appspot.com/o/images%2F1.jpg?alt=media&token=eff922d2-532b-4dd1-98eb-7be1edcc6dbf",
         },
         {
           id: 2,
           url:
-            "https://sun9-24.userapi.com/impf/c850724/v850724949/1d6f38/3hbY0IGNiao.jpg?size=2560x1706&quality=96&proxy=1&sign=0642b073c8a092b8fd70cd63eef7bfd9&type=album",
+            "https://firebasestorage.googleapis.com/v0/b/ministrans-60ff9.appspot.com/o/images%2F2.jpg?alt=media&token=25373de8-9bc1-4eb9-96c5-0670afad9c61",
         },
         {
           id: 3,
           url:
-            "https://sun9-13.userapi.com/impf/WjDZU-0WppOoR5licN0MNjvCb86aNwgoAChWxQ/mpCsOfARNGs.jpg?size=2560x1707&quality=96&proxy=1&sign=c3f2cd326c3a3e0dfd967a15b19b237b&type=album",
+            "https://firebasestorage.googleapis.com/v0/b/ministrans-60ff9.appspot.com/o/images%2F3.jpg?alt=media&token=e46d8e55-e96b-44d9-b8ab-55f04de5f8ee",
         },
         {
           id: 4,
           url:
-            "https://sun9-48.userapi.com/impf/c850732/v850732805/1007b2/hkq1Zz1TmTI.jpg?size=2560x1707&quality=96&proxy=1&sign=e2aa782888aafdaa912ab8dda8f1906a&type=album",
+            "https://firebasestorage.googleapis.com/v0/b/ministrans-60ff9.appspot.com/o/images%2F4.jpg?alt=media&token=0a259ace-570b-4138-8a30-e90514b6c1d1",
         },
         {
           id: 5,
           url:
-            "https://sun9-71.userapi.com/impf/-YW28VhRzQekKSmgtofiBHHgaMuiNyKkoZ3dMA/Sc0Hpkr81EY.jpg?size=2560x1707&quality=96&proxy=1&sign=34ee3ccbb97455c85cd66cefec782234&type=album",
+            "https://firebasestorage.googleapis.com/v0/b/ministrans-60ff9.appspot.com/o/images%2F5.jpg?alt=media&token=e8777e25-afff-4217-b151-d39a6fadb7e5",
         },
       ],
     };
-  },
-  methods: {
-    onScroll(e) {
-      if (typeof window === "undefined") return;
-      const top = window.pageYOffset || e.target.scrollTop || 0;
-      this.fab = top > 20;
-    },
-    toTop() {
-      this.$vuetify.goTo(0);
-    },
   },
 };
 </script>

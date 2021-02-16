@@ -85,7 +85,7 @@
                   {{ userBirthday | moment("DD MMMM YYYY") }}
                 </h4>
               </h2>
-              <h2 class="headline mb-0">
+              <h2 class="headline mb-0" v-if="userLevel != 'Ксендз'">
                 <h4 v-if="!userClas">
                   <v-icon>mdi-book-outline</v-icon> Нет данных
                 </h4>
@@ -116,7 +116,7 @@
             </v-card-actions>
           </v-card>
         </v-col>
-        <v-col cols="12" sm="6" md="6">
+        <v-col cols="12" sm="6" md="6" v-if="userLevel != 'Ксендз'">
           <v-card width="600" outlined>
             <v-card-title>Когда приходить?</v-card-title>
             <v-card-text>
@@ -129,6 +129,56 @@
                 v-if="checkinProperty"
               ></check-in-form>
             </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" md="6" v-if="(userLevel = 'Ксендз')">
+          <v-card width="600" outlined>
+            <v-card-title>Отчёты Министрантов</v-card-title>
+
+            <v-list height="260">
+              <v-list-item v-for="(report, index) in reports" :key="index">
+                <v-list-item-content>
+                  <v-list-item-title
+                    >{{ report.name }} {{ report.surname }}</v-list-item-title
+                  >
+                  <v-list-item-subtitle>{{
+                    report.comment
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <v-card-actions v-if="detailedReports.length > 4">
+              <v-spacer></v-spacer>
+              <v-dialog v-model="dialog" persistent max-width="550">
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon><v-icon>expand</v-icon></v-btn>
+                </template>
+                <v-card height="650">
+                  <v-card-title
+                    >Отчёты Министрантов <v-spacer></v-spacer
+                    ><v-btn icon @click="dialog = false"
+                      ><v-icon class="pull-right">close</v-icon></v-btn
+                    ></v-card-title
+                  >
+                  <v-list>
+                    <v-list-item
+                      v-for="(report, index) in detailedReports"
+                      :key="index"
+                    >
+                      <v-list-item-content>
+                        <v-list-item-title
+                          >{{ report.name }}
+                          {{ report.surname }}</v-list-item-title
+                        >
+                        <v-list-item-subtitle>{{
+                          report.comment
+                        }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-card>
+              </v-dialog>
+            </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
@@ -204,9 +254,6 @@
           </h2>
         </v-card-text>
       </v-card>
-      <!-- <v-card>
-        <sunday-schedule></sunday-schedule>
-      </v-card> -->
       <br />
       <schedule-for-users
         :hide-headers="true"
@@ -252,6 +299,7 @@ export default {
       image: null,
       hasImage: false,
       text: "",
+      dialog: false,
     };
   },
   computed: {
@@ -273,6 +321,7 @@ export default {
       "mParafia",
       "mPhone",
       "parish",
+      "massCheckins",
       "userMassCheckins",
     ]),
     userImage() {
@@ -359,6 +408,14 @@ export default {
       }
       return boolean;
     },
+    reports() {
+      let x = this.massCheckins.filter((x) => x.apologized == true).slice(-4);
+      return x;
+    },
+    detailedReports() {
+      let x = this.massCheckins.filter((x) => x.apologized == true);
+      return x;
+    },
   },
   methods: {
     ...mapMutations(["SET_ERROR", "SET_MESSAGE"]),
@@ -380,6 +437,7 @@ export default {
   created() {
     if (this.targetId) {
       this.$store.dispatch("LOAD_USER_DATA_BY_USER", this.targetId);
+      this.$store.dispatch("LOAD_MASS_CHECKINS");
     }
   },
 };

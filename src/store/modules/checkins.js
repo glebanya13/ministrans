@@ -160,7 +160,9 @@ export default {
                             date: data.date,
                             name: user.name,
                             surname: user.surname,
-                            time: data.time
+                            time: data.time,
+                            apologized: data.apologized,
+                            comment: data.comment
                         }
                         checkins.push(checkin)
                     })
